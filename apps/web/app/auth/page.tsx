@@ -37,7 +37,7 @@ export default function AuthPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#080810", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFF", fontFamily: "system-ui" }}>
       <form onSubmit={handleSubmit} style={{ background: "#0f0f1a", padding: 40, borderRadius: 20, border: "1px solid rgba(255,107,53,0.1)", width: "100%", maxWidth: 400 }}>
-        <h1 style={{ marginBottom: 20, fontSize: 24, textAlign: "center" }}>Autenticação Convex</h1>
+
         <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", marginBottom: 30 }}>Entre ou crie sua conta para gerenciar seu food truck.</p>
         
         {error && <div style={{ background: "rgba(239,68,68,0.1)", color: "#EF4444", padding: 12, borderRadius: 8, marginBottom: 20, fontSize: 14 }}>{error}</div>}
