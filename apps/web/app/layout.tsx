@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import "./globals.css";
 import "./cozinha/cozinha.css";
@@ -16,11 +17,23 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <ConvexClientProvider>
-          {children}
-        </ConvexClientProvider>
+        <ClerkProvider>
+          <header style={{ padding: '1rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+            <Show when="signed-out">
+              <SignInButton />
+              <SignUpButton />
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+          </header>
+          <ConvexClientProvider>
+            {children}
+          </ConvexClientProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
 }
+
 

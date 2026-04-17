@@ -21,7 +21,6 @@ export default function AuthPage() {
       await signIn("password", { email, password, flow: "signUp" });
       router.push("/onboarding");
     } catch (err: any) {
-      // If sign up fails, try sign in
       try {
         await signIn("password", { email, password, flow: "signIn" });
         router.push("/onboarding");
@@ -29,7 +28,9 @@ export default function AuthPage() {
         setError("Falha na autenticação. Verifique suas credenciais.");
         console.error(err2);
       }
-    } finally {
+    }
+
+ finally {
       setIsSubmitting(false);
     }
   };

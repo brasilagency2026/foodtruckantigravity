@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/core": "^0.37.4",
+    "@clerk/nextjs": "^5.7.6",
     "@convex-dev/auth": "^0.0.91",
     "aws4fetch": "^1.0.18",
     "convex": "^1.12.0",
