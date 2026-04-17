@@ -127,7 +127,8 @@ export const confirmPayment = mutation({
     paymentStatus: v.union(
       v.literal("aprovado"),
       v.literal("recusado"),
-      v.literal("reembolsado")
+      v.literal("reembolsado"),
+      v.literal("pendente")
     ),
   },
   handler: async (ctx, { mercadoPagoPaymentId, paymentStatus }) => {
