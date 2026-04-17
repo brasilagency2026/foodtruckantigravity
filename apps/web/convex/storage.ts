@@ -31,11 +31,12 @@ export const generateUploadUrl = action({
 
     // Presigned URL valide 10 minutes
     const signed = await r2.sign(
-      new Request(url, { method: "PUT" }),
+      new Request(url, {
+        method: "PUT",
+        headers: { "Content-Type": contentType },
+      }),
       {
         aws: { signQuery: true },
-        headers: { "Content-Type": contentType },
-        expiresIn: 600,
       }
     );
 
