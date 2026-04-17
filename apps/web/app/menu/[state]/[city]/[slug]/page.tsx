@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { fetchQuery } from "convex/nextjs";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import { notFound, redirect } from "next/navigation";
 import MenuPageClient from "../../../../t/[truckId]/page";
 

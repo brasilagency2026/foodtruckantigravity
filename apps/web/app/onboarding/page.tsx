@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { useAuth } from "@convex-dev/auth/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../convex/_generated/api";
 import { StepInfo } from "./StepInfo";
 import { StepLocation } from "./StepLocation";
 import { StepPhoto } from "./StepPhoto";
