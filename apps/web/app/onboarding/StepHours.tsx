@@ -203,7 +203,6 @@ const s: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     padding: "4px 6px",
     borderRadius: 6,
-    title: "Aplicar a todos os dias",
   },
   closedLabel: {
     color: "rgba(255,255,255,0.15)",
