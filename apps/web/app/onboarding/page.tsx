@@ -40,7 +40,7 @@ export default function OnboardingPage() {
   function update(fields: Partial<OnboardingData>) { setData((p) => ({ ...p, ...fields })); }
   
   async function finish() {
-    if (!isAuthenticated || !userId) {
+    if (!isAuthenticated) {
       alert("Você precisa estar logado para cadastrar um truck.");
       return;
     }
