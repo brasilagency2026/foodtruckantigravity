@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://your-clerk-issuer-url-here.clerk.accounts.dev",
+      domain: "https://balanced-deer-33.clerk.accounts.dev",
       applicationID: "convex",
     },
   ],
