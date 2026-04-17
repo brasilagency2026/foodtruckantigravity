@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@convex-dev/auth/react";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
-  const { signIn } = useAuth();
+  const { signIn } = useAuthActions();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

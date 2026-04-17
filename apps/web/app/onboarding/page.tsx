@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
-import { useAuth } from "@convex-dev/auth/react";
+import { useConvexAuth } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { StepInfo } from "./StepInfo";
 import { StepLocation } from "./StepLocation";
@@ -31,7 +31,7 @@ const STEPS = [
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { isAuthenticated, userId } = useAuth();
+  const { isAuthenticated } = useConvexAuth();
   const createTruck = useMutation(api.foodTrucks.createTruck);
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
