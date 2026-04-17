@@ -107,7 +107,6 @@ export const createTruck = mutation({
     latitude: v.number(),
     longitude: v.number(),
     address: v.string(),
-    ownerId: v.string(),
     coverPhotoUrl: v.string(),
     phone: v.string(),
     slug: v.string(),
@@ -126,6 +125,9 @@ export const createTruck = mutation({
     }),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
     // Verificar se slug já existe nessa cidade
     const existing = await ctx.db
       .query("foodTrucks")
@@ -145,6 +147,7 @@ export const createTruck = mutation({
 
     return await ctx.db.insert("foodTrucks", {
       ...args,
+      ownerId: identity.subject,
       slug: finalSlug,
       isOpen: false,
       rating: 0,

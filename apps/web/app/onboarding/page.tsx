@@ -50,7 +50,7 @@ export default function OnboardingPage() {
         name: data.name!, description: data.description!, cuisine: data.cuisine!,
         phone: data.phone!, latitude: data.latitude!, longitude: data.longitude!,
         address: data.address!, coverPhotoUrl: data.coverPhotoUrl!, openingHours: data.openingHours ?? {},
-        ownerId: userId, slug: data.slug!, state: data.state!, city: data.city!,
+        slug: data.slug!, state: data.state!, city: data.city!,
         cityDisplay: data.cityDisplay!, stateDisplay: data.stateDisplay!,
       });
       router.push(`/dashboard/${truckId}`);
