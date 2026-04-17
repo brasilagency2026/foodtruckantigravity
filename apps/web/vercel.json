@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx convex deploy --cmd 'next build'",
+  "buildCommand": "next build",
   "outputDirectory": ".next",
   "installCommand": "cd ../.. && npm install",
   "framework": "nextjs"
