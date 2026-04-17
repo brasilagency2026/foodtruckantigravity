@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import "./globals.css";
 import "./cozinha/cozinha.css";
@@ -19,13 +19,15 @@ export default function RootLayout({
       <body>
         <ClerkProvider>
           <header style={{ padding: '1rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-            <Show when="signed-out">
-              <SignInButton />
-              <SignUpButton />
-            </Show>
-            <Show when="signed-in">
+            <SignedOut>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <SignInButton />
+                <SignUpButton />
+              </div>
+            </SignedOut>
+            <SignedIn>
               <UserButton />
-            </Show>
+            </SignedIn>
           </header>
           <ConvexClientProvider>
             {children}
@@ -35,5 +37,6 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
