@@ -192,7 +192,7 @@ export default function PricingClient() {
                 </div>
                 <div className="pr-mp-methods">
                   {[
-                    { icon: "⚡", label: "Pix", rate: "0% de taxa", color: "#22C55E" },
+                    { icon: "⚡", label: "Pix", rate: "1% de taxa", color: "#22C55E" },
                     { icon: "💳", label: "Crédito", rate: "4,99% por transação", color: "#3B82F6" },
                     { icon: "🏦", label: "Débito", rate: "3,49% por transação", color: "#8B5CF6" },
                   ].map((m) => (
@@ -364,13 +364,13 @@ const MP_PERKS = [
   { icon: "✅", title: "Você já usa o Mercado Pago?", desc: "Então já tem tudo. É só conectar sua conta — leva 2 minutos." },
   { icon: "📲", title: "Receba na hora no celular", desc: "O dinheiro cai diretamente na sua conta Mercado Pago." },
   { icon: "🔐", title: "Seguro e confiável", desc: "A mesma plataforma de pagamentos do Mercado Livre — usada por milhões no Brasil." },
-  { icon: "💸", title: "Sem taxa fixa", desc: "Paga apenas quando vende. Pix tem taxa zero — cartão tem taxa por transação." },
+  { icon: "💸", title: "Sem taxa fixa", desc: "Paga apenas quando vende. Pix tem taxa de 1% — cartão tem taxa por transação." },
 ];
 
 const FAQ = [
   {
     q: "Preciso de maquininha de cartão?",
-    a: "Não! Todos os pagamentos são feitos pelo celular do cliente, integrado ao Mercado Pago. O cliente paga com Pix (taxa 0%), cartão de crédito (4,99%) ou débito (3,49%) direto no app ou na página web do cardápio.",
+    a: "Não! Todos os pagamentos são feitos pelo celular do cliente, integrado ao Mercado Pago. O cliente paga com Pix (taxa 1%), cartão de crédito (4,99%) ou débito (3,49%) direto no app ou na página web do cardápio.",
   },
   {
     q: "Preciso comprar algum equipamento?",
