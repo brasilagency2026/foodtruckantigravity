@@ -42,11 +42,12 @@ export async function POST(req: NextRequest) {
   const uploadEndpoint = `https://${accountId}.r2.cloudflarestorage.com/${bucketName}/${key}`;
 
   const signed = await r2.sign(
-    new Request(uploadEndpoint, { method: "PUT" }),
+    new Request(uploadEndpoint, {
+      method: "PUT",
+      headers: { "Content-Type": contentType },
+    }),
     {
       aws: { signQuery: true },
-      headers: { "Content-Type": contentType },
-      expiresIn: 600, // 10 minutos
     }
   );
 
