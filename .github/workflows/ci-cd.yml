@@ -1,0 +1,106 @@
+name: CI/CD — Food Truck Alert
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ============================================
+  # 1. LINT + TESTES
+  # ============================================
+  test:
+    name: 🧪 Lint & Testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "yarn"
+
+      - name: Instalar dependências
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn turbo lint
+
+      - name: Testes
+        run: yarn turbo test
+
+  # ============================================
+  # 2. DEPLOY WEB → VERCEL (automático)
+  # ============================================
+  deploy-web:
+    name: 🚀 Deploy Web → Vercel
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy no Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: apps/web
+          vercel-args: "--prod"
+
+  # ============================================
+  # 3. DEPLOY CONVEX (backend)
+  # ============================================
+  deploy-convex:
+    name: ⚡ Deploy Convex
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Deploy Convex
+        run: yarn convex deploy --cmd "yarn build"
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+
+  # ============================================
+  # 4. BUILD MOBILE (apenas na main)
+  # ============================================
+  build-mobile:
+    name: 📱 Build Mobile (EAS)
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build Android (preview)
+        working-directory: apps/mobile
+        run: eas build --platform android --profile preview --non-interactive
+
+      - name: Build iOS (preview)
+        working-directory: apps/mobile
+        run: eas build --platform ios --profile preview --non-interactive
