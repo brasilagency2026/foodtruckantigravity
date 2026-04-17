@@ -182,6 +182,7 @@ export default async function MenuSlugPage({ params }: PageProps) {
 
 // ─── Static params para pre-rendering (SSG) ───────────────────────────────────
 
+/*
 export async function generateStaticParams() {
   const trucks = await fetchQuery(api.foodTrucks.getAllTrucks, {});
   return trucks.map((truck) => ({
@@ -190,3 +191,4 @@ export async function generateStaticParams() {
     slug: truck.slug,
   }));
 }
+*/
