@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && npx turbo build --filter=web",
+  "buildCommand": "cd ../.. && npx convex deploy --cmd 'npx turbo build --filter=web'",
   "outputDirectory": ".next",
   "installCommand": "cd ../.. && npm install",
   "framework": "nextjs"
