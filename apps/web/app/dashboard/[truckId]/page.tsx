@@ -80,7 +80,7 @@ export default function DashboardPage({
             </button>
             <button
               style={s.qrBtnSecondary}
-              onClick={() => navigator.clipboard.writeText(`${BASE_URL}/menu/${params.truckId}`)}
+              onClick={() => navigator.clipboard.writeText(`${BASE_URL}/t/${params.truckId}`)}
             >
               🔗 Copiar link
             </button>

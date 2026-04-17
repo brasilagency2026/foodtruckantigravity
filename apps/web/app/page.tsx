@@ -218,7 +218,7 @@ export default function HomePage() {
           ${status}
           ${dist ? `<span style="font-size:12px;color:#888">${dist}</span>` : ""}
         </div>
-        <a href="/menu/${truck._id}" style="display:block;background:#FF6B35;color:#fff;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">
+        <a href="/t/${truck._id}" style="display:block;background:#FF6B35;color:#fff;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">
           Pedir agora
         </a>
       </div>
@@ -567,7 +567,7 @@ function TruckCard({ truck, selected, onClick }: { truck: Truck; selected: boole
         </div>
       </div>
       <a
-        href={`/menu/${truck._id}`}
+        href={`/t/${truck._id}`}
         className="truck-order-btn"
         onClick={(e) => e.stopPropagation()}
       >
