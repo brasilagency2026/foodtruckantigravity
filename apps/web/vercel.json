@@ -1,6 +1,7 @@
 {
-  "buildCommand": "cd ../.. && yarn turbo build --filter=web",
+  "buildCommand": "cd ../.. && npx turbo build --filter=web",
   "outputDirectory": ".next",
-  "installCommand": "cd ../.. && yarn install",
+  "installCommand": "cd ../.. && npm install",
   "framework": "nextjs"
 }
+
