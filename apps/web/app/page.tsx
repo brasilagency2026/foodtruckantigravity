@@ -1004,6 +1004,5 @@ const CSS = `
     .btn-store { width: 100%; }
     .store-buttons { flex-direction: column; }
     .btn-store-dark { width: 100%; }
-    .nav-actions .btn-ghost { display: none; }
   }
 `;
