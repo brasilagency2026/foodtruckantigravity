@@ -133,6 +133,17 @@ export const updateOrderStatus = mutation({
   },
 });
 
+// Link Mercado Pago payment ID to an order (called right after MP API returns)
+export const linkPaymentId = mutation({
+  args: {
+    orderId: v.id("orders"),
+    mercadoPagoPaymentId: v.string(),
+  },
+  handler: async (ctx, { orderId, mercadoPagoPaymentId }) => {
+    await ctx.db.patch(orderId, { mercadoPagoPaymentId });
+  },
+});
+
 // Webhook Mercado Pago confirma pagamento
 export const confirmPayment = mutation({
   args: {

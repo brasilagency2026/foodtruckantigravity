@@ -37,7 +37,7 @@ export const createPayment = action({
         first_name: args.clientName.split(" ")[0],
         last_name: args.clientName.split(" ").slice(1).join(" "),
       },
-      notification_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/mercadopago`,
+      notification_url: `https://www.foodpronto.com.br/api/webhooks/mercadopago`,
     };
 
     if (args.paymentMethod === "pix") {
@@ -64,9 +64,9 @@ export const createPayment = action({
     }
 
     // Salvar o ID do pagamento no pedido
-    await ctx.runMutation(api.orders.confirmPayment, {
+    await ctx.runMutation(api.orders.linkPaymentId, {
+      orderId: args.orderId,
       mercadoPagoPaymentId: String(data.id),
-      paymentStatus: "pendente",
     });
 
     // Retornar dados necessários para o cliente
