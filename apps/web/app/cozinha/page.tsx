@@ -57,7 +57,7 @@ export default function CozinhaPage() {
             <p>Nenhum pedido pendente!</p>
           </div>
         ) : (
-          orders.map((order) => (
+          orders.map((order: any) => (
             <div key={order._id} className={`order-card status-${order.status}`}>
               <div className="order-header">
                 <strong>#{order._id.slice(-4).toUpperCase()}</strong>
