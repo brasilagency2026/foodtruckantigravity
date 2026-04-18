@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { useConvexAuth } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -31,11 +32,20 @@ const STEPS = [
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { isSignedIn, isLoaded: clerkLoaded } = useAuth();
+  const { isAuthenticated, isLoading: convexLoading } = useConvexAuth();
   const createTruck = useMutation(api.foodTrucks.createTruck);
+  const myTrucks = useQuery(api.foodTrucks.getMyTrucks);
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Partial<OnboardingData>>({});
+
+  // Redirect to dashboard if user already has a truck
+  useEffect(() => {
+    if (myTrucks && myTrucks.length > 0) {
+      router.replace(`/dashboard/${myTrucks[0]._id}`);
+    }
+  }, [myTrucks, router]);
   
   function update(fields: Partial<OnboardingData>) { setData((p) => ({ ...p, ...fields })); }
   
@@ -60,7 +70,7 @@ export default function OnboardingPage() {
     }
   }
 
-  if (isLoading) {
+  if (!clerkLoaded) {
     return (
       <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center" }}>
         <p style={{ color:"rgba(255,255,255,0.5)", fontSize:16 }}>Carregando...</p>
@@ -68,7 +78,7 @@ export default function OnboardingPage() {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isSignedIn) {
      return (
        <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:20 }}>
          <h1>Acesso Restrito</h1>
