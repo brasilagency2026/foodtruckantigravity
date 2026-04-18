@@ -35,8 +35,8 @@ export default function CheckoutPage() {
   const createPayment = useAction(api.payments.createPayment);
 
   async function handlePay() {
-    if (!name.trim() || !phone.trim()) {
-      setError("Preencha seu nome e telefone.");
+    if (!name.trim()) {
+      setError("Preencha seu nome.");
       return;
     }
     setError(null);
@@ -47,7 +47,7 @@ export default function CheckoutPage() {
         truckId: truckId as Id<"foodTrucks">,
         clientId: "guest",
         clientName: name,
-        clientPhone: phone,
+        clientPhone: phone || "",
         items,
         totalPrice: total,
         paymentMethod: "pix", // default, MP will handle actual method selection
@@ -116,7 +116,7 @@ export default function CheckoutPage() {
         <div style={s.section}>
           <h2 style={s.sectionTitle}>Seus dados</h2>
           <div style={s.inputWrap}>
-            <label style={s.inputLabel}>Nome *</label>
+            <label style={s.inputLabel}>Nome</label>
             <input
               style={s.input}
               placeholder="Seu nome"
@@ -125,7 +125,7 @@ export default function CheckoutPage() {
             />
           </div>
           <div style={s.inputWrap}>
-            <label style={s.inputLabel}>WhatsApp *</label>
+            <label style={s.inputLabel}>WhatsApp (opcional)</label>
             <input
               style={s.input}
               placeholder="(11) 99999-9999"
