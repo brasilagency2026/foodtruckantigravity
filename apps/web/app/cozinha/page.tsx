@@ -1,9 +1,31 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
+import { useRef, useEffect, useCallback } from "react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice, formatOrderStatus } from "shared/types";
+
+function playNewOrderSound() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const now = ctx.currentTime;
+    // Three ascending beeps
+    [0, 0.15, 0.3].forEach((delay, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 600 + i * 200;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.3, now + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.12);
+      osc.start(now + delay);
+      osc.stop(now + delay + 0.12);
+    });
+    setTimeout(() => ctx.close(), 1000);
+  } catch {}
+}
 
 export default function CozinhaPage() {
   const myTrucks = useQuery(api.foodTrucks.getMyTrucks);
@@ -13,6 +35,16 @@ export default function CozinhaPage() {
     api.orders.getActiveOrdersForTruck,
     truckId ? { truckId } : "skip"
   );
+
+  const prevOrderCount = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!orders) return;
+    if (prevOrderCount.current !== null && orders.length > prevOrderCount.current) {
+      playNewOrderSound();
+    }
+    prevOrderCount.current = orders.length;
+  }, [orders]);
 
   const updateStatus = useMutation(api.orders.updateOrderStatus);
   const confirmCash = useMutation(api.orders.confirmCashPayment);

@@ -1,9 +1,33 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { useRef, useEffect } from "react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
+
+function playReadySound() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const now = ctx.currentTime;
+    // Cheerful melody: C5-E5-G5-C6
+    const notes = [523, 659, 784, 1047];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = "sine";
+      const t = now + i * 0.18;
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t);
+      osc.stop(t + 0.25);
+    });
+    setTimeout(() => ctx.close(), 2000);
+  } catch {}
+}
 
 const STATUS_MAP: Record<string, { label: string; color: string; icon: string }> = {
   recebido: { label: "Pedido recebido", color: "#3B82F6", icon: "📋" },
@@ -27,6 +51,16 @@ export default function OrderPage({
 }) {
   const orderId = params.orderId as Id<"orders">;
   const order = useQuery(api.orders.getOrderById, { orderId });
+
+  const prevStatus = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!order) return;
+    if (prevStatus.current !== null && prevStatus.current !== "pronto" && order.status === "pronto") {
+      playReadySound();
+    }
+    prevStatus.current = order.status;
+  }, [order?.status]);
 
   if (order === undefined) {
     return (
