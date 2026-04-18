@@ -7,14 +7,6 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
 
-type PaymentMethod = "pix" | "cartao_credito" | "cartao_debito";
-
-const METHODS: { key: PaymentMethod; icon: string; label: string; desc: string }[] = [
-  { key: "pix", icon: "⚡", label: "Pix", desc: "Aprovação instantânea" },
-  { key: "cartao_credito", icon: "💳", label: "Crédito", desc: "Parcelamento" },
-  { key: "cartao_debito", icon: "🏦", label: "Débito", desc: "Débito na hora" },
-];
-
 interface CartItem {
   menuItemId: string;
   name: string;
@@ -34,7 +26,6 @@ export default function CheckoutPage() {
 
   const truck = useQuery(api.foodTrucks.getTruckById, truckId ? { truckId: truckId as Id<"foodTrucks"> } : "skip");
 
-  const [method, setMethod] = useState<PaymentMethod>("pix");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,28 +50,20 @@ export default function CheckoutPage() {
         clientPhone: phone,
         items,
         totalPrice: total,
-        paymentMethod: method,
+        paymentMethod: "pix", // default, MP will handle actual method selection
       });
 
       const payment = await createPayment({
         orderId,
         truckId: truckId as Id<"foodTrucks">,
         totalPrice: total,
-        paymentMethod: method,
         clientEmail: "cliente@foodpronto.com.br",
         clientName: name,
         description: `Pedido #${orderId.slice(-4).toUpperCase()} — ${truck?.name ?? "Food Truck"}`,
       });
 
-      // For Pix: go to order tracking page (shows QR code)
-      // For card: redirect to MP checkout
-      if (method === "pix") {
-        router.push(`/order/${orderId}`);
-      } else if (payment.checkoutUrl) {
-        window.location.href = payment.checkoutUrl;
-      } else {
-        router.push(`/order/${orderId}`);
-      }
+      // Redirect to Mercado Pago Checkout Pro
+      window.location.href = payment.checkoutUrl;
     } catch (e: any) {
       console.error("Checkout error:", e);
       setError(e?.message ?? "Erro ao processar pagamento. Tente novamente.");
@@ -153,34 +136,12 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Método de pagamento */}
-        <div style={s.section}>
-          <h2 style={s.sectionTitle}>Forma de pagamento</h2>
-          {METHODS.map((m) => (
-            <button
-              key={m.key}
-              style={{
-                ...s.methodRow,
-                ...(method === m.key ? s.methodRowActive : {}),
-              }}
-              onClick={() => setMethod(m.key)}
-            >
-              <span style={s.methodIcon}>{m.icon}</span>
-              <div style={s.methodInfo}>
-                <span style={{
-                  ...s.methodLabel,
-                  ...(method === m.key ? s.methodLabelActive : {}),
-                }}>{m.label}</span>
-                <span style={s.methodDesc}>{m.desc}</span>
-              </div>
-              <div style={{
-                ...s.radio,
-                ...(method === m.key ? s.radioActive : {}),
-              }}>
-                {method === m.key && <div style={s.radioDot} />}
-              </div>
-            </button>
-          ))}
+        {/* Info MP */}
+        <div style={s.mpInfo}>
+          <span style={{ fontSize: 18 }}>🔒</span>
+          <p style={s.mpInfoText}>
+            Você será redirecionado para o Mercado Pago para escolher a forma de pagamento (Pix, crédito, débito).
+          </p>
         </div>
 
         {/* Error */}
@@ -197,10 +158,7 @@ export default function CheckoutPage() {
           onClick={handlePay}
           disabled={loading}
         >
-          {loading
-            ? "Processando..."
-            : `Pagar ${formatPrice(total)} via ${METHODS.find((m) => m.key === method)?.label}`
-          }
+          {loading ? "Redirecionando..." : `Pagar ${formatPrice(total)}`}
         </button>
       </div>
 
@@ -394,6 +352,22 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 14,
     marginBottom: 16,
     textAlign: "center" as const,
+  },
+  mpInfo: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    background: "rgba(0,158,227,0.08)",
+    border: "1px solid rgba(0,158,227,0.2)",
+    borderRadius: 12,
+    padding: "14px 16px",
+    marginBottom: 16,
+  },
+  mpInfoText: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: 13,
+    lineHeight: 1.5,
+    margin: 0,
   },
   payBtn: {
     width: "100%",

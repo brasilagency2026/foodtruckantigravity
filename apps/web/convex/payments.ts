@@ -11,14 +11,9 @@ export const createPayment = action({
     orderId: v.id("orders"),
     truckId: v.id("foodTrucks"),
     totalPrice: v.number(),      // em centavos
-    paymentMethod: v.union(
-      v.literal("pix"),
-      v.literal("cartao_credito"),
-      v.literal("cartao_debito")
-    ),
     clientEmail: v.string(),
     clientName: v.string(),
-    description: v.string(),     // ex: "Pedido #ABC123 - Food Truck X"
+    description: v.string(),
   },
   handler: async (ctx, args) => {
     // Fetch the truck's Mercado Pago access token
@@ -28,56 +23,52 @@ export const createPayment = action({
     }
     const accessToken = truck.mpAccessToken;
 
-    const paymentData: Record<string, unknown> = {
-      transaction_amount: args.totalPrice / 100, // Mercado Pago usa reais, não centavos
-      description: args.description,
-      external_reference: args.orderId,
+    // Use Checkout Pro — MP handles Pix, credit, debit, everything
+    const preferenceData = {
+      items: [
+        {
+          title: args.description,
+          quantity: 1,
+          unit_price: args.totalPrice / 100, // MP uses reais, not centavos
+          currency_id: "BRL",
+        },
+      ],
       payer: {
         email: args.clientEmail,
-        first_name: args.clientName.split(" ")[0],
-        last_name: args.clientName.split(" ").slice(1).join(" "),
+        name: args.clientName,
       },
+      external_reference: args.orderId,
       notification_url: `https://www.foodpronto.com.br/api/webhooks/mercadopago`,
+      back_urls: {
+        success: `https://www.foodpronto.com.br/order/${args.orderId}`,
+        failure: `https://www.foodpronto.com.br/order/${args.orderId}`,
+        pending: `https://www.foodpronto.com.br/order/${args.orderId}`,
+      },
+      auto_return: "approved",
     };
 
-    if (args.paymentMethod === "pix") {
-      paymentData.payment_method_id = "pix";
-    }
-
     const response = await fetch(
-      "https://api.mercadopago.com/v1/payments",
+      "https://api.mercadopago.com/checkout/preferences",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
-          "X-Idempotency-Key": args.orderId,
         },
-        body: JSON.stringify(paymentData),
+        body: JSON.stringify(preferenceData),
       }
     );
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(`Erro Mercado Pago: ${data.message}`);
+      throw new Error(`Erro Mercado Pago: ${JSON.stringify(data)}`);
     }
 
-    // Salvar o ID do pagamento no pedido
-    await ctx.runMutation(api.orders.linkPaymentId, {
-      orderId: args.orderId,
-      mercadoPagoPaymentId: String(data.id),
-    });
-
-    // Retornar dados necessários para o cliente
+    // Return the checkout URL — client redirects to MP
     return {
-      paymentId: data.id,
-      status: data.status,
-      // Para Pix: QR Code
-      pixQrCode: data.point_of_interaction?.transaction_data?.qr_code,
-      pixQrCodeBase64: data.point_of_interaction?.transaction_data?.qr_code_base64,
-      // Para cartão: URL de checkout
       checkoutUrl: data.init_point,
+      preferenceId: data.id,
     };
   },
 });
