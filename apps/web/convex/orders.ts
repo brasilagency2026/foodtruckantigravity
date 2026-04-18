@@ -65,6 +65,19 @@ export const getOrdersByClient = query({
   },
 });
 
+// Find order by Mercado Pago payment ID (used by webhook)
+export const getOrderByPaymentId = query({
+  args: { mercadoPagoPaymentId: v.string() },
+  handler: async (ctx, { mercadoPagoPaymentId }) => {
+    return await ctx.db
+      .query("orders")
+      .withIndex("by_payment", (q) =>
+        q.eq("mercadoPagoPaymentId", mercadoPagoPaymentId)
+      )
+      .first();
+  },
+});
+
 // ============================================
 // MUTATIONS
 // ============================================

@@ -9,6 +9,7 @@ import { api } from "./_generated/api";
 export const createPayment = action({
   args: {
     orderId: v.id("orders"),
+    truckId: v.id("foodTrucks"),
     totalPrice: v.number(),      // em centavos
     paymentMethod: v.union(
       v.literal("pix"),
@@ -20,7 +21,12 @@ export const createPayment = action({
     description: v.string(),     // ex: "Pedido #ABC123 - Food Truck X"
   },
   handler: async (ctx, args) => {
-    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN!;
+    // Fetch the truck's Mercado Pago access token
+    const truck = await ctx.runQuery(api.foodTrucks.getTruckById, { truckId: args.truckId });
+    if (!truck?.mpAccessToken) {
+      throw new Error("Este truck não tem Mercado Pago conectado.");
+    }
+    const accessToken = truck.mpAccessToken;
 
     const paymentData: Record<string, unknown> = {
       transaction_amount: args.totalPrice / 100, // Mercado Pago usa reais, não centavos

@@ -49,7 +49,7 @@ export default function OnboardingPage() {
   
   function update(fields: Partial<OnboardingData>) { setData((p) => ({ ...p, ...fields })); }
   
-  async function finish() {
+  async function finish(connectPayment: boolean) {
     if (!isAuthenticated) {
       alert("Você precisa estar logado para cadastrar um truck.");
       return;
@@ -63,7 +63,11 @@ export default function OnboardingPage() {
         slug: data.slug!, state: data.state!, city: data.city!,
         cityDisplay: data.cityDisplay!, stateDisplay: data.stateDisplay!,
       });
-      router.push(`/dashboard/${truckId}`);
+      if (connectPayment) {
+        window.location.href = `/api/mercadopago/authorize?truckId=${truckId}`;
+      } else {
+        router.push(`/dashboard/${truckId}`);
+      }
     } catch (e) { 
       console.error(e);
       setLoading(false); 
@@ -113,7 +117,7 @@ export default function OnboardingPage() {
         {step===1 && <StepLocation data={data} onBack={()=>setStep(0)} onNext={(f)=>{update(f);setStep(2);}} />}
         {step===2 && <StepPhoto data={data} onBack={()=>setStep(1)} onNext={(f)=>{update(f);setStep(3);}} />}
         {step===3 && <StepHours data={data} onBack={()=>setStep(2)} onNext={(f)=>{update(f);setStep(4);}} />}
-        {step===4 && <StepPayment onBack={()=>setStep(3)} onFinish={finish} loading={loading} />}
+        {step===4 && <StepPayment onBack={()=>setStep(3)} onFinish={(connectPayment) => finish(connectPayment)} loading={loading} />}
       </div>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@400;500;600;700&display=swap');*{box-sizing:border-box;}`}</style>
     </div>

@@ -37,12 +37,33 @@ export async function POST(req: NextRequest) {
     const paymentId = data.data?.id;
     if (!paymentId) return NextResponse.json({ ok: true });
 
-    // Buscar detalhes do pagamento no Mercado Pago
+    // Look up the order to find which truck (and its MP token)
+    // The payment external_reference is the orderId
+    const order = await convex.query(api.orders.getOrderByPaymentId, {
+      mercadoPagoPaymentId: String(paymentId),
+    });
+
+    if (!order) {
+      console.error("Webhook: order not found for payment", paymentId);
+      return NextResponse.json({ ok: true });
+    }
+
+    // Get the truck's access token
+    const truck = await convex.query(api.foodTrucks.getTruckById, {
+      truckId: order.truckId,
+    });
+
+    if (!truck?.mpAccessToken) {
+      console.error("Webhook: truck has no MP token", order.truckId);
+      return NextResponse.json({ ok: true });
+    }
+
+    // Buscar detalhes do pagamento no Mercado Pago using the truck's token
     const mpResponse = await fetch(
       `https://api.mercadopago.com/v1/payments/${paymentId}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${truck.mpAccessToken}`,
         },
       }
     );

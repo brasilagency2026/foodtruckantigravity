@@ -202,3 +202,28 @@ export const updateLocation = mutation({
     await ctx.db.patch(truckId, { latitude, longitude, address });
   },
 });
+
+export const saveMercadoPagoTokens = mutation({
+  args: {
+    truckId: v.id("foodTrucks"),
+    mpAccessToken: v.string(),
+    mpRefreshToken: v.string(),
+    mpUserId: v.string(),
+    mpExpiresAt: v.number(),
+  },
+  handler: async (ctx, { truckId, mpAccessToken, mpRefreshToken, mpUserId, mpExpiresAt }) => {
+    await ctx.db.patch(truckId, { mpAccessToken, mpRefreshToken, mpUserId, mpExpiresAt });
+  },
+});
+
+export const disconnectMercadoPago = mutation({
+  args: { truckId: v.id("foodTrucks") },
+  handler: async (ctx, { truckId }) => {
+    await ctx.db.patch(truckId, {
+      mpAccessToken: undefined,
+      mpRefreshToken: undefined,
+      mpUserId: undefined,
+      mpExpiresAt: undefined,
+    });
+  },
+});

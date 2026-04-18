@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
+import { useSearchParams } from "next/navigation";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
@@ -20,6 +21,8 @@ export default function DashboardPage({
 
   const [locating, setLocating] = useState(false);
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const mpStatus = searchParams.get("mp"); // "success" or "error"
 
   const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const qrUrl = getQRCodeImageUrl(params.truckId, BASE_URL, 300);
@@ -115,6 +118,33 @@ export default function DashboardPage({
           <p style={{ color: "#fff", fontSize: 13, margin: "2px 0 0", fontWeight: 500 }}>{truck.address}</p>
         </div>
       </div>
+
+      {/* MP OAuth result banner */}
+      {mpStatus === "success" && (
+        <div style={{ ...s.locationBanner, background: "rgba(34,197,94,0.1)", color: "#22C55E" }}>
+          ✅ Mercado Pago conectado com sucesso!
+        </div>
+      )}
+      {mpStatus === "error" && (
+        <div style={{ ...s.locationBanner, background: "rgba(239,68,68,0.1)", color: "#EF4444" }}>
+          ❌ Erro ao conectar Mercado Pago. Tente novamente nas configurações.
+        </div>
+      )}
+
+      {/* MP connection status */}
+      {!truck.mpAccessToken && (
+        <a
+          href={`/api/mercadopago/authorize?truckId=${params.truckId}`}
+          style={s.mpBanner}
+        >
+          <span style={{ fontSize: 18 }}>💳</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ color: "#FFF", fontSize: 14, fontWeight: 600, margin: 0 }}>Conecte seu Mercado Pago</p>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, margin: "2px 0 0" }}>Para aceitar pagamentos online (Pix, crédito, débito)</p>
+          </div>
+          <span style={{ color: "#009EE3", fontWeight: 700, fontSize: 13 }}>Conectar →</span>
+        </a>
+      )}
 
       {/* Stats do dia */}
       <div style={s.statsRow}>
@@ -317,5 +347,17 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: 14,
     border: "1px solid rgba(255,255,255,0.06)",
     marginBottom: 24,
+  },
+  mpBanner: {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    padding: "16px 20px",
+    background: "rgba(0,158,227,0.08)",
+    borderRadius: 14,
+    border: "1px solid rgba(0,158,227,0.2)",
+    marginBottom: 24,
+    textDecoration: "none",
+    cursor: "pointer",
   },
 };

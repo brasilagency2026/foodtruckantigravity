@@ -4,7 +4,7 @@ import { StepHeader, BackButton } from "./components";
 
 interface Props {
   onBack: () => void;
-  onFinish: (paymentConnected: boolean) => void;
+  onFinish: (connectPayment: boolean) => void;
   loading: boolean;
 }
 
@@ -14,7 +14,7 @@ export function StepPayment({ onBack, onFinish, loading }: Props) {
       <StepHeader
         emoji="💳"
         title="Receba seus pagamentos"
-        subtitle="Conecte sua conta Mercado Pago para aceitar Pix, cartão de crédito e débito."
+        subtitle="Conecte sua conta Mercado Pago para aceitar Pix, cartão de crédito e débito. 100% do pagamento vai para você, sem comissão!"
       />
 
       {/* Card MP */}
@@ -46,14 +46,13 @@ export function StepPayment({ onBack, onFinish, loading }: Props) {
           ))}
         </div>
 
-        <a
-          href="https://www.mercadopago.com.br/developers/pt/docs/checkout-api/landing"
-          target="_blank"
-          rel="noreferrer"
+        <button
+          onClick={() => onFinish(true)}
+          disabled={loading}
           style={s.connectBtn}
         >
-          Conectar Mercado Pago →
-        </a>
+          {loading ? "Criando..." : "Conectar Mercado Pago →"}
+        </button>
       </div>
 
       {/* Pular por agora */}

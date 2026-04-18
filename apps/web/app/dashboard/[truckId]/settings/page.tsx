@@ -26,6 +26,7 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
   const truckId = params.truckId as Id<"foodTrucks">;
   const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
   const updateTruck = useMutation(api.foodTrucks.updateTruck);
+  const disconnectMP = useMutation(api.foodTrucks.disconnectMercadoPago);
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -204,6 +205,54 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
             )}
           </div>
         ))}
+      </section>
+
+      {/* Mercado Pago */}
+      <section style={s.section}>
+        <h2 style={s.sectionTitle}>💳 Mercado Pago</h2>
+        {truck.mpAccessToken ? (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+              <span style={{ color: "#22C55E", fontWeight: 700, fontSize: 14 }}>✅ Conectado</span>
+              <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>
+                (ID: {truck.mpUserId})
+              </span>
+            </div>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 16px", lineHeight: 1.5 }}>
+              100% dos pagamentos vão direto para sua conta Mercado Pago. Sem comissão da plataforma.
+            </p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <a
+                href={`/api/mercadopago/authorize?truckId=${params.truckId}`}
+                style={{ ...s.uploadBtn, textDecoration: "none" }}
+              >
+                🔄 Reconectar
+              </a>
+              <button
+                onClick={async () => {
+                  if (confirm("Desconectar o Mercado Pago? Você não poderá aceitar pagamentos online.")) {
+                    await disconnectMP({ truckId });
+                  }
+                }}
+                style={{ ...s.uploadBtn, background: "rgba(239,68,68,0.1)", color: "#EF4444" }}
+              >
+                Desconectar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 16px", lineHeight: 1.5 }}>
+              Conecte sua conta Mercado Pago para aceitar Pix, crédito e débito. 100% do pagamento vai para você!
+            </p>
+            <a
+              href={`/api/mercadopago/authorize?truckId=${params.truckId}`}
+              style={{ display: "inline-block", padding: "12px 24px", background: "#009EE3", color: "#FFF", borderRadius: 10, fontWeight: 700, fontSize: 14, textDecoration: "none" }}
+            >
+              Conectar Mercado Pago →
+            </a>
+          </div>
+        )}
       </section>
 
       {/* Save */}

@@ -31,6 +31,11 @@ export default defineSchema({
       saturday: v.optional(v.object({ open: v.string(), close: v.string() })),
       sunday: v.optional(v.object({ open: v.string(), close: v.string() })),
     }),
+    // Mercado Pago OAuth
+    mpAccessToken: v.optional(v.string()),
+    mpRefreshToken: v.optional(v.string()),
+    mpUserId: v.optional(v.string()),
+    mpExpiresAt: v.optional(v.number()),
   })
     .index("by_owner", ["ownerId"])
     .index("by_open", ["isOpen"])
