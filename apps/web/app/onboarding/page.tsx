@@ -31,7 +31,7 @@ const STEPS = [
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { isAuthenticated } = useConvexAuth();
+  const { isAuthenticated, isLoading } = useConvexAuth();
   const createTruck = useMutation(api.foodTrucks.createTruck);
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -60,12 +60,20 @@ export default function OnboardingPage() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <p style={{ color:"rgba(255,255,255,0.5)", fontSize:16 }}>Carregando...</p>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
      return (
        <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:20 }}>
          <h1>Acesso Restrito</h1>
          <p>Por favor, faça login para continuar.</p>
-         <button onClick={() => router.push("/auth")} style={{ background:"#FF6B35", color:"#FFF", border:"none", padding:"10px 20px", borderRadius:8, cursor:"pointer" }}>
+         <button onClick={() => router.push("/sign-in")} style={{ background:"#FF6B35", color:"#FFF", border:"none", padding:"10px 20px", borderRadius:8, cursor:"pointer" }}>
             Ir para Login
          </button>
        </div>
