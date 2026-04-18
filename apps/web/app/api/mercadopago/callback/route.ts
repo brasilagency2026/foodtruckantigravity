@@ -3,7 +3,11 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+function getConvex() {
+  return new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+}
+
+export const dynamic = "force-dynamic";
 
 // Mercado Pago redirects here after the seller authorizes
 export async function GET(req: NextRequest) {
@@ -47,7 +51,7 @@ export async function GET(req: NextRequest) {
     const expiresAt = Date.now() + tokenData.expires_in * 1000;
 
     // Save tokens in Convex
-    await convex.mutation(api.foodTrucks.saveMercadoPagoTokens, {
+    await getConvex().mutation(api.foodTrucks.saveMercadoPagoTokens, {
       truckId: truckId as Id<"foodTrucks">,
       mpAccessToken: tokenData.access_token,
       mpRefreshToken: tokenData.refresh_token,

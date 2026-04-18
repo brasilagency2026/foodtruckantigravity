@@ -455,63 +455,6 @@ const s: Record<string, React.CSSProperties> = {
     lineHeight: 1.5,
     margin: 0,
   },
-  methodRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    padding: "14px 16px",
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.06)",
-    borderRadius: 12,
-    marginBottom: 8,
-    cursor: "pointer",
-    width: "100%",
-    textAlign: "left" as const,
-    fontFamily: "inherit",
-  },
-  methodRowActive: {
-    background: "rgba(255,107,53,0.08)",
-    borderColor: "#FF6B35",
-  },
-  methodIcon: {
-    fontSize: 22,
-  },
-  methodInfo: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column" as const,
-  },
-  methodLabel: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: 600,
-  },
-  methodLabelActive: {
-    color: "#FF6B35",
-  },
-  methodDesc: {
-    color: "rgba(255,255,255,0.35)",
-    fontSize: 12,
-    marginTop: 2,
-  },
-  radio: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    border: "2px solid rgba(255,255,255,0.2)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  radioActive: {
-    borderColor: "#FF6B35",
-  },
-  radioDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    background: "#FF6B35",
-  },
   payBtn: {
     width: "100%",
     padding: "16px 24px",
