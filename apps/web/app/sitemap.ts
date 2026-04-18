@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Páginas de cidade (listagem de trucks por cidade)
   const cities = Array.from(
-    new Map(trucks.map((t) => [`${t.state}/${t.city}`, t])).values()
+    new Map(trucks.map((t) => [`${t.state}/${t.city}`, t] as const)).values()
   );
   const cityUrls: MetadataRoute.Sitemap = cities.map((t) => ({
     url: `${base}/menu/${t.state}/${t.city}`,
