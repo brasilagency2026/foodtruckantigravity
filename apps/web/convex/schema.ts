@@ -85,7 +85,8 @@ export default defineSchema({
     paymentMethod: v.union(
       v.literal("pix"),
       v.literal("cartao_credito"),
-      v.literal("cartao_debito")
+      v.literal("cartao_debito"),
+      v.literal("dinheiro")
     ),
     mercadoPagoPaymentId: v.optional(v.string()),
     estimatedTime: v.optional(v.number()),

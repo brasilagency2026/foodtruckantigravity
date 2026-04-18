@@ -153,6 +153,31 @@ body {
 .btn-preparing { background: rgba(59,130,246,0.2); color: #3B82F6; }
 .btn-ready     { background: #FF6B35; color: #fff; }
 .btn-delivered { background: rgba(34,197,94,0.2); color: #22C55E; }
+.btn-cash      { background: rgba(34,197,94,0.2); color: #22C55E; margin-top: 8px; width: 100%; }
+
+/* ---- CASH PAYMENT BADGE ---- */
+.cash-badge {
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #F59E0B;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.cash-badge.cash-confirmed {
+  background: rgba(34,197,94,0.1);
+  border-color: rgba(34,197,94,0.3);
+  color: #22C55E;
+}
+
+.waiting-label {
+  color: rgba(255,255,255,0.35);
+  font-size: 13px;
+  font-weight: 600;
+}
 
 /* ---- EMPTY STATE ---- */
 .empty {

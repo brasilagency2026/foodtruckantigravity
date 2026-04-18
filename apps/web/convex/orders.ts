@@ -100,7 +100,8 @@ export const createOrder = mutation({
     paymentMethod: v.union(
       v.literal("pix"),
       v.literal("cartao_credito"),
-      v.literal("cartao_debito")
+      v.literal("cartao_debito"),
+      v.literal("dinheiro")
     ),
   },
   handler: async (ctx, args) => {
@@ -141,6 +142,16 @@ export const linkPaymentId = mutation({
   },
   handler: async (ctx, { orderId, mercadoPagoPaymentId }) => {
     await ctx.db.patch(orderId, { mercadoPagoPaymentId });
+  },
+});
+
+// Cozinha confirma recebimento de pagamento em dinheiro
+export const confirmCashPayment = mutation({
+  args: {
+    orderId: v.id("orders"),
+  },
+  handler: async (ctx, { orderId }) => {
+    await ctx.db.patch(orderId, { paymentStatus: "aprovado" });
   },
 });
 

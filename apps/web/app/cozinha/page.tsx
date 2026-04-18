@@ -15,6 +15,7 @@ export default function CozinhaPage() {
   );
 
   const updateStatus = useMutation(api.orders.updateOrderStatus);
+  const confirmCash = useMutation(api.orders.confirmCashPayment);
 
   if (!myTrucks) {
     return (
@@ -71,6 +72,24 @@ export default function CozinhaPage() {
 
               <p className="client-name">👤 {order.clientName}</p>
 
+              {/* Cash payment pending badge */}
+              {order.paymentMethod === "dinheiro" && order.paymentStatus === "pendente" && (
+                <div className="cash-badge">
+                  💵 Aguardando pagamento em dinheiro
+                  <button
+                    className="btn btn-cash"
+                    onClick={() => confirmCash({ orderId: order._id })}
+                  >
+                    ✅ Recebi o pagamento
+                  </button>
+                </div>
+              )}
+              {order.paymentMethod === "dinheiro" && order.paymentStatus === "aprovado" && (
+                <div className="cash-badge cash-confirmed">
+                  ✅ Dinheiro recebido
+                </div>
+              )}
+
               <ul className="order-items">
                 {order.items.map((item: any, i: number) => (
                   <li key={i}>
@@ -87,14 +106,18 @@ export default function CozinhaPage() {
                 <span className="total">{formatPrice(order.totalPrice)}</span>
                 <div className="actions">
                   {order.status === "recebido" && (
-                    <button
-                      className="btn btn-preparing"
-                      onClick={() =>
-                        updateStatus({ orderId: order._id, status: "preparando" })
-                      }
-                    >
-                      👨‍🍳 Iniciar
-                    </button>
+                    order.paymentMethod === "dinheiro" && order.paymentStatus === "pendente" ? (
+                      <span className="waiting-label">⏳ Aguardando dinheiro</span>
+                    ) : (
+                      <button
+                        className="btn btn-preparing"
+                        onClick={() =>
+                          updateStatus({ orderId: order._id, status: "preparando" })
+                        }
+                      >
+                        👨‍🍳 Iniciar
+                      </button>
+                    )
                   )}
                   {order.status === "preparando" && (
                     <button

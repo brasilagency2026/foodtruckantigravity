@@ -28,6 +28,7 @@ export default function CheckoutPage() {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [paymentType, setPaymentType] = useState<"online" | "dinheiro">("online");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,8 +51,14 @@ export default function CheckoutPage() {
         clientPhone: phone || "",
         items,
         totalPrice: total,
-        paymentMethod: "pix", // default, MP will handle actual method selection
+        paymentMethod: paymentType === "dinheiro" ? "dinheiro" : "pix",
       });
+
+      if (paymentType === "dinheiro") {
+        // Cash: redirect to order page (shows "go to counter" message)
+        router.push(`/order/${orderId}`);
+        return;
+      }
 
       const payment = await createPayment({
         orderId,
@@ -136,13 +143,71 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Info MP */}
-        <div style={s.mpInfo}>
-          <span style={{ fontSize: 18 }}>🔒</span>
-          <p style={s.mpInfoText}>
-            Você será redirecionado para o Mercado Pago para escolher a forma de pagamento (Pix, crédito, débito).
-          </p>
+        {/* Forma de pagamento */}
+        <div style={s.section}>
+          <h2 style={s.sectionTitle}>Forma de pagamento</h2>
+          <button
+            style={{
+              ...s.methodRow,
+              ...(paymentType === "online" ? s.methodRowActive : {}),
+            }}
+            onClick={() => setPaymentType("online")}
+          >
+            <span style={s.methodIcon}>💳</span>
+            <div style={s.methodInfo}>
+              <span style={{
+                ...s.methodLabel,
+                ...(paymentType === "online" ? s.methodLabelActive : {}),
+              }}>Pix / Cartão</span>
+              <span style={s.methodDesc}>Via Mercado Pago</span>
+            </div>
+            <div style={{
+              ...s.radio,
+              ...(paymentType === "online" ? s.radioActive : {}),
+            }}>
+              {paymentType === "online" && <div style={s.radioDot} />}
+            </div>
+          </button>
+          <button
+            style={{
+              ...s.methodRow,
+              ...(paymentType === "dinheiro" ? s.methodRowActive : {}),
+            }}
+            onClick={() => setPaymentType("dinheiro")}
+          >
+            <span style={s.methodIcon}>💵</span>
+            <div style={s.methodInfo}>
+              <span style={{
+                ...s.methodLabel,
+                ...(paymentType === "dinheiro" ? s.methodLabelActive : {}),
+              }}>Dinheiro</span>
+              <span style={s.methodDesc}>Pagar no balcão</span>
+            </div>
+            <div style={{
+              ...s.radio,
+              ...(paymentType === "dinheiro" ? s.radioActive : {}),
+            }}>
+              {paymentType === "dinheiro" && <div style={s.radioDot} />}
+            </div>
+          </button>
         </div>
+
+        {/* Info contextual */}
+        {paymentType === "online" ? (
+          <div style={s.mpInfo}>
+            <span style={{ fontSize: 18 }}>🔒</span>
+            <p style={s.mpInfoText}>
+              Você será redirecionado para o Mercado Pago para escolher a forma de pagamento (Pix, crédito, débito).
+            </p>
+          </div>
+        ) : (
+          <div style={s.cashInfo}>
+            <span style={{ fontSize: 18 }}>💵</span>
+            <p style={s.cashInfoText}>
+              Dirija-se ao balcão do food truck para efetuar o pagamento em dinheiro. Seu pedido será preparado após a confirmação do pagamento.
+            </p>
+          </div>
+        )}
 
         {/* Error */}
         {error && (
@@ -158,7 +223,12 @@ export default function CheckoutPage() {
           onClick={handlePay}
           disabled={loading}
         >
-          {loading ? "Redirecionando..." : `Pagar ${formatPrice(total)}`}
+          {loading
+            ? "Processando..."
+            : paymentType === "dinheiro"
+              ? `Fazer pedido — ${formatPrice(total)}`
+              : `Pagar ${formatPrice(total)}`
+          }
         </button>
       </div>
 
@@ -368,6 +438,79 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 13,
     lineHeight: 1.5,
     margin: 0,
+  },
+  cashInfo: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    background: "rgba(245,158,11,0.08)",
+    border: "1px solid rgba(245,158,11,0.2)",
+    borderRadius: 12,
+    padding: "14px 16px",
+    marginBottom: 16,
+  },
+  cashInfoText: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: 13,
+    lineHeight: 1.5,
+    margin: 0,
+  },
+  methodRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "14px 16px",
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.06)",
+    borderRadius: 12,
+    marginBottom: 8,
+    cursor: "pointer",
+    width: "100%",
+    textAlign: "left" as const,
+    fontFamily: "inherit",
+  },
+  methodRowActive: {
+    background: "rgba(255,107,53,0.08)",
+    borderColor: "#FF6B35",
+  },
+  methodIcon: {
+    fontSize: 22,
+  },
+  methodInfo: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column" as const,
+  },
+  methodLabel: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: 600,
+  },
+  methodLabelActive: {
+    color: "#FF6B35",
+  },
+  methodDesc: {
+    color: "rgba(255,255,255,0.35)",
+    fontSize: 12,
+    marginTop: 2,
+  },
+  radio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    border: "2px solid rgba(255,255,255,0.2)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  radioActive: {
+    borderColor: "#FF6B35",
+  },
+  radioDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    background: "#FF6B35",
   },
   payBtn: {
     width: "100%",

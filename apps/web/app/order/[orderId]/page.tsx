@@ -70,6 +70,20 @@ export default function OrderPage({
           )}
         </div>
 
+        {/* Cash payment notice */}
+        {order.paymentMethod === "dinheiro" && order.paymentStatus === "pendente" && (
+          <div style={s.cashNotice}>
+            <span style={{ fontSize: 28 }}>💵</span>
+            <div>
+              <p style={s.cashNoticeTitle}>Pagamento em dinheiro</p>
+              <p style={s.cashNoticeText}>
+                Dirija-se ao balcão do food truck e efetue o pagamento em dinheiro. 
+                Seu pedido será preparado após a confirmação.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Pagamento */}
         <div style={s.paymentRow}>
           <span style={s.paymentLabel}>Pagamento</span>
@@ -108,7 +122,7 @@ export default function OrderPage({
           <div style={s.dataRow}>
             <span style={s.dataLabel}>Pagamento</span>
             <span style={s.dataValue}>
-              {order.paymentMethod === "pix" ? "Pix" : order.paymentMethod === "cartao_credito" ? "Crédito" : "Débito"}
+              {order.paymentMethod === "pix" ? "Pix" : order.paymentMethod === "cartao_credito" ? "Crédito" : order.paymentMethod === "dinheiro" ? "Dinheiro" : "Débito"}
             </span>
           </div>
         </div>
@@ -199,6 +213,28 @@ const s: Record<string, React.CSSProperties> = {
     color: "rgba(255,255,255,0.5)",
     fontSize: 14,
     margin: "8px 0 0",
+  },
+  cashNotice: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 14,
+    background: "rgba(245,158,11,0.08)",
+    border: "2px solid rgba(245,158,11,0.3)",
+    borderRadius: 16,
+    padding: "18px 16px",
+    marginBottom: 16,
+  },
+  cashNoticeTitle: {
+    color: "#F59E0B",
+    fontSize: 16,
+    fontWeight: 700,
+    margin: "0 0 6px",
+  },
+  cashNoticeText: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: 14,
+    lineHeight: 1.5,
+    margin: 0,
   },
   paymentRow: {
     display: "flex",
