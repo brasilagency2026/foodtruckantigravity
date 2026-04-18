@@ -25,7 +25,7 @@ type OS = "ios" | "android" | "other";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const RADIUS_KM = 10;
-const APP_STORE_URL = "https://apps.apple.com/app/food-truck-alert/id000000000";
+const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
 
 const CUISINE_ICONS: Record<string, string> = {
@@ -252,7 +252,7 @@ export default function HomePage() {
         <nav className="nav">
           <div className="nav-logo">
             <span className="logo-icon">🍔</span>
-            <span className="logo-text">Food Truck Alert</span>
+            <span className="logo-text">Food Pronto</span>
           </div>
           <div className="nav-actions">
             <a href="/sign-in" className="btn-ghost">Entrar</a>
@@ -456,7 +456,7 @@ export default function HomePage() {
                 <div className="phone-alert">
                   <div className="alert-icon">🔔</div>
                   <div className="alert-content">
-                    <div className="alert-app">Food Truck Alert</div>
+                    <div className="alert-app">Food Pronto</div>
                     <div className="alert-title">Seu pedido está pronto!</div>
                     <div className="alert-body">Busque no balcão do truck 🍔</div>
                   </div>
@@ -526,7 +526,7 @@ export default function HomePage() {
       <footer className="footer">
         <div className="footer-inner">
           <div className="footer-logo">
-            <span>🍔</span> Food Truck Alert
+            <span>🍔</span> Food Pronto
           </div>
           <div className="footer-links">
             <a href="/precos">Preços</a>
@@ -534,7 +534,7 @@ export default function HomePage() {
             <a href="/privacidade">Privacidade</a>
             <a href="/contato">Contato</a>
           </div>
-          <p className="footer-copy">© {new Date().getFullYear()} Food Truck Alert. Feito com ❤️ no Brasil.</p>
+          <p className="footer-copy">© {new Date().getFullYear()} Food Pronto. Feito com ❤️ no Brasil.</p>
         </div>
       </footer>
     </>

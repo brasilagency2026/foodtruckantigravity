@@ -129,7 +129,7 @@ export default function ProfileTab() {
       <View style={s.section}>
         <Text style={s.sectionTitle}>Sobre</Text>
         {[
-          { icon: "🍔", label: "Food Truck Alert", desc: "Versão 1.0.0" },
+          { icon: "🍔", label: "Food Pronto", desc: "Versão 1.0.0" },
           { icon: "📋", label: "Termos de uso", onPress: () => {} },
           { icon: "🔒", label: "Política de privacidade", onPress: () => {} },
         ].map((item, i) => (

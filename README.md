@@ -1,4 +1,4 @@
-# 🍔 Food Truck Alert
+# 🍔 Food Pronto
 
 App mobile (Android + iOS) + painel web para food trucks com cardápio digital, pedidos em tempo real, alertas sonoros e vibração quando o pedido fica pronto.
 

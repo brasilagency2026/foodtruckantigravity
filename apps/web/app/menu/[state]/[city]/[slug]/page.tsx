@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ? [{ url: truck.coverPhotoUrl, width: 1200, height: 630, alt: truck.name }]
         : [],
       locale: "pt_BR",
-      siteName: "Food Truck Alert",
+      siteName: "Food Pronto",
     },
     twitter: {
       card: "summary_large_image",

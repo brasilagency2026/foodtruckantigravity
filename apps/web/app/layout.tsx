@@ -5,7 +5,7 @@ import "./globals.css";
 import "./cozinha/cozinha.css";
 
 export const metadata: Metadata = {
-  title: "Food Truck Alert — Painel Admin",
+  title: "Food Pronto — Painel Admin",
   description: "Gerencie seu food truck, cardápio e pedidos em tempo real",
 };
 

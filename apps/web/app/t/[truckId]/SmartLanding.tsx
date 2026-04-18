@@ -34,7 +34,7 @@ export function SmartLanding({
   const [visible, setVisible] = useState(false);
 
   const APP_SCHEME = `foodtruckalert://menu/${truckId}`;
-  const APP_STORE_URL = "https://apps.apple.com/app/food-truck-alert/id000000000";
+  const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
   const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export function SmartLanding({
         <div style={styles.spinnerWrap}>
           <div style={styles.spinner} />
         </div>
-        <p style={styles.checkingText}>Abrindo Food Truck Alert...</p>
+        <p style={styles.checkingText}>Abrindo Food Pronto...</p>
       </div>
     );
   }

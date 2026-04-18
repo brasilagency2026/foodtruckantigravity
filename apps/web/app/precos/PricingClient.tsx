@@ -17,7 +17,7 @@ export default function PricingClient() {
         {/* NAV */}
         <nav className="pr-nav">
           <Link href="/" className="pr-logo">
-            <span>🍔</span> Food Truck Alert
+            <span>🍔</span> Food Pronto
           </Link>
           <Link href="/onboarding" className="pr-nav-cta">
             Começar grátis →
@@ -140,7 +140,7 @@ export default function PricingClient() {
               <div className="pr-compare-col good">
                 <div className="pr-compare-header">
                   <span className="pr-compare-emoji">🚀</span>
-                  <span className="pr-compare-title">Food Truck Alert</span>
+                  <span className="pr-compare-title">Food Pronto</span>
                 </div>
                 {NEW_WAY.map((item, i) => (
                   <div key={i} className="pr-compare-item good">
@@ -245,7 +245,7 @@ export default function PricingClient() {
                 <span className="pr-accent">Seu celular avisa.</span>
               </h2>
               <p className="pr-freedom-body">
-                Com painel LED ou senhas em papel, o cliente fica preso perto do truck com medo de perder a vez. Com o Food Truck Alert, quando o pedido ficar pronto, o celular do cliente <strong>vibra e toca um som</strong> — seja onde ele estiver.
+                Com painel LED ou senhas em papel, o cliente fica preso perto do truck com medo de perder a vez. Com o Food Pronto, quando o pedido ficar pronto, o celular do cliente <strong>vibra e toca um som</strong> — seja onde ele estiver.
               </p>
               <div className="pr-freedom-feats">
                 {[
@@ -299,13 +299,13 @@ export default function PricingClient() {
 
         {/* FOOTER */}
         <footer className="pr-footer">
-          <Link href="/" className="pr-footer-logo">🍔 Food Truck Alert</Link>
+          <Link href="/" className="pr-footer-logo">🍔 Food Pronto</Link>
           <div className="pr-footer-links">
             <Link href="/termos">Termos</Link>
             <Link href="/privacidade">Privacidade</Link>
             <Link href="/contato">Contato</Link>
           </div>
-          <p className="pr-footer-copy">© {new Date().getFullYear()} Food Truck Alert. Feito com ❤️ no Brasil.</p>
+          <p className="pr-footer-copy">© {new Date().getFullYear()} Food Pronto. Feito com ❤️ no Brasil.</p>
         </footer>
       </div>
     </>
