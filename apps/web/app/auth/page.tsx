@@ -19,25 +19,21 @@ export default function AuthPage() {
     setIsSubmitting(true);
     setError(null);
 
-    if (mode === "signup") {
-      try {
+    try {
+      if (mode === "signup") {
         await signIn("password", { email, password, flow: "signUp" });
-        router.push("/onboarding");
-      } catch (err: any) {
-        setError("Falha ao criar conta. Tente novamente.");
-        console.error(err);
-      }
-    } else {
-      try {
+      } else {
         await signIn("password", { email, password, flow: "signIn" });
-        router.push("/onboarding");
-      } catch (err: any) {
-        setError("Falha na autenticação. Verifique suas credenciais.");
-        console.error(err);
       }
-    }
-
- finally {
+      router.push("/onboarding");
+    } catch (err: any) {
+      setError(
+        mode === "signup"
+          ? "Falha ao criar conta. Tente novamente."
+          : "Falha na autenticação. Verifique suas credenciais."
+      );
+      console.error(err);
+    } finally {
       setIsSubmitting(false);
     }
   };
