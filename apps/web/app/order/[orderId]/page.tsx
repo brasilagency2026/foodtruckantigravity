@@ -1,0 +1,294 @@
+"use client";
+
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
+import { formatPrice } from "shared/types";
+
+const STATUS_MAP: Record<string, { label: string; color: string; icon: string }> = {
+  recebido: { label: "Pedido recebido", color: "#3B82F6", icon: "📋" },
+  preparando: { label: "Preparando", color: "#F59E0B", icon: "👨‍🍳" },
+  pronto: { label: "Pronto para retirada!", color: "#22C55E", icon: "✅" },
+  entregue: { label: "Entregue", color: "#6B7280", icon: "🎉" },
+  cancelado: { label: "Cancelado", color: "#EF4444", icon: "❌" },
+};
+
+const PAYMENT_MAP: Record<string, { label: string; color: string }> = {
+  pendente: { label: "Aguardando pagamento", color: "#F59E0B" },
+  aprovado: { label: "Pago", color: "#22C55E" },
+  recusado: { label: "Recusado", color: "#EF4444" },
+  reembolsado: { label: "Reembolsado", color: "#6B7280" },
+};
+
+export default function OrderPage({
+  params,
+}: {
+  params: { orderId: string };
+}) {
+  const orderId = params.orderId as Id<"orders">;
+  const order = useQuery(api.orders.getOrderById, { orderId });
+
+  if (order === undefined) {
+    return (
+      <div style={s.page}>
+        <div style={s.loading}>
+          <div style={s.spinner} />
+        </div>
+      </div>
+    );
+  }
+
+  if (order === null) {
+    return (
+      <div style={s.page}>
+        <div style={s.empty}>
+          <p style={{ color: "#fff", fontSize: 18 }}>Pedido não encontrado</p>
+          <a href="/" style={s.backLink}>← Voltar</a>
+        </div>
+      </div>
+    );
+  }
+
+  const status = STATUS_MAP[order.status] ?? STATUS_MAP.recebido;
+  const payment = PAYMENT_MAP[order.paymentStatus] ?? PAYMENT_MAP.pendente;
+
+  return (
+    <div style={s.page}>
+      <div style={s.container}>
+        {/* Header */}
+        <div style={s.header}>
+          <h1 style={s.title}>Acompanhar pedido</h1>
+          <p style={s.orderCode}>#{orderId.slice(-6).toUpperCase()}</p>
+        </div>
+
+        {/* Status principal */}
+        <div style={{ ...s.statusCard, borderColor: status.color }}>
+          <span style={{ fontSize: 40 }}>{status.icon}</span>
+          <p style={{ ...s.statusLabel, color: status.color }}>{status.label}</p>
+          {order.estimatedTime && (
+            <p style={s.eta}>⏱ Estimativa: {order.estimatedTime} min</p>
+          )}
+        </div>
+
+        {/* Pagamento */}
+        <div style={s.paymentRow}>
+          <span style={s.paymentLabel}>Pagamento</span>
+          <span style={{ ...s.paymentStatus, color: payment.color }}>
+            {payment.label}
+          </span>
+        </div>
+
+        {/* Itens */}
+        <div style={s.section}>
+          <h2 style={s.sectionTitle}>Itens do pedido</h2>
+          {order.items.map((item: any, i: number) => (
+            <div key={i} style={s.itemRow}>
+              <span style={s.itemQty}>{item.quantity}x</span>
+              <span style={s.itemName}>{item.name}</span>
+              <span style={s.itemPrice}>{formatPrice(item.price * item.quantity)}</span>
+            </div>
+          ))}
+          <div style={s.totalRow}>
+            <span style={s.totalLabel}>Total</span>
+            <span style={s.totalValue}>{formatPrice(order.totalPrice)}</span>
+          </div>
+        </div>
+
+        {/* Dados */}
+        <div style={s.section}>
+          <h2 style={s.sectionTitle}>Dados do pedido</h2>
+          <div style={s.dataRow}>
+            <span style={s.dataLabel}>Cliente</span>
+            <span style={s.dataValue}>{order.clientName}</span>
+          </div>
+          <div style={s.dataRow}>
+            <span style={s.dataLabel}>Telefone</span>
+            <span style={s.dataValue}>{order.clientPhone}</span>
+          </div>
+          <div style={s.dataRow}>
+            <span style={s.dataLabel}>Pagamento</span>
+            <span style={s.dataValue}>
+              {order.paymentMethod === "pix" ? "Pix" : order.paymentMethod === "cartao_credito" ? "Crédito" : "Débito"}
+            </span>
+          </div>
+        </div>
+
+        <p style={s.realtimeNote}>
+          🔄 Esta página atualiza em tempo real
+        </p>
+      </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
+    </div>
+  );
+}
+
+const s: Record<string, React.CSSProperties> = {
+  page: {
+    minHeight: "100vh",
+    background: "#0D0D0D",
+    fontFamily: "'DM Sans', system-ui, sans-serif",
+  },
+  container: {
+    maxWidth: 480,
+    margin: "0 auto",
+    padding: "32px 20px 48px",
+  },
+  loading: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "60vh",
+  },
+  spinner: {
+    width: 32,
+    height: 32,
+    border: "3px solid rgba(255,107,53,0.2)",
+    borderTop: "3px solid #FF6B35",
+    borderRadius: "50%",
+    animation: "spin 0.8s linear infinite",
+  },
+  empty: {
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "60vh",
+    gap: 16,
+  },
+  backLink: {
+    color: "#FF6B35",
+    fontSize: 15,
+    textDecoration: "none",
+  },
+  header: {
+    textAlign: "center" as const,
+    marginBottom: 28,
+  },
+  title: {
+    color: "#fff",
+    fontSize: 22,
+    fontWeight: 800,
+    fontFamily: "'Syne', system-ui",
+    margin: 0,
+  },
+  orderCode: {
+    color: "rgba(255,255,255,0.4)",
+    fontSize: 14,
+    margin: "6px 0 0",
+    fontFamily: "monospace",
+  },
+  statusCard: {
+    background: "#1A1A1A",
+    borderRadius: 20,
+    padding: "32px 24px",
+    textAlign: "center" as const,
+    marginBottom: 16,
+    border: "2px solid",
+  },
+  statusLabel: {
+    fontSize: 22,
+    fontWeight: 800,
+    margin: "12px 0 0",
+    fontFamily: "'Syne', system-ui",
+  },
+  eta: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 14,
+    margin: "8px 0 0",
+  },
+  paymentRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    background: "#1A1A1A",
+    borderRadius: 12,
+    padding: "14px 18px",
+    marginBottom: 16,
+    border: "1px solid rgba(255,255,255,0.06)",
+  },
+  paymentLabel: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 14,
+  },
+  paymentStatus: {
+    fontSize: 14,
+    fontWeight: 700,
+  },
+  section: {
+    background: "#1A1A1A",
+    borderRadius: 16,
+    padding: "20px 16px",
+    marginBottom: 16,
+    border: "1px solid rgba(255,255,255,0.06)",
+  },
+  sectionTitle: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: 700,
+    margin: "0 0 16px",
+  },
+  itemRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 10,
+  },
+  itemQty: {
+    color: "#FF6B35",
+    fontWeight: 700,
+    fontSize: 14,
+    minWidth: 30,
+  },
+  itemName: {
+    color: "#fff",
+    fontSize: 14,
+    flex: 1,
+  },
+  itemPrice: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  totalRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTop: "1px solid rgba(255,255,255,0.1)",
+    paddingTop: 12,
+    marginTop: 8,
+  },
+  totalLabel: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  totalValue: {
+    color: "#FF6B35",
+    fontSize: 20,
+    fontWeight: 800,
+  },
+  dataRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  dataLabel: {
+    color: "rgba(255,255,255,0.4)",
+    fontSize: 13,
+  },
+  dataValue: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: 600,
+  },
+  realtimeNote: {
+    color: "rgba(255,255,255,0.3)",
+    fontSize: 13,
+    textAlign: "center" as const,
+    marginTop: 20,
+  },
+};

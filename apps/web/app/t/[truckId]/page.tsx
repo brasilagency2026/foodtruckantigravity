@@ -230,7 +230,7 @@ function CartDrawer({
         </div>
 
         <a
-          href={`/checkout?items=${encodeURIComponent(JSON.stringify(cart))}&truckId=placeholder`}
+          href={`/checkout?items=${encodeURIComponent(JSON.stringify(cart))}&truckId=${params.truckId}`}
           style={s.checkoutBtn}
         >
           Ir para pagamento →
