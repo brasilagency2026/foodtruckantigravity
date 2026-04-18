@@ -127,7 +127,7 @@ export default function DashboardPage({
       )}
       {mpStatus === "error" && (
         <div style={{ ...s.locationBanner, background: "rgba(239,68,68,0.1)", color: "#EF4444" }}>
-          ❌ Erro ao conectar Mercado Pago. Tente novamente nas configurações.
+          ❌ Erro ao conectar Mercado Pago. {searchParams.get("reason")} {searchParams.get("status")} {searchParams.get("detail") && decodeURIComponent(searchParams.get("detail")!)}
         </div>
       )}
 

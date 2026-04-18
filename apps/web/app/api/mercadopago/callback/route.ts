@@ -34,9 +34,10 @@ export async function GET(req: NextRequest) {
 
     if (!tokenRes.ok) {
       const err = await tokenRes.text();
-      console.error("MP OAuth token exchange failed:", err);
+      console.error("MP OAuth token exchange failed:", tokenRes.status, err);
+      const detail = encodeURIComponent(err.slice(0, 200));
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/${truckId}?mp=error&reason=token_exchange`
+        `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/${truckId}?mp=error&reason=token_exchange&status=${tokenRes.status}&detail=${detail}`
       );
     }
 
