@@ -72,7 +72,7 @@ export default function CozinhaPage() {
               <p className="client-name">👤 {order.clientName}</p>
 
               <ul className="order-items">
-                {order.items.map((item, i) => (
+                {order.items.map((item: any, i: number) => (
                   <li key={i}>
                     <span className="qty">{item.quantity}x</span>
                     <span className="item-name">{item.name}</span>
