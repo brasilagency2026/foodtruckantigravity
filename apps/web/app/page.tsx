@@ -255,8 +255,8 @@ export default function HomePage() {
             <span className="logo-text">Food Truck Alert</span>
           </div>
           <div className="nav-actions">
-            <a href="/auth" className="btn-ghost">Entrar</a>
-            <a href="/onboarding" className="btn-primary-sm">Cadastrar meu truck</a>
+            <a href="/auth?mode=signin" className="btn-ghost">Entrar</a>
+            <a href="/auth?mode=signup" className="btn-primary-sm">Cadastrar meu truck</a>
           </div>
 
         </nav>
