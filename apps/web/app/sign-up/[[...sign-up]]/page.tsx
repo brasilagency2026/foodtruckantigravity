@@ -13,6 +13,7 @@ export default function SignUpPage() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,16 +119,26 @@ export default function SignUpPage() {
 
               <div style={{ marginBottom: 28 }}>
                 <label style={{ display: "block", marginBottom: 8, fontSize: 14, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Senha</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  placeholder="Mínimo 8 caracteres"
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(255,107,53,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="Mínimo 8 caracteres"
+                    style={{ ...inputStyle, paddingRight: 48 }}
+                    onFocus={(e) => (e.target.style.borderColor = "rgba(255,107,53,0.5)")}
+                    onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 18, padding: 0, lineHeight: 1 }}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
               </div>
             </>
           ) : (
