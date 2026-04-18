@@ -166,6 +166,7 @@ export default function MenuPage({
         <CartDrawer
           cart={cart}
           truck={truck}
+          truckId={truckId}
           onClose={() => setShowCart(false)}
           onAdd={addToCart}
           onRemove={removeFromCart}
@@ -189,12 +190,14 @@ export default function MenuPage({
 function CartDrawer({
   cart,
   truck,
+  truckId,
   onClose,
   onAdd,
   onRemove,
 }: {
   cart: CartItem[];
   truck: { name: string };
+  truckId: string;
   onClose: () => void;
   onAdd: (item: any) => void;
   onRemove: (id: string) => void;
@@ -230,7 +233,7 @@ function CartDrawer({
         </div>
 
         <a
-          href={`/checkout?items=${encodeURIComponent(JSON.stringify(cart))}&truckId=${params.truckId}`}
+          href={`/checkout?items=${encodeURIComponent(JSON.stringify(cart))}&truckId=${truckId}`}
           style={s.checkoutBtn}
         >
           Ir para pagamento →
