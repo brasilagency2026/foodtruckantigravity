@@ -1,11 +1,12 @@
 "use client";
 
-import { useSignUp } from "@clerk/nextjs";
-import { useState } from "react";
+import { useSignUp, useAuth } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   const { signUp, isLoaded, setActive } = useSignUp();
+  const { isSignedIn } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +15,10 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (isSignedIn) router.replace("/onboarding");
+  }, [isSignedIn, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
