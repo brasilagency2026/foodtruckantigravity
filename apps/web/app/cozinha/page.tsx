@@ -5,15 +5,34 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice, formatOrderStatus } from "shared/types";
 
-// Substitua pelo ID real do truck logado
-const TRUCK_ID = process.env.NEXT_PUBLIC_TRUCK_ID as Id<"foodTrucks">;
-
 export default function CozinhaPage() {
-  const orders = useQuery(api.orders.getActiveOrdersForTruck, {
-    truckId: TRUCK_ID,
-  });
+  const myTrucks = useQuery(api.foodTrucks.getMyTrucks);
+  const truckId = myTrucks?.[0]?._id as Id<"foodTrucks"> | undefined;
+
+  const orders = useQuery(
+    api.orders.getActiveOrdersForTruck,
+    truckId ? { truckId } : "skip"
+  );
 
   const updateStatus = useMutation(api.orders.updateOrderStatus);
+
+  if (!myTrucks) {
+    return (
+      <div className="loading">
+        <div className="spinner" />
+        <p>Carregando...</p>
+      </div>
+    );
+  }
+
+  if (!truckId) {
+    return (
+      <div className="loading">
+        <p>Nenhum truck encontrado para sua conta.</p>
+        <a href="/onboarding" style={{ color: "#FF6B35", textDecoration: "underline", marginTop: 12 }}>Cadastrar meu truck</a>
+      </div>
+    );
+  }
 
   if (!orders) {
     return (
