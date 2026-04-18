@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -15,9 +16,63 @@ export default function DashboardPage({
   const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
   const stats = useQuery(api.payments.getDailyStats, { truckId });
   const toggleOpen = useMutation(api.foodTrucks.toggleOpen);
+  const updateLocation = useMutation(api.foodTrucks.updateLocation);
+
+  const [locating, setLocating] = useState(false);
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
 
   const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const qrUrl = getQRCodeImageUrl(params.truckId, BASE_URL, 300);
+
+  const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
+    try {
+      const res = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&language=pt-BR`
+      );
+      const data = await res.json();
+      return data.results?.[0]?.formatted_address ?? `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    } catch {
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+  };
+
+  const handleToggle = useCallback(async () => {
+    if (!truck) return;
+    const newOpen = !truck.isOpen;
+
+    if (newOpen) {
+      // Opening: get current location first
+      setLocating(true);
+      setLocationStatus("📍 Obtendo localização...");
+
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+          });
+        });
+
+        const { latitude, longitude } = pos.coords;
+        const address = await reverseGeocode(latitude, longitude);
+
+        await updateLocation({ truckId, latitude, longitude, address });
+        await toggleOpen({ truckId, isOpen: true });
+        setLocationStatus("✅ Localização atualizada!");
+        setTimeout(() => setLocationStatus(null), 3000);
+      } catch (err) {
+        console.error("Geolocation error:", err);
+        setLocationStatus("⚠️ Localização indisponível. Truck aberto com endereço anterior.");
+        await toggleOpen({ truckId, isOpen: true });
+        setTimeout(() => setLocationStatus(null), 5000);
+      } finally {
+        setLocating(false);
+      }
+    } else {
+      // Closing: just toggle off
+      await toggleOpen({ truckId, isOpen: false });
+    }
+  }, [truck, truckId, toggleOpen, updateLocation]);
 
   if (!truck) {
     return (
@@ -39,11 +94,26 @@ export default function DashboardPage({
 
         {/* Toggle aberto/fechado */}
         <button
-          style={{ ...s.toggleBtn, ...(truck.isOpen ? s.toggleOpen : s.toggleClosed) }}
-          onClick={() => toggleOpen({ truckId, isOpen: !truck.isOpen })}
+          style={{ ...s.toggleBtn, ...(truck.isOpen ? s.toggleOpen : s.toggleClosed), opacity: locating ? 0.6 : 1 }}
+          onClick={handleToggle}
+          disabled={locating}
         >
-          {truck.isOpen ? "🟢 Aberto" : "🔴 Fechado"}
+          {locating ? "📍 Localizando..." : truck.isOpen ? "🟢 Aberto" : "🔴 Fechado"}
         </button>
+      </div>
+
+      {/* Location status */}
+      {locationStatus && (
+        <div style={s.locationBanner}>{locationStatus}</div>
+      )}
+
+      {/* Current location */}
+      <div style={s.locationCard}>
+        <span style={{ fontSize: 16 }}>📍</span>
+        <div style={{ flex: 1 }}>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, margin: 0 }}>Localização atual</p>
+          <p style={{ color: "#fff", fontSize: 13, margin: "2px 0 0", fontWeight: 500 }}>{truck.address}</p>
+        </div>
       </div>
 
       {/* Stats do dia */}
@@ -229,4 +299,23 @@ const s: Record<string, React.CSSProperties> = {
   quickLinkIcon: { fontSize: 20, width: 28, textAlign: "center" },
   quickLinkLabel: { color: "#FFF", fontSize: 15, fontWeight: 500, flex: 1 },
   quickLinkArrow: { color: "rgba(255,255,255,0.2)", fontSize: 16 },
+  locationBanner: {
+    background: "rgba(255,107,53,0.1)",
+    color: "#FF6B35",
+    padding: "10px 16px",
+    borderRadius: 10,
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  locationCard: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "14px 16px",
+    background: "#1A1A1A",
+    borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.06)",
+    marginBottom: 24,
+  },
 };
