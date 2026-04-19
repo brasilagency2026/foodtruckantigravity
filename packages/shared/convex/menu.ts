@@ -9,20 +9,30 @@ import { mutation, query } from "./_generated/server";
 export const getMenuByTruck = query({
   args: { truckId: v.id("foodTrucks") },
   handler: async (ctx, { truckId }) => {
-    const items = await ctx.db
-      .query("menuItems")
-      .withIndex("by_truck", (q) => q.eq("truckId", truckId))
-      .filter((q) => q.eq(q.field("available"), true))
-      .collect();
+    try {
+      if (!truckId) return {};
+      const truck = await ctx.db.get(truckId);
+      if (!truck) return {};
 
-    // Grouper par catégorie
-    const grouped: Record<string, typeof items> = {};
-    for (const item of items) {
-      if (!grouped[item.category]) grouped[item.category] = [];
-      grouped[item.category].push(item);
+      const items = await ctx.db
+        .query("menuItems")
+        .withIndex("by_truck", (q) => q.eq("truckId", truckId))
+        .filter((q) => q.eq(q.field("available"), true))
+        .collect();
+
+      // Grouper par catégorie (fallback to 'Geral' when missing)
+      const grouped: Record<string, typeof items> = {};
+      for (const item of items) {
+        const cat = item.category ?? "Geral";
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(item);
+      }
+
+      return grouped;
+    } catch (err) {
+      console.error("getMenuByTruck error", err);
+      return {};
     }
-
-    return grouped;
   },
 });
 
