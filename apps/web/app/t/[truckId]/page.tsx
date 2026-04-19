@@ -140,10 +140,34 @@ export default function MenuPage({
       {showHours && (
         <Modal onClose={() => setShowHours(false)} title="Horários">
           <div style={{ padding: 16, color: "#222" }}>
-            {truck.hours ? (
-              <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>{truck.hours}</pre>
+            {truck.openingHours ? (
+              <div style={{ fontFamily: "inherit", lineHeight: 1.5 }}>
+                {([
+                  ["monday", "Segunda"],
+                  ["tuesday", "Terça"],
+                  ["wednesday", "Quarta"],
+                  ["thursday", "Quinta"],
+                  ["friday", "Sexta"],
+                  ["saturday", "Sábado"],
+                  ["sunday", "Domingo"],
+                ] as Array<[string, string]>).map(([key, label]) => {
+                  const day = (truck.openingHours as any)?.[key];
+                  if (!day || !day.open || !day.close) {
+                    return (
+                      <div key={key} style={{ color: "rgba(0,0,0,0.6)" }}>
+                        {label}: Fechado
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={key}>
+                      {label}: {day.open} — {day.close}
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
-              "Pas d'horaires renseignés."
+              "Horários não informados."
             )}
           </div>
         </Modal>
