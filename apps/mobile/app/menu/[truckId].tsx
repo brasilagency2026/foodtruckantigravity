@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   View, Text, ScrollView, TouchableOpacity,
   Image, StyleSheet, SafeAreaView
@@ -25,12 +25,37 @@ export default function MenuScreen() {
     truckId: truckId as Id<"foodTrucks">,
   });
 
-  const menuGrouped = useQuery(api.menu.getMenuByTruck, {
+  // Fetch flat items and group locally with sanitized keys to avoid
+  // Convex field-name errors coming from non-ASCII category names.
+  const items = useQuery(api.menu.getAllMenuItemsByTruck, {
     truckId: truckId as Id<"foodTrucks">,
-  });
+  }) as any[] | undefined;
+
+  const { menuGrouped, labelMap } = useMemo(() => {
+    function sanitizeKey(s: string) {
+      if (!s) return "Geral";
+      try {
+        const normalized = s.normalize("NFD").replace(/\p{M}/gu, "");
+        return normalized.replace(/[^\x20-\x7E]/g, "");
+      } catch (e) {
+        const normalized = s.normalize("NFD").replace(/[\u0000-\u036f]/g, "");
+        return normalized.replace(/[^\x20-\x7E]/g, "");
+      }
+    }
+    const grouped: Record<string, any[]> = {};
+    const labels: Record<string, string> = {};
+    for (const it of items ?? []) {
+      const rawCat = it.category ?? "Geral";
+      const key = sanitizeKey(rawCat);
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(it);
+      if (!labels[key]) labels[key] = rawCat;
+    }
+    return { menuGrouped: grouped, labelMap: labels };
+  }, [items]);
 
   const categories = menuGrouped ? Object.keys(menuGrouped) : [];
-  const currentCategory = activeCategory ?? categories[0];
+  const currentCategory = activeCategory ?? (categories[0] ?? "Todos");
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
@@ -100,7 +125,7 @@ export default function MenuScreen() {
             onPress={() => setActiveCategory(cat)}
           >
             <Text style={[styles.catText, currentCategory === cat && styles.catTextActive]}>
-              {cat}
+              {labelMap[cat] ?? cat}
             </Text>
           </TouchableOpacity>
         ))}

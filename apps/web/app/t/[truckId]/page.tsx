@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -33,7 +32,33 @@ export default function MenuPage({
 
   const truckId = params.truckId as Id<"foodTrucks">;
   const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
-  const menuGrouped = useQuery(api.menu.getMenuByTruck, { truckId });
+  // Fetch flat list and group on the client to avoid any server-side
+  // objects with non-ASCII keys (Convex rejects those as field names).
+  const items = useQuery(api.menu.getAllMenuItemsByTruck, { truckId }) as any[] | undefined;
+
+  const { menuGrouped, labelMap } = useMemo(() => {
+    function sanitizeKey(s: string) {
+      if (!s) return "Geral";
+      try {
+        const normalized = s.normalize("NFD").replace(/\p{M}/gu, "");
+        return normalized.replace(/[^\x20-\x7E]/g, "");
+      } catch (e) {
+        const normalized = s.normalize("NFD").replace(/[\u0000-\u036f]/g, "");
+        return normalized.replace(/[^\x20-\x7E]/g, "");
+      }
+    }
+
+    const grouped: Record<string, any[]> = {};
+    const labels: Record<string, string> = {};
+    for (const it of items ?? []) {
+      const rawCat = it.category ?? "Geral";
+      const key = sanitizeKey(rawCat);
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(it);
+      if (!labels[key]) labels[key] = rawCat;
+    }
+    return { menuGrouped: grouped, labelMap: labels };
+  }, [items]);
   const searchParams = useSearchParams();
   const manual = searchParams?.get("manual") === "true";
   const clientNameFromQuery = searchParams?.get("clientName") ?? "";
@@ -181,20 +206,20 @@ export default function MenuPage({
 
       {/* Categorias */}
 
-      <div style={s.categories}>
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            style={{
-              ...s.catBtn,
-              ...(currentCategory === cat ? s.catBtnActive : {}),
-            }}
-            onClick={() => setActiveCategory(cat)}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+          <div style={s.categories}>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                style={{
+                  ...s.catBtn,
+                  ...(currentCategory === cat ? s.catBtnActive : {}),
+                }}
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat === "Todos" ? "Todos" : labelMap[cat] ?? cat}
+              </button>
+            ))}
+          </div>
 
 
       {/* Itens do cardápio */}
