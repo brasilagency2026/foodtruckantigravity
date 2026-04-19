@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import React from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -33,6 +34,10 @@ export default function MenuPage({
   const truckId = params.truckId as Id<"foodTrucks">;
   const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
   const menuGrouped = useQuery(api.menu.getMenuByTruck, { truckId });
+  const searchParams = useSearchParams();
+  const manual = searchParams?.get("manual") === "true";
+  const clientNameFromQuery = searchParams?.get("clientName") ?? "";
+  const clientPhoneFromQuery = searchParams?.get("clientPhone") ?? "";
 
 
   // Ajoute la catégorie "Todos" en premier
@@ -276,6 +281,9 @@ export default function MenuPage({
           cart={cart}
           truck={truck}
           truckId={truckId}
+          manual={manual}
+          clientName={clientNameFromQuery}
+          clientPhone={clientPhoneFromQuery}
           onClose={() => setShowCart(false)}
           onAdd={addToCart}
           onRemove={removeFromCart}
@@ -300,6 +308,9 @@ function CartDrawer({
   cart,
   truck,
   truckId,
+  manual,
+  clientName,
+  clientPhone,
   onClose,
   onAdd,
   onRemove,
@@ -307,6 +318,9 @@ function CartDrawer({
   cart: CartItem[];
   truck: { name: string };
   truckId: string;
+  manual?: boolean;
+  clientName?: string;
+  clientPhone?: string;
   onClose: () => void;
   onAdd: (item: any) => void;
   onRemove: (id: string) => void;
@@ -341,12 +355,19 @@ function CartDrawer({
           <span style={s.drawerTotalVal}>{formatPrice(total)}</span>
         </div>
 
-        <a
-          href={`/checkout?items=${encodeURIComponent(JSON.stringify(cart))}&truckId=${truckId}`}
-          style={s.checkoutBtn}
-        >
-          Ir para pagamento →
-        </a>
+        {
+          (() => {
+            const base = `/checkout?items=${encodeURIComponent(JSON.stringify(cart))}&truckId=${truckId}`;
+            const href = manual
+              ? base + `&manual=true&clientName=${encodeURIComponent(clientName ?? "")}&clientPhone=${encodeURIComponent(clientPhone ?? "")}`
+              : base;
+            return (
+              <a href={href} style={s.checkoutBtn}>
+                Ir para pagamento →
+              </a>
+            );
+          })()
+        }
       </div>
     </div>
   );

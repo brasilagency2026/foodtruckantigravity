@@ -456,7 +456,14 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 16, borderBottom: "1px solid #eee" }}>
           <h3 style={{ margin: 0 }}>Criar pedido manual</h3>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <a href={`/t/${truckId}`} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: "#009EE3", textDecoration: "none" }}>Ver cardápio completo →</a>
+            <a
+              href={`/t/${truckId}?manual=true&clientName=${encodeURIComponent(clientName)}&clientPhone=${encodeURIComponent(clientPhone)}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontSize: 13, color: "#009EE3", textDecoration: "none" }}
+            >
+              Ver cardápio completo →
+            </a>
             <button onClick={onClose} style={{ fontSize: 20, background: "none", border: "none", cursor: "pointer" }}>×</button>
           </div>
         </div>

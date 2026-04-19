@@ -27,14 +27,19 @@ export default function CheckoutPage() {
 
   const truck = useQuery(api.foodTrucks.getTruckById, truckId ? { truckId: truckId as Id<"foodTrucks"> } : "skip");
 
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [paymentType, setPaymentType] = useState<"online" | "dinheiro">("online");
+  const manual = searchParams.get("manual") === "true";
+  const initialName = searchParams.get("clientName") ?? "";
+  const initialPhone = searchParams.get("clientPhone") ?? "";
+  const [name, setName] = useState(initialName);
+  const [phone, setPhone] = useState(initialPhone);
+  const [paymentType, setPaymentType] = useState<"online" | "dinheiro">(manual ? "dinheiro" : "online");
+  const [paymentReceived, setPaymentReceived] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const createOrder = useMutation(api.orders.createOrder);
   const createPayment = useAction(api.payments.createPayment);
+  const confirmCash = useMutation(api.orders.confirmCashPayment);
 
   async function handlePay() {
     if (!name.trim()) {
@@ -56,7 +61,15 @@ export default function CheckoutPage() {
       });
 
       if (paymentType === "dinheiro") {
-        // Cash: redirect to order page (shows "go to counter" message)
+        // Cash: if owner manual flow and owner already received payment, mark it approved
+        if (manual && paymentReceived) {
+          try {
+            await confirmCash({ orderId });
+          } catch (e) {
+            console.error("Error confirming cash payment:", e);
+          }
+        }
+        // redirect to order page (shows "go to counter" message)
         router.push(`/order/${orderId}`);
         return;
       }
@@ -207,6 +220,15 @@ export default function CheckoutPage() {
             <p style={s.cashInfoText}>
               Dirija-se ao balcão do food truck para efetuar o pagamento em dinheiro. Seu pedido será preparado após a confirmação do pagamento.
             </p>
+          </div>
+        )}
+
+        {manual && paymentType === "dinheiro" && (
+          <div style={{ marginBottom: 12 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <input type="checkbox" checked={paymentReceived} onChange={(e) => setPaymentReceived(e.target.checked)} />
+              <span>Recebi o pagamento</span>
+            </label>
           </div>
         )}
 
