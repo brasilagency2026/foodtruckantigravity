@@ -336,7 +336,7 @@ const FEATURES = [
   { title: "Alerta sonoro + vibração no celular do cliente", desc: "Quando o pedido fica pronto, o celular toca e vibra onde quer que o cliente esteja" },
   { title: "Painel da cozinha mobile", desc: "App exclusivo para gerenciar a fila de pedidos em campo" },
   { title: "Mapa no app para clientes", desc: "Seu truck aparece no mapa para quem está por perto" },
-  { title: "Dashboard com estatísticas", desc: "Faturamento, pedidos mais vendidos e avaliações" },
+  { title: "Dashboard com estatísticas", desc: "Faturamento e pedidos mais vendidos" },
   { title: "QR Code em alta resolução para impressão", desc: "Cole no balcão e pronto" },
   { title: "URL SEO-friendly do cardápio", desc: "foodpronto.com.br/menu/sp/sua-cidade/seu-truck" },
   { title: "Suporte via WhatsApp", desc: "Ajuda humana, não robô" },

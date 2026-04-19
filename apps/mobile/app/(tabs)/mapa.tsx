@@ -70,7 +70,6 @@ export default function MapaScreen() {
             >
               <Text style={styles.calloutName}>{truck.name}</Text>
               <Text style={styles.calloutCuisine}>{truck.cuisine}</Text>
-              <Text style={styles.calloutRating}>⭐ {truck.rating.toFixed(1)}</Text>
               <Text style={[styles.calloutStatus, truck.isOpen ? styles.open : styles.closed]}>
                 {truck.isOpen ? "🟢 Aberto" : "🔴 Fechado"}
               </Text>

@@ -19,8 +19,8 @@ export interface FoodTruck {
   isOpen: boolean;
   ownerId: string;
   coverPhotoUrl: string;
-  rating: number;
-  totalReviews: number;
+  rating?: number;
+  totalReviews?: number;
   phone: string;
   openingHours: OpeningHours;
   createdAt: number;

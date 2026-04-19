@@ -13,8 +13,6 @@ interface Truck {
   latitude: number;
   longitude: number;
   isOpen: boolean;
-  rating: number;
-  totalReviews: number;
   coverPhotoUrl: string;
   address: string;
   distance?: number;
@@ -558,9 +556,6 @@ function TruckCard({ truck, selected, onClick }: { truck: Truck; selected: boole
         </div>
         <span className="truck-cuisine">{truck.cuisine}</span>
         <div className="truck-meta">
-          {truck.rating > 0 && (
-            <span className="truck-rating">⭐ {truck.rating.toFixed(1)}</span>
-          )}
           {truck.distance !== undefined && (
             <span className="truck-dist">📍 {truck.distance.toFixed(1)} km</span>
           )}

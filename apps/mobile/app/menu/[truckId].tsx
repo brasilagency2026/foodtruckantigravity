@@ -81,7 +81,7 @@ export default function MenuScreen() {
           </Text>
           <Text style={styles.truckName}>{truck.name}</Text>
           <Text style={styles.truckMeta}>
-            {truck.cuisine} · ⭐ {truck.rating.toFixed(1)}
+            {truck.cuisine}
           </Text>
         </View>
       </View>

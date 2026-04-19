@@ -14,8 +14,8 @@ export default defineSchema({
     isOpen: v.boolean(),
     ownerId: v.string(), // Keeping as string to avoid breaking changes if they come from external IDs, but Convex Auth uses IDs.
     coverPhotoUrl: v.string(),
-    rating: v.number(),
-    totalReviews: v.number(),
+    rating: v.optional(v.number()),
+    totalReviews: v.optional(v.number()),
     phone: v.string(),
     slug: v.optional(v.string()),
     state: v.optional(v.string()),

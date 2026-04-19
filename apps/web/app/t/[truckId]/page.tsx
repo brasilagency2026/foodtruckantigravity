@@ -97,7 +97,7 @@ export default function MenuPage({
           </span>
           <h1 style={s.truckName}>{truck.name}</h1>
           <p style={s.truckMeta}>
-            {truck.cuisine} · ⭐ {truck.rating.toFixed(1)} ({truck.totalReviews})
+            {truck.cuisine}
           </p>
         </div>
       </div>

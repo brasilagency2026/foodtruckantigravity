@@ -158,10 +158,6 @@ export default function DashboardPage({
           <p style={s.statValue}>{stats?.totalOrders ?? 0}</p>
           <p style={s.statLabel}>Pedidos hoje</p>
         </div>
-        <div style={s.statCard}>
-          <p style={s.statValue}>{truck.rating.toFixed(1)} ⭐</p>
-          <p style={s.statLabel}>{truck.totalReviews} avaliações</p>
-        </div>
       </div>
 
       {/* QR Code */}

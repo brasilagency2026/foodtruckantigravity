@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const state = trucks[0]?.stateDisplay ?? params.state.toUpperCase();
   return {
     title: `Food Trucks em ${city}, ${state} — Cardápios e Pedidos Online`,
-    description: `Descubra ${trucks.length} food trucks em ${city}. Veja cardápios, avaliações e peça online com alerta sonoro quando seu pedido ficar pronto.`,
+    description: `Descubra ${trucks.length} food trucks em ${city}. Veja cardápios e peça online com alerta sonoro quando seu pedido ficar pronto.`,
   };
 }
 
@@ -70,11 +70,6 @@ export default async function CityPage({ params }: PageProps) {
                   {truck.description.slice(0, 80)}...
                 </p>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  {truck.rating > 0 && (
-                    <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
-                      ⭐ {truck.rating.toFixed(1)} ({truck.totalReviews})
-                    </span>
-                  )}
                   <span style={{ background: "#FF6B35", color: "#fff", borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700, marginLeft: "auto" }}>
                     Ver cardápio →
                   </span>

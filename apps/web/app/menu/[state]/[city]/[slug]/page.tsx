@@ -98,15 +98,7 @@ function JsonLd({ truck, params }: { truck: any; params: PageProps["params"] }) 
       latitude: truck.latitude,
       longitude: truck.longitude,
     },
-    aggregateRating: truck.totalReviews > 0
-      ? {
-          "@type": "AggregateRating",
-          ratingValue: truck.rating,
-          reviewCount: truck.totalReviews,
-          bestRating: 5,
-          worstRating: 1,
-        }
-      : undefined,
+    aggregateRating: undefined,
     servesCuisine: truck.cuisine,
     openingHoursSpecification: buildOpeningHours(truck.openingHours),
     menu: url,

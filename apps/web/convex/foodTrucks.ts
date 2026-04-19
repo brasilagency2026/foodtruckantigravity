@@ -150,8 +150,6 @@ export const createTruck = mutation({
       ownerId: identity.subject,
       slug: finalSlug,
       isOpen: false,
-      rating: 0,
-      totalReviews: 0,
     });
   },
 });

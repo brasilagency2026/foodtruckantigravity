@@ -147,8 +147,6 @@ export const createTruck = mutation({
       ...args,
       slug: finalSlug,
       isOpen: false,
-      rating: 0,
-      totalReviews: 0,
     });
   },
 });
