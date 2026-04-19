@@ -50,8 +50,8 @@ export interface MenuItem {
   photoUrl: string;      // Cloudflare R2
   category: string;
   available: boolean;
-  preparationTime: number; // minutos
-  allergens: string[];
+  preparationTime?: number;
+  allergens?: string[];
 }
 
 export interface OrderItem {

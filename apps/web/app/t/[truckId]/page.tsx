@@ -130,9 +130,6 @@ export default function MenuPage({
               <div style={s.itemInfo}>
                 <h3 style={s.itemName}>{item.name}</h3>
                 <p style={s.itemDesc}>{item.description}</p>
-                {item.allergens.length > 0 && (
-                  <p style={s.allergens}>⚠️ {item.allergens.join(", ")}</p>
-                )}
                 <div style={s.itemFooter}>
                   <span style={s.itemPrice}>{formatPrice(item.price)}</span>
                   {qty === 0 ? (

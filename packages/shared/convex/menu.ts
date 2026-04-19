@@ -58,8 +58,6 @@ export const createMenuItem = mutation({
     price: v.number(),         // em centavos
     photoUrl: v.string(),      // Cloudflare R2
     category: v.string(),
-    preparationTime: v.number(),
-    allergens: v.array(v.string()),
     sku: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -79,8 +77,6 @@ export const updateMenuItem = mutation({
     price: v.optional(v.number()),
     photoUrl: v.optional(v.string()),
     category: v.optional(v.string()),
-    preparationTime: v.optional(v.number()),
-    allergens: v.optional(v.array(v.string())),
     sku: v.optional(v.string()),
   },
   handler: async (ctx, { itemId, ...fields }) => {

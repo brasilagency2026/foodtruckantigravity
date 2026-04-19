@@ -17,8 +17,6 @@ interface MenuItem {
   photoUrl: string;
   category: string;
   available: boolean;
-  preparationTime: number;
-  allergens: string[];
   sku?: string;
 }
 
@@ -27,22 +25,14 @@ interface FormData {
   description: string;
   price: string;
   category: string;
-  preparationTime: string;
-  allergens: string;
   photoUrl: string;
   sku: string;
 }
 
 const EMPTY_FORM: FormData = {
   name: "", description: "", price: "",
-  category: "", preparationTime: "15",
-  allergens: "", photoUrl: "", sku: "",
+  category: "", photoUrl: "", sku: "",
 };
-
-const ALLERGEN_OPTIONS = [
-  "Glúten", "Lactose", "Ovos", "Amendoim", "Frutos do Mar",
-  "Soja", "Nozes", "Gergelim",
-];
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
@@ -102,8 +92,6 @@ export default function GerenciarCardapioPage({
       description: item.description,
       price: (item.price / 100).toFixed(2).replace(".", ","),
       category: item.category,
-      preparationTime: String(item.preparationTime),
-      allergens: item.allergens.join(", "),
       photoUrl: item.photoUrl,
       sku: item.sku ?? "",
     });
@@ -163,10 +151,6 @@ export default function GerenciarCardapioPage({
     setSaving(true);
     try {
       const price = parsePrice(form.price);
-      const allergens = form.allergens
-        ? form.allergens.split(",").map((a) => a.trim()).filter(Boolean)
-        : [];
-      const preparationTime = parseInt(form.preparationTime) || 15;
       const sku = form.sku.trim() || undefined;
 
       if (editingId) {
@@ -177,8 +161,6 @@ export default function GerenciarCardapioPage({
           price,
           photoUrl: form.photoUrl,
           category: form.category,
-          preparationTime,
-          allergens,
           sku,
         });
       } else {
@@ -189,8 +171,6 @@ export default function GerenciarCardapioPage({
           price,
           photoUrl: form.photoUrl || "",
           category: form.category,
-          preparationTime,
-          allergens,
           sku,
         });
       }
@@ -423,55 +403,15 @@ export default function GerenciarCardapioPage({
                   </Field>
                 </div>
 
-                {/* Prep time + SKU row */}
-                <div className="cm-row-2">
-                  <Field label="Tempo de preparo (min)">
-                    <input
-                      className="cm-input"
-                      type="number"
-                      min="1"
-                      max="120"
-                      value={form.preparationTime}
-                      onChange={(e) => set("preparationTime", e.target.value)}
-                    />
-                  </Field>
-                  <Field label="Referência / SKU">
-                    <input
-                      className="cm-input"
-                      placeholder="Ex: BRG-001"
-                      value={form.sku}
-                      onChange={(e) => set("sku", e.target.value)}
-                    />
-                  </Field>
-                </div>
-
-                {/* Allergens */}
-                <div className="cm-allergens-section">
-                  <label className="cm-label">Alérgenos</label>
-                  <div className="cm-allergen-pills">
-                    {ALLERGEN_OPTIONS.map((a) => {
-                      const active = form.allergens.includes(a);
-                      return (
-                        <button
-                          key={a}
-                          type="button"
-                          className={`cm-allergen-pill ${active ? "active" : ""}`}
-                          onClick={() => {
-                            const list = form.allergens
-                              ? form.allergens.split(", ").filter(Boolean)
-                              : [];
-                            const next = active
-                              ? list.filter((x) => x !== a)
-                              : [...list, a];
-                            set("allergens", next.join(", "));
-                          }}
-                        >
-                          {a}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                {/* SKU */}
+                <Field label="Referência / SKU">
+                  <input
+                    className="cm-input"
+                    placeholder="Ex: BRG-001"
+                    value={form.sku}
+                    onChange={(e) => set("sku", e.target.value)}
+                  />
+                </Field>
 
                 {/* Save button */}
                 <button
@@ -535,11 +475,7 @@ function MenuItemCard({
 
         <div className="cm-item-meta">
           <span className="cm-item-price">{formatPrice(item.price)}</span>
-          <span className="cm-item-prep">⏱ {item.preparationTime} min</span>
           {item.sku && <span className="cm-item-sku">🏷️ {item.sku}</span>}
-          {item.allergens.length > 0 && (
-            <span className="cm-item-allergens">⚠️ {item.allergens.join(", ")}</span>
-          )}
         </div>
 
         <div className="cm-item-actions">

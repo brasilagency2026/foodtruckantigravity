@@ -50,8 +50,8 @@ export default defineSchema({
     photoUrl: v.string(),
     category: v.string(),
     available: v.boolean(),
-    preparationTime: v.number(),
-    allergens: v.array(v.string()),
+    preparationTime: v.optional(v.number()),
+    allergens: v.optional(v.array(v.string())),
     sku: v.optional(v.string()),
   })
     .index("by_truck", ["truckId"])
