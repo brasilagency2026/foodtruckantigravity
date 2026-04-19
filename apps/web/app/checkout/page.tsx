@@ -58,6 +58,7 @@ export default function CheckoutPage() {
         items,
         totalPrice: total,
         paymentMethod: paymentType === "dinheiro" ? "dinheiro" : "pix",
+        manual: manual ? true : undefined,
       });
 
       if (paymentType === "dinheiro") {

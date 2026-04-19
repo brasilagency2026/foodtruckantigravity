@@ -39,9 +39,9 @@ export const getActiveOrdersForTruck = query({
       )
       .collect();
 
-    // Filtrer: n'afficher que les commandes payées OU en espèces
+    // Filtrer: afficher les commandes marquées `manual`, payées OU en espèces
     const all = [...active, ...preparing, ...ready].filter(
-      (o) => o.paymentStatus === "aprovado" || o.paymentMethod === "dinheiro"
+      (o) => o.manual === true || o.paymentStatus === "aprovado" || o.paymentMethod === "dinheiro"
     );
 
     return all.sort((a, b) => a._creationTime - b._creationTime);
@@ -116,6 +116,7 @@ export const createOrder = mutation({
       v.literal("cartao_debito"),
       v.literal("dinheiro")
     ),
+    manual: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const orderId = await ctx.db.insert("orders", {

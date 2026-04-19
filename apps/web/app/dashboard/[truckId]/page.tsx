@@ -438,6 +438,7 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
       totalPrice: total,
       paymentMethod,
       paymentReceived,
+      manual: true,
     };
 
     try {

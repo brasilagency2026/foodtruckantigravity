@@ -104,7 +104,7 @@ export default function CozinhaPage() {
 
               <p className="client-name">
                 👤 {order.clientName}
-                {!order.clientId && (
+                {(order.manual === true || !order.clientId) && (
                   <span style={{ marginLeft: 8, padding: '2px 8px', background: '#FFEFD5', color: '#8B4513', borderRadius: 8, fontSize: 12, fontWeight: 700 }}>
                     Pedido manual
                   </span>
