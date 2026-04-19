@@ -117,13 +117,34 @@ export const createOrder = mutation({
       v.literal("dinheiro")
     ),
     manual: v.optional(v.boolean()),
+    paymentReceived: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    // Avoid inserting any unexpected client-only fields (like `paymentReceived`).
+    const {
+      truckId,
+      clientId,
+      clientName,
+      clientPhone,
+      items,
+      totalPrice,
+      paymentMethod,
+      manual,
+    } = args as any;
+
     const orderId = await ctx.db.insert("orders", {
-      ...args,
+      truckId,
+      clientId,
+      clientName,
+      clientPhone,
+      items,
+      totalPrice,
+      paymentMethod,
+      manual,
       status: "recebido",
       paymentStatus: "pendente",
     });
+
     return orderId;
   },
 });
