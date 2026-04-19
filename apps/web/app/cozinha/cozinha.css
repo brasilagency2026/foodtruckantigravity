@@ -99,12 +99,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: #25D366;
   text-decoration: none;
   flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .btn-whatsapp:hover {
