@@ -96,6 +96,7 @@ export default function MenuPage({
   return (
     <div style={s.page}>
 
+
       {/* Header do truck */}
       <div style={s.header}>
         {truck.coverPhotoUrl && (
@@ -107,11 +108,73 @@ export default function MenuPage({
             {truck.isOpen ? "🟢 Aberto agora" : "🔴 Fechado"}
           </span>
           <h1 style={s.truckName}>{truck.name}</h1>
-          <p style={s.truckMeta}>
-            {truck.cuisine}
-          </p>
+          <p style={s.truckMeta}>{truck.cuisine}</p>
         </div>
       </div>
+
+      {/* Boutons infos truck */}
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", margin: "18px 0 10px 0" }}>
+        <button style={s.infoBtn} onClick={() => setShowDetails(true)}>Detalhes</button>
+        <button style={s.infoBtn} onClick={() => setShowHours(true)}>Horários</button>
+        <a
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(truck.address ?? truck.location ?? "")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ ...s.infoBtn, textDecoration: "none", display: "inline-block" }}
+        >
+          Google Maps
+        </a>
+      </div>
+
+      {/* Modale Detalhes */}
+      {showDetails && (
+        <Modal onClose={() => setShowDetails(false)} title="Detalhes">
+          <div style={{ padding: 16, color: "#222" }}>{truck.description || "Pas de description."}</div>
+        </Modal>
+      )}
+
+      {/* Modale Horários */}
+      {showHours && (
+        <Modal onClose={() => setShowHours(false)} title="Horários">
+          <div style={{ padding: 16, color: "#222" }}>
+            {truck.hours ? (
+              <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>{truck.hours}</pre>
+            ) : (
+              "Pas d'horaires renseignés."
+            )}
+          </div>
+        </Modal>
+      )}
+// ...existing code...
+
+// Modal générique
+import React from "react";
+function Modal({ onClose, title, children }: { onClose: () => void; title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.45)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={onClose}>
+      <div style={{ background: "#fff", borderRadius: 12, minWidth: 320, maxWidth: 400, boxShadow: "0 8px 32px rgba(0,0,0,0.18)", position: "relative" }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: "16px 20px 0 20px", fontWeight: 700, fontSize: 18, borderBottom: "1px solid #eee" }}>{title}</div>
+        <button onClick={onClose} style={{ position: "absolute", top: 10, right: 14, background: "none", border: "none", fontSize: 22, color: "#888", cursor: "pointer" }}>&times;</button>
+        <div>{children}</div>
+      </div>
+    </div>
+  );
+}
+// ...existing code...
+// Ajout styles pour les boutons info
+s.infoBtn = {
+  padding: "8px 18px",
+  background: "#222",
+  color: "#fff",
+  border: "none",
+  borderRadius: 8,
+  fontSize: 14,
+  fontWeight: 600,
+  cursor: "pointer",
+  fontFamily: "inherit",
+  transition: "background 0.2s",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+};
 
       {/* Categorias */}
 
