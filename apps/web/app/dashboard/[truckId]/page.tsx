@@ -385,7 +385,7 @@ const s: Record<string, React.CSSProperties> = {
 
 // Manual order modal component
 function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: string; items: any[] | undefined; onClose: () => void; onCreate: (payload: any) => void }) {
-  const [cart, setCart] = useState<{ menuItemId: string; name: string; price: number; quantity: number; sku?: string; variationName?: string }[]>([]);
+  const [cart, setCart] = useState<{ key: string; menuItemId: string; name: string; price: number; quantity: number; sku?: string; variationName?: string }[]>([]);
   const [clientName, setClientName] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [search, setSearch] = useState("");
@@ -393,19 +393,28 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
   const [paymentReceived, setPaymentReceived] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const getKey = (item: any) => {
+    try {
+      return typeof item._id === "string" ? item._id : String(item._id);
+    } catch {
+      return JSON.stringify(item._id ?? item);
+    }
+  };
+
   function addToCart(item: any, variationName?: string, variationPrice?: number) {
-    const key = variationName ? `${item._id}__${variationName}` : item._id;
+    const baseId = getKey(item);
+    const compositeKey = variationName ? `${baseId}__${variationName}` : baseId;
     const price = variationPrice ?? item.price;
-    const name = variationName ? `${item.name} (${variationName})` : item.name;
+    const name = variationName ? `${item.name ?? "Sem nome"} (${variationName})` : item.name ?? "Sem nome";
     setCart((prev) => {
-      const ex = prev.find((p) => p.menuItemId === key);
-      if (ex) return prev.map((p) => p.menuItemId === key ? { ...p, quantity: p.quantity + 1 } : p);
-      return [...prev, { menuItemId: key, name, price, quantity: 1, sku: item.sku, variationName }];
+      const ex = prev.find((p) => p.key === compositeKey);
+      if (ex) return prev.map((p) => p.key === compositeKey ? { ...p, quantity: p.quantity + 1 } : p);
+      return [...prev, { key: compositeKey, menuItemId: baseId, name, price, quantity: 1, sku: item.sku, variationName }];
     });
   }
 
-  function removeFromCart(menuItemId: string) {
-    setCart((prev) => prev.map((p) => p.menuItemId === menuItemId ? { ...p, quantity: p.quantity - 1 } : p).filter((p) => p.quantity > 0));
+  function removeFromCart(compositeKey: string) {
+    setCart((prev) => prev.map((p) => p.key === compositeKey ? { ...p, quantity: p.quantity - 1 } : p).filter((p) => p.quantity > 0));
   }
 
   const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
@@ -470,22 +479,28 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
             <div>
               <h4 style={{ margin: "8px 0" }}>Itens</h4>
               {!filteredItems ? (
-                <div>Carregando itens...</div>
-              ) : (
-                filteredItems.map((it: any) => (
-                  <div key={it._id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #f2f2f2" }}>
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{it.name}</div>
-                      <div style={{ fontSize: 13, color: "#666" }}>{formatPrice(it.price)}</div>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <button onClick={() => removeFromCart(it._id)} style={{ padding: "6px 10px" }}>−</button>
-                      <span style={{ minWidth: 28, textAlign: "center" }}>{cart.find((c) => c.menuItemId === it._id)?.quantity ?? 0}</span>
-                      <button onClick={() => addToCart(it)} style={{ padding: "6px 10px" }}>+</button>
-                    </div>
-                  </div>
-                ))
-              )}
+                  <div>Carregando itens...</div>
+                ) : (
+                  filteredItems.map((it: any) => {
+                    const baseKey = getKey(it);
+                    const compositeKey = baseKey; // variations not displayed here; use base by default
+                    const qty = cart.find((c) => c.key === compositeKey)?.quantity ?? 0;
+                    const displayName = it.name ?? (it.title ?? it.nome) ?? "Sem nome";
+                    return (
+                      <div key={baseKey} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #f2f2f2" }}>
+                        <div>
+                          <div style={{ fontWeight: 600 }}>{displayName}</div>
+                          <div style={{ fontSize: 13, color: "#666" }}>{formatPrice(it.price)}</div>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <button onClick={() => removeFromCart(compositeKey)} style={{ padding: "6px 10px" }}>−</button>
+                          <span style={{ minWidth: 28, textAlign: "center" }}>{qty}</span>
+                          <button onClick={() => addToCart(it)} style={{ padding: "6px 10px" }}>+</button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
             </div>
           </div>
 
