@@ -52,6 +52,8 @@ export interface MenuItem {
   available: boolean;
   preparationTime?: number;
   allergens?: string[];
+  sku?: string;
+  variations?: { name: string; price: number }[];
 }
 
 export interface OrderItem {
@@ -60,6 +62,8 @@ export interface OrderItem {
   price: number;
   quantity: number;
   observations?: string;
+  sku?: string;
+  variationName?: string;
 }
 
 export interface Order {

@@ -59,6 +59,10 @@ export const createMenuItem = mutation({
     photoUrl: v.string(),      // Cloudflare R2
     category: v.string(),
     sku: v.optional(v.string()),
+    variations: v.optional(v.array(v.object({
+      name: v.string(),
+      price: v.number(),
+    }))),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("menuItems", {
@@ -78,6 +82,10 @@ export const updateMenuItem = mutation({
     photoUrl: v.optional(v.string()),
     category: v.optional(v.string()),
     sku: v.optional(v.string()),
+    variations: v.optional(v.array(v.object({
+      name: v.string(),
+      price: v.number(),
+    }))),
   },
   handler: async (ctx, { itemId, ...fields }) => {
     await ctx.db.patch(itemId, fields);

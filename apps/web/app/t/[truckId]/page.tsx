@@ -14,6 +14,7 @@ interface CartItem {
   quantity: number;
   observations?: string;
   sku?: string;
+  variationName?: string;
 }
 
 export default function MenuPage({
@@ -36,19 +37,22 @@ export default function MenuPage({
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
-  function addToCart(item: { _id: string; name: string; price: number; sku?: string }) {
+  function addToCart(item: { _id: string; name: string; price: number; sku?: string }, variationName?: string, variationPrice?: number) {
+    const cartKey = variationName ? `${item._id}__${variationName}` : item._id;
+    const price = variationPrice ?? item.price;
+    const displayName = variationName ? `${item.name} (${variationName})` : item.name;
     setCart((prev) => {
-      const existing = prev.find((i) => i.menuItemId === item._id);
+      const existing = prev.find((i) => i.menuItemId === cartKey);
       if (existing) {
         return prev.map((i) =>
-          i.menuItemId === item._id
+          i.menuItemId === cartKey
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
       }
       return [
         ...prev,
-        { menuItemId: item._id, name: item.name, price: item.price, quantity: 1, sku: item.sku },
+        { menuItemId: cartKey, name: displayName, price, quantity: 1, sku: item.sku, variationName },
       ];
     });
   }
@@ -63,6 +67,10 @@ export default function MenuPage({
 
   function getQty(menuItemId: string) {
     return cart.find((i) => i.menuItemId === menuItemId)?.quantity ?? 0;
+  }
+
+  function getTotalQtyForItem(itemId: string) {
+    return cart.filter((i) => i.menuItemId === itemId || i.menuItemId.startsWith(`${itemId}__`)).reduce((sum, i) => sum + i.quantity, 0);
   }
 
   if (!truck || !menuGrouped) {
@@ -122,6 +130,8 @@ export default function MenuPage({
       <div style={s.items}>
         {(menuGrouped[currentCategory] ?? []).map((item) => {
           const qty = getQty(item._id);
+          const hasVariations = item.variations && item.variations.length > 0;
+          const totalQty = getTotalQtyForItem(item._id);
           return (
             <div key={item._id} style={s.item}>
               {item.photoUrl && (
@@ -130,6 +140,37 @@ export default function MenuPage({
               <div style={s.itemInfo}>
                 <h3 style={s.itemName}>{item.name}</h3>
                 <p style={s.itemDesc}>{item.description}</p>
+                {hasVariations ? (
+                  <div style={{ marginTop: 8 }}>
+                    <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6, display: "block" }}>
+                      A partir de {formatPrice(Math.min(item.price, ...item.variations!.map((v: any) => v.price)))}
+                    </span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      {item.variations!.map((v: any, vi: number) => {
+                        const vKey = `${item._id}__${v.name}`;
+                        const vQty = getQty(vKey);
+                        return (
+                          <div key={vi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: "6px 10px" }}>
+                            <div>
+                              <span style={{ color: "#fff", fontSize: 13, fontWeight: 500 }}>{v.name}</span>
+                              <span style={{ color: "#FF6B35", fontSize: 13, fontWeight: 700, marginLeft: 8 }}>{formatPrice(v.price)}</span>
+                            </div>
+                            {vQty === 0 ? (
+                              <button style={{ ...s.addBtn, padding: "4px 12px", fontSize: 12 }} onClick={() => addToCart(item, v.name, v.price)}>+</button>
+                            ) : (
+                              <div style={s.qtyControl}>
+                                <button style={s.qtyBtn} onClick={() => removeFromCart(vKey)}>−</button>
+                                <span style={s.qtyNum}>{vQty}</span>
+                                <button style={s.qtyBtn} onClick={() => addToCart(item, v.name, v.price)}>+</button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {totalQty > 0 && <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 4, display: "block" }}>{totalQty} no carrinho</span>}
+                  </div>
+                ) : (
                 <div style={s.itemFooter}>
                   <span style={s.itemPrice}>{formatPrice(item.price)}</span>
                   {qty === 0 ? (
@@ -144,6 +185,7 @@ export default function MenuPage({
                     </div>
                   )}
                 </div>
+                )}
               </div>
             </div>
           );

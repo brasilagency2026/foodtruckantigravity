@@ -140,6 +140,7 @@ export default function CozinhaPage() {
                   <li key={i}>
                     <span className="qty">{item.quantity}x</span>
                     <span className="item-name">{item.name}</span>
+                    {item.variationName && <span className="item-sku">({item.variationName})</span>}
                     {item.sku && <span className="item-sku">[{item.sku}]</span>}
                     {item.observations && (
                       <span className="obs">⚠️ {item.observations}</span>

@@ -13,6 +13,7 @@ interface CartItem {
   price: number;
   quantity: number;
   observations?: string;
+  variationName?: string;
 }
 
 export default function CheckoutPage() {

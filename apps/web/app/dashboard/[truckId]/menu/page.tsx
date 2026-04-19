@@ -18,6 +18,12 @@ interface MenuItem {
   category: string;
   available: boolean;
   sku?: string;
+  variations?: { name: string; price: number }[];
+}
+
+interface Variation {
+  name: string;
+  price: string;
 }
 
 interface FormData {
@@ -27,11 +33,13 @@ interface FormData {
   category: string;
   photoUrl: string;
   sku: string;
+  variations: Variation[];
 }
 
 const EMPTY_FORM: FormData = {
   name: "", description: "", price: "",
   category: "", photoUrl: "", sku: "",
+  variations: [],
 };
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
@@ -94,6 +102,10 @@ export default function GerenciarCardapioPage({
       category: item.category,
       photoUrl: item.photoUrl,
       sku: item.sku ?? "",
+      variations: (item.variations ?? []).map((v) => ({
+        name: v.name,
+        price: (v.price / 100).toFixed(2).replace(".", ","),
+      })),
     });
     setErrors({});
     setShowForm(true);
@@ -152,6 +164,10 @@ export default function GerenciarCardapioPage({
     try {
       const price = parsePrice(form.price);
       const sku = form.sku.trim() || undefined;
+      const variations = form.variations
+        .filter((v) => v.name.trim() && v.price.trim())
+        .map((v) => ({ name: v.name.trim(), price: parsePrice(v.price) }));
+      const variationsArg = variations.length > 0 ? variations : undefined;
 
       if (editingId) {
         await updateItem({
@@ -162,6 +178,7 @@ export default function GerenciarCardapioPage({
           photoUrl: form.photoUrl,
           category: form.category,
           sku,
+          variations: variationsArg,
         });
       } else {
         await createItem({
@@ -172,6 +189,7 @@ export default function GerenciarCardapioPage({
           photoUrl: form.photoUrl || "",
           category: form.category,
           sku,
+          variations: variationsArg,
         });
       }
       closeForm();
@@ -413,6 +431,57 @@ export default function GerenciarCardapioPage({
                   />
                 </Field>
 
+                {/* Variations */}
+                <div className="cm-field">
+                  <label className="cm-label">Variações (opcional)</label>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", margin: "0 0 8px" }}>
+                    Ex: Pequeno R$15, Médio R$22, Grande R$29
+                  </p>
+                  {form.variations.map((v, i) => (
+                    <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                      <input
+                        className="cm-input"
+                        placeholder="Nome (ex: Grande)"
+                        value={v.name}
+                        onChange={(e) => {
+                          const vars = [...form.variations];
+                          vars[i] = { ...vars[i], name: e.target.value };
+                          setForm((f) => ({ ...f, variations: vars }));
+                        }}
+                        style={{ flex: 2 }}
+                      />
+                      <input
+                        className="cm-input"
+                        placeholder="Preço"
+                        value={v.price}
+                        onChange={(e) => {
+                          const vars = [...form.variations];
+                          vars[i] = { ...vars[i], price: e.target.value };
+                          setForm((f) => ({ ...f, variations: vars }));
+                        }}
+                        style={{ flex: 1 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const vars = form.variations.filter((_, j) => j !== i);
+                          setForm((f) => ({ ...f, variations: vars }));
+                        }}
+                        style={{ background: "rgba(239,68,68,0.2)", color: "#EF4444", border: "none", borderRadius: 8, padding: "0 12px", cursor: "pointer", fontSize: 16 }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, variations: [...f.variations, { name: "", price: "" }] }))}
+                    style={{ background: "rgba(255,107,53,0.15)", color: "#FF6B35", border: "1px dashed rgba(255,107,53,0.4)", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, width: "100%" }}
+                  >
+                    + Adicionar variação
+                  </button>
+                </div>
+
                 {/* Save button */}
                 <button
                   className="cm-save-btn"
@@ -477,6 +546,16 @@ function MenuItemCard({
           <span className="cm-item-price">{formatPrice(item.price)}</span>
           {item.sku && <span className="cm-item-sku">🏷️ {item.sku}</span>}
         </div>
+
+        {item.variations && item.variations.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+            {item.variations.map((v, i) => (
+              <span key={i} style={{ background: "rgba(255,107,53,0.15)", color: "#FF6B35", padding: "2px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
+                {v.name}: {formatPrice(v.price)}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="cm-item-actions">
           <button className="cm-item-edit" onClick={onEdit}>✏️ Editar</button>
