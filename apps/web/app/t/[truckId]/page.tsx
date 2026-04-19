@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import React from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -25,6 +26,8 @@ export default function MenuPage({
   const [showMenu, setShowMenu] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showHours, setShowHours] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const truckId = params.truckId as Id<"foodTrucks">;
@@ -145,36 +148,7 @@ export default function MenuPage({
           </div>
         </Modal>
       )}
-// ...existing code...
-
-// Modal générique
-import React from "react";
-function Modal({ onClose, title, children }: { onClose: () => void; title: string; children: React.ReactNode }) {
-  return (
-    <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.45)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={onClose}>
-      <div style={{ background: "#fff", borderRadius: 12, minWidth: 320, maxWidth: 400, boxShadow: "0 8px 32px rgba(0,0,0,0.18)", position: "relative" }} onClick={e => e.stopPropagation()}>
-        <div style={{ padding: "16px 20px 0 20px", fontWeight: 700, fontSize: 18, borderBottom: "1px solid #eee" }}>{title}</div>
-        <button onClick={onClose} style={{ position: "absolute", top: 10, right: 14, background: "none", border: "none", fontSize: 22, color: "#888", cursor: "pointer" }}>&times;</button>
-        <div>{children}</div>
-      </div>
-    </div>
-  );
-}
-// ...existing code...
-// Ajout styles pour les boutons info
-s.infoBtn = {
-  padding: "8px 18px",
-  background: "#222",
-  color: "#fff",
-  border: "none",
-  borderRadius: 8,
-  fontSize: 14,
-  fontWeight: 600,
-  cursor: "pointer",
-  fontFamily: "inherit",
-  transition: "background 0.2s",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-};
+      
 
       {/* Categorias */}
 
@@ -367,6 +341,19 @@ function LoadingScreen() {
   );
 }
 
+// Modal générique
+function Modal({ onClose, title, children }: { onClose: () => void; title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.45)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={onClose}>
+      <div style={{ background: "#fff", borderRadius: 12, minWidth: 320, maxWidth: 400, boxShadow: "0 8px 32px rgba(0,0,0,0.18)", position: "relative" }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: "16px 20px 0 20px", fontWeight: 700, fontSize: 18, borderBottom: "1px solid #eee" }}>{title}</div>
+        <button onClick={onClose} style={{ position: "absolute", top: 10, right: 14, background: "none", border: "none", fontSize: 22, color: "#888", cursor: "pointer" }}>&times;</button>
+        <div>{children}</div>
+      </div>
+    </div>
+  );
+}
+
 // ============================================
 // STYLES
 // ============================================
@@ -440,6 +427,19 @@ const s: Record<string, React.CSSProperties> = {
     background: "#FF6B35",
     border: "1px solid #FF6B35",
     color: "#FFFFFF",
+  },
+  infoBtn: {
+    padding: "8px 18px",
+    background: "#222",
+    color: "#fff",
+    border: "none",
+    borderRadius: 8,
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "background 0.2s",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
   },
   items: {
     padding: "0 20px",
