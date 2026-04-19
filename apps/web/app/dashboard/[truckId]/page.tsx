@@ -26,6 +26,10 @@ export default function DashboardPage({
 
   const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const qrUrl = getQRCodeImageUrl(params.truckId, BASE_URL, 300);
+  const [showManualModal, setShowManualModal] = useState(false);
+  const allMenuItems = useQuery(api.menu.getAllMenuItemsByTruck, { truckId });
+  const createOrder = useMutation(api.orders.createOrder);
+  const confirmCash = useMutation(api.orders.confirmCashPayment);
 
   const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     try {
@@ -191,14 +195,35 @@ export default function DashboardPage({
           { href: `/dashboard/${params.truckId}/menu`, icon: "📋", label: "Gerenciar cardápio" },
           { href: `/cozinha`, icon: "👨‍🍳", label: "Painel da cozinha" },
           { href: `/dashboard/${params.truckId}/settings`, icon: "⚙️", label: "Configurações" },
+          { href: `#`, icon: "📝", label: "Criar pedido manual", onClick: () => setShowManualModal(true) },
         ].map((link) => (
-          <a key={link.href} href={link.href} style={s.quickLink}>
+          <a key={link.label} href={link.href} onClick={(e) => { if (link.onClick) { e.preventDefault(); link.onClick(); } }} style={s.quickLink}>
             <span style={s.quickLinkIcon}>{link.icon}</span>
             <span style={s.quickLinkLabel}>{link.label}</span>
             <span style={s.quickLinkArrow}>→</span>
           </a>
         ))}
       </div>
+
+      {/* Manual Order Modal */}
+      {showManualModal && (
+        <ManualOrderModal
+          truckId={truckId}
+          items={allMenuItems}
+          onClose={() => setShowManualModal(false)}
+          onCreate={async (payload: any) => {
+            try {
+              const orderId = await createOrder(payload);
+              if (payload.paymentMethod === "dinheiro" && payload.paymentReceived) {
+                await confirmCash({ orderId });
+              }
+            } catch (err) {
+              console.error("Erro criando pedido manual:", err);
+            }
+            setShowManualModal(false);
+          }}
+        />
+      )}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
@@ -357,3 +382,132 @@ const s: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
 };
+
+// Manual order modal component
+function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: string; items: any[] | undefined; onClose: () => void; onCreate: (payload: any) => void }) {
+  const [cart, setCart] = useState<{ menuItemId: string; name: string; price: number; quantity: number; sku?: string; variationName?: string }[]>([]);
+  const [clientName, setClientName] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"dinheiro"|"pix"|"cartao_credito"|"cartao_debito">("dinheiro");
+  const [paymentReceived, setPaymentReceived] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  function addToCart(item: any, variationName?: string, variationPrice?: number) {
+    const key = variationName ? `${item._id}__${variationName}` : item._id;
+    const price = variationPrice ?? item.price;
+    const name = variationName ? `${item.name} (${variationName})` : item.name;
+    setCart((prev) => {
+      const ex = prev.find((p) => p.menuItemId === key);
+      if (ex) return prev.map((p) => p.menuItemId === key ? { ...p, quantity: p.quantity + 1 } : p);
+      return [...prev, { menuItemId: key, name, price, quantity: 1, sku: item.sku, variationName }];
+    });
+  }
+
+  function removeFromCart(menuItemId: string) {
+    setCart((prev) => prev.map((p) => p.menuItemId === menuItemId ? { ...p, quantity: p.quantity - 1 } : p).filter((p) => p.quantity > 0));
+  }
+
+  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+
+  async function handleCreate() {
+    if (cart.length === 0) {
+      alert("Adicione ao menos um item");
+      return;
+    }
+    if (!clientName || clientName.trim() === "") {
+      alert("Informe o nome do cliente");
+      return;
+    }
+
+    const payload = {
+      truckId,
+      clientId: "",
+      clientName: clientName.trim(),
+      clientPhone: clientPhone.trim(),
+      items: cart.map((c) => ({ menuItemId: c.menuItemId, name: c.name, price: c.price, quantity: c.quantity, sku: c.sku, variationName: c.variationName })),
+      totalPrice: total,
+      paymentMethod,
+      paymentReceived,
+    };
+
+    try {
+      setSubmitting(true);
+      await onCreate(payload);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 9999 }} onClick={onClose}>
+      <div style={{ width: 720, maxWidth: "96%", margin: "40px auto", background: "#fff", borderRadius: 12, overflow: "hidden" }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 16, borderBottom: "1px solid #eee" }}>
+          <h3 style={{ margin: 0 }}>Criar pedido manual</h3>
+          <button onClick={onClose} style={{ fontSize: 20, background: "none", border: "none", cursor: "pointer" }}>×</button>
+        </div>
+
+        <div style={{ display: "flex", gap: 12, padding: 16 }}>
+          <div style={{ flex: 1, maxHeight: "60vh", overflowY: "auto" }}>
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: "block", fontSize: 13, color: "#333", marginBottom: 6 }}>Nome do cliente</label>
+              <input value={clientName} onChange={(e) => setClientName(e.target.value)} style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ddd" }} />
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: "block", fontSize: 13, color: "#333", marginBottom: 6 }}>Telefone (opcional)</label>
+              <input value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ddd" }} />
+            </div>
+
+            <div>
+              <h4 style={{ margin: "8px 0" }}>Itens</h4>
+              {!items ? (
+                <div>Carregando itens...</div>
+              ) : (
+                items.map((it: any) => (
+                  <div key={it._id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #f2f2f2" }}>
+                    <div>
+                      <div style={{ fontWeight: 600 }}>{it.name}</div>
+                      <div style={{ fontSize: 13, color: "#666" }}>{formatPrice(it.price)}</div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <button onClick={() => removeFromCart(it._id)} style={{ padding: "6px 10px" }}>−</button>
+                      <span style={{ minWidth: 28, textAlign: "center" }}>{cart.find((c) => c.menuItemId === it._id)?.quantity ?? 0}</span>
+                      <button onClick={() => addToCart(it)} style={{ padding: "6px 10px" }}>+</button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div style={{ width: 320, borderLeft: "1px solid #f2f2f2", paddingLeft: 12 }}>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 13, color: "#666" }}>Método de pagamento</div>
+              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as any)} style={{ width: "100%", padding: 10, borderRadius: 8, marginTop: 6 }}>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="pix">Pix</option>
+                <option value="cartao_credito">Cartão de crédito</option>
+                <option value="cartao_debito">Cartão de débito</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <input type="checkbox" checked={paymentReceived} onChange={(e) => setPaymentReceived(e.target.checked)} />
+                <span>Recebi o pagamento</span>
+              </label>
+            </div>
+
+            <div style={{ marginTop: 20, fontWeight: 700, fontSize: 16 }}>
+              Total: {formatPrice(total)}
+            </div>
+
+            <div style={{ marginTop: 14, display: "flex", gap: 8 }}>
+              <button onClick={handleCreate} disabled={submitting} style={{ flex: 1, padding: "12px 14px", background: "#FF6B35", color: "#fff", border: "none", borderRadius: 10, cursor: "pointer" }}>{submitting ? "Enviando..." : "Criar pedido"}</button>
+              <button onClick={onClose} style={{ padding: "12px 14px", background: "#eee", border: "none", borderRadius: 10 }}>Fechar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
