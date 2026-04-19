@@ -214,3 +214,14 @@ export const confirmPayment = mutation({
     await ctx.db.patch(order._id, { paymentStatus });
   },
 });
+
+// Marca manual flag em uma order já criada
+export const markOrderManual = mutation({
+  args: {
+    orderId: v.id("orders"),
+    manual: v.boolean(),
+  },
+  handler: async (ctx, { orderId, manual }) => {
+    await ctx.db.patch(orderId, { manual });
+  },
+});

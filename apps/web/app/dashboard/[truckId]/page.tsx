@@ -30,6 +30,7 @@ export default function DashboardPage({
   const allMenuItems = useQuery(api.menu.getAllMenuItemsByTruck, { truckId });
   const createOrder = useMutation(api.orders.createOrder);
   const confirmCash = useMutation(api.orders.confirmCashPayment);
+  const markManual = useMutation(api.orders.markOrderManual);
 
   const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     try {
@@ -213,7 +214,22 @@ export default function DashboardPage({
           onClose={() => setShowManualModal(false)}
           onCreate={async (payload: any) => {
             try {
-              const orderId = await createOrder(payload);
+              // Remove client-only flags before calling createOrder to avoid server validator errors
+              const payloadToSend = { ...payload };
+              delete payloadToSend.manual;
+              delete payloadToSend.paymentReceived;
+
+              const orderId = await createOrder(payloadToSend);
+
+              // Mark order as manual via a separate mutation
+              if (payload.manual) {
+                try {
+                  await markManual({ orderId, manual: true });
+                } catch (e) {
+                  console.error("Erro marcando pedido como manual:", e);
+                }
+              }
+
               if (payload.paymentMethod === "dinheiro" && payload.paymentReceived) {
                 await confirmCash({ orderId });
               }

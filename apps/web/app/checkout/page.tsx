@@ -40,6 +40,7 @@ export default function CheckoutPage() {
   const createOrder = useMutation(api.orders.createOrder);
   const createPayment = useAction(api.payments.createPayment);
   const confirmCash = useMutation(api.orders.confirmCashPayment);
+  const markManual = useMutation(api.orders.markOrderManual);
 
   async function handlePay() {
     if (!name.trim()) {
@@ -50,7 +51,8 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      const orderId = await createOrder({
+      // Build a payload without client-only flags to avoid server validator errors
+      const createPayload = {
         truckId: truckId as Id<"foodTrucks">,
         clientId: "guest",
         clientName: name,
@@ -58,10 +60,20 @@ export default function CheckoutPage() {
         items,
         totalPrice: total,
         paymentMethod: paymentType === "dinheiro" ? "dinheiro" : "pix",
-        manual: manual ? true : undefined,
-      });
+      };
+
+      const orderId = await createOrder(createPayload);
 
       if (paymentType === "dinheiro") {
+        // If this was a manual flow, mark order as manual separately
+        if (manual) {
+          try {
+            await markManual({ orderId, manual: true });
+          } catch (e) {
+            console.error("Error marking manual order:", e);
+          }
+        }
+
         // Cash: if owner manual flow and owner already received payment, mark it approved
         if (manual && paymentReceived) {
           try {
@@ -70,6 +82,7 @@ export default function CheckoutPage() {
             console.error("Error confirming cash payment:", e);
           }
         }
+
         // redirect to order page (shows "go to counter" message)
         router.push(`/order/${orderId}`);
         return;
