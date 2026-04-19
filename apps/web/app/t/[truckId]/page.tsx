@@ -31,8 +31,11 @@ export default function MenuPage({
   const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
   const menuGrouped = useQuery(api.menu.getMenuByTruck, { truckId });
 
-  const categories = menuGrouped ? Object.keys(menuGrouped) : [];
-  const currentCategory = activeCategory ?? categories[0];
+
+  // Ajoute la catégorie "Todos" en premier
+  const categories = menuGrouped ? ["Todos", ...Object.keys(menuGrouped)] : [];
+  // Par défaut, sélectionne "Todos"
+  const currentCategory = activeCategory ?? "Todos";
 
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
@@ -111,6 +114,7 @@ export default function MenuPage({
       </div>
 
       {/* Categorias */}
+
       <div style={s.categories}>
         {categories.map((cat) => (
           <button
@@ -126,9 +130,13 @@ export default function MenuPage({
         ))}
       </div>
 
+
       {/* Itens do cardápio */}
       <div style={s.items}>
-        {(menuGrouped[currentCategory] ?? []).map((item) => {
+        {(currentCategory === "Todos"
+          ? Object.values(menuGrouped).flat()
+          : menuGrouped[currentCategory] ?? []
+        ).map((item) => {
           const qty = getQty(item._id);
           const hasVariations = item.variations && item.variations.length > 0;
           const totalQty = getTotalQtyForItem(item._id);
