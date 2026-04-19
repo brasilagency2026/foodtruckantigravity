@@ -104,6 +104,19 @@ export default function OrderPage({
           )}
         </div>
 
+        {/* Cancellation alert */}
+        {order.status === "cancelado" && (
+          <div style={s.cancelNotice}>
+            <span style={{ fontSize: 28 }}>⚠️</span>
+            <div>
+              <p style={s.cancelNoticeTitle}>Pedido cancelado</p>
+              <p style={s.cancelNoticeText}>
+                Seu pedido foi cancelado pela cozinha. Dirija-se ao balcão do food truck para reembolso ou troca.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Cash payment notice */}
         {order.paymentMethod === "dinheiro" && order.paymentStatus === "pendente" && (
           <div style={s.cashNotice}>
@@ -265,6 +278,28 @@ const s: Record<string, React.CSSProperties> = {
     margin: "0 0 6px",
   },
   cashNoticeText: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: 14,
+    lineHeight: 1.5,
+    margin: 0,
+  },
+  cancelNotice: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 14,
+    background: "rgba(239,68,68,0.08)",
+    border: "2px solid rgba(239,68,68,0.3)",
+    borderRadius: 16,
+    padding: "18px 16px",
+    marginBottom: 16,
+  },
+  cancelNoticeTitle: {
+    color: "#EF4444",
+    fontSize: 16,
+    fontWeight: 700,
+    margin: "0 0 6px",
+  },
+  cancelNoticeText: {
     color: "rgba(255,255,255,0.6)",
     fontSize: 14,
     lineHeight: 1.5,

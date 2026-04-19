@@ -185,6 +185,7 @@ body {
 .btn-preparing { background: rgba(59,130,246,0.2); color: #3B82F6; }
 .btn-ready     { background: #FF6B35; color: #fff; }
 .btn-delivered { background: rgba(34,197,94,0.2); color: #22C55E; }
+.btn-cancel    { background: rgba(239,68,68,0.15); color: #EF4444; font-size: 11px; }
 .btn-cash      { background: rgba(34,197,94,0.2); color: #22C55E; margin-top: 8px; width: 100%; }
 
 /* ---- CASH PAYMENT BADGE ---- */

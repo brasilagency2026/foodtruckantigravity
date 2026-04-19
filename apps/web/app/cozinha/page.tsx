@@ -176,6 +176,18 @@ export default function CozinhaPage() {
                       🔔 Pronto!
                     </button>
                   )}
+                  {(order.status === "recebido" || order.status === "preparando") && (
+                    <button
+                      className="btn btn-cancel"
+                      onClick={() => {
+                        if (confirm("Tem certeza que deseja cancelar este pedido?")) {
+                          updateStatus({ orderId: order._id, status: "cancelado" });
+                        }
+                      }}
+                    >
+                      ❌ Cancelar
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
