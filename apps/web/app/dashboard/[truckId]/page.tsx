@@ -388,6 +388,7 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
   const [cart, setCart] = useState<{ menuItemId: string; name: string; price: number; quantity: number; sku?: string; variationName?: string }[]>([]);
   const [clientName, setClientName] = useState("");
   const [clientPhone, setClientPhone] = useState("");
+  const [search, setSearch] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"dinheiro"|"pix"|"cartao_credito"|"cartao_debito">("dinheiro");
   const [paymentReceived, setPaymentReceived] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -438,16 +439,21 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
     }
   }
 
+  const filteredItems = items?.filter((it: any) => it?.name?.toLowerCase().includes(search.toLowerCase())) ?? items;
+
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 9999 }} onClick={onClose}>
-      <div style={{ width: 720, maxWidth: "96%", margin: "40px auto", background: "#fff", borderRadius: 12, overflow: "hidden" }} onClick={(e) => e.stopPropagation()}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 9999 }} onClick={onClose}>
+      <div style={{ width: "90%", maxWidth: 1100, margin: "20px auto", background: "#fff", borderRadius: 12, overflow: "hidden", maxHeight: "90vh", display: "flex", flexDirection: "column" }} onClick={(e) => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 16, borderBottom: "1px solid #eee" }}>
           <h3 style={{ margin: 0 }}>Criar pedido manual</h3>
-          <button onClick={onClose} style={{ fontSize: 20, background: "none", border: "none", cursor: "pointer" }}>×</button>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <a href={`/t/${truckId}`} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: "#009EE3", textDecoration: "none" }}>Ver cardápio completo →</a>
+            <button onClick={onClose} style={{ fontSize: 20, background: "none", border: "none", cursor: "pointer" }}>×</button>
+          </div>
         </div>
 
-        <div style={{ display: "flex", gap: 12, padding: 16 }}>
-          <div style={{ flex: 1, maxHeight: "60vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", gap: 12, padding: 16, flex: 1, minHeight: 0 }}>
+          <div style={{ flex: 2, minHeight: 0, overflowY: "auto" }}>
             <div style={{ marginBottom: 12 }}>
               <label style={{ display: "block", fontSize: 13, color: "#333", marginBottom: 6 }}>Nome do cliente</label>
               <input value={clientName} onChange={(e) => setClientName(e.target.value)} style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ddd" }} />
@@ -457,12 +463,16 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
               <input value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ddd" }} />
             </div>
 
+            <div style={{ marginBottom: 12 }}>
+              <input placeholder="Pesquisar itens..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ddd" }} />
+            </div>
+
             <div>
               <h4 style={{ margin: "8px 0" }}>Itens</h4>
-              {!items ? (
+              {!filteredItems ? (
                 <div>Carregando itens...</div>
               ) : (
-                items.map((it: any) => (
+                filteredItems.map((it: any) => (
                   <div key={it._id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #f2f2f2" }}>
                     <div>
                       <div style={{ fontWeight: 600 }}>{it.name}</div>
@@ -479,7 +489,7 @@ function ManualOrderModal({ truckId, items, onClose, onCreate }: { truckId: stri
             </div>
           </div>
 
-          <div style={{ width: 320, borderLeft: "1px solid #f2f2f2", paddingLeft: 12 }}>
+          <div style={{ width: 360, borderLeft: "1px solid #f2f2f2", paddingLeft: 12, overflowY: "auto" }}>
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 13, color: "#666" }}>Método de pagamento</div>
               <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as any)} style={{ width: "100%", padding: 10, borderRadius: 8, marginTop: 6 }}>
