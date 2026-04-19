@@ -14,6 +14,7 @@ export const getOrderById = query({
 });
 
 // Cozinha vê TODOS os pedidos ativos ao vivo
+// Só mostra pedidos com pagamento confirmado (ou dinheiro)
 export const getActiveOrdersForTruck = query({
   args: { truckId: v.id("foodTrucks") },
   handler: async (ctx, { truckId }) => {
@@ -31,9 +32,12 @@ export const getActiveOrdersForTruck = query({
       )
       .collect();
 
-    return [...active, ...preparing].sort((a, b) => 
-      a._creationTime - b._creationTime
+    // Filtrer: n'afficher que les commandes payées OU en espèces
+    const all = [...active, ...preparing].filter(
+      (o) => o.paymentStatus === "aprovado" || o.paymentMethod === "dinheiro"
     );
+
+    return all.sort((a, b) => a._creationTime - b._creationTime);
   },
 });
 
