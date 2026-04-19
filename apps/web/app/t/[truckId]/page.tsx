@@ -13,6 +13,7 @@ interface CartItem {
   price: number;
   quantity: number;
   observations?: string;
+  sku?: string;
 }
 
 export default function MenuPage({
@@ -35,7 +36,7 @@ export default function MenuPage({
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
-  function addToCart(item: { _id: string; name: string; price: number }) {
+  function addToCart(item: { _id: string; name: string; price: number; sku?: string }) {
     setCart((prev) => {
       const existing = prev.find((i) => i.menuItemId === item._id);
       if (existing) {
@@ -47,7 +48,7 @@ export default function MenuPage({
       }
       return [
         ...prev,
-        { menuItemId: item._id, name: item.name, price: item.price, quantity: 1 },
+        { menuItemId: item._id, name: item.name, price: item.price, quantity: 1, sku: item.sku },
       ];
     });
   }

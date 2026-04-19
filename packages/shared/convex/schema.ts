@@ -52,6 +52,7 @@ export default defineSchema({
     available: v.boolean(),
     preparationTime: v.number(),
     allergens: v.array(v.string()),
+    sku: v.optional(v.string()),
   })
     .index("by_truck", ["truckId"])
     .index("by_truck_category", ["truckId", "category"]),
@@ -67,6 +68,7 @@ export default defineSchema({
       price: v.number(),
       quantity: v.number(),
       observations: v.optional(v.string()),
+      sku: v.optional(v.string()),
     })),
     totalPrice: v.number(),
     status: v.union(

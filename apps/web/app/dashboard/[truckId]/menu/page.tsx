@@ -19,6 +19,7 @@ interface MenuItem {
   available: boolean;
   preparationTime: number;
   allergens: string[];
+  sku?: string;
 }
 
 interface FormData {
@@ -29,12 +30,13 @@ interface FormData {
   preparationTime: string;
   allergens: string;
   photoUrl: string;
+  sku: string;
 }
 
 const EMPTY_FORM: FormData = {
   name: "", description: "", price: "",
   category: "", preparationTime: "15",
-  allergens: "", photoUrl: "",
+  allergens: "", photoUrl: "", sku: "",
 };
 
 const ALLERGEN_OPTIONS = [
@@ -103,6 +105,7 @@ export default function GerenciarCardapioPage({
       preparationTime: String(item.preparationTime),
       allergens: item.allergens.join(", "),
       photoUrl: item.photoUrl,
+      sku: item.sku ?? "",
     });
     setErrors({});
     setShowForm(true);
@@ -164,6 +167,7 @@ export default function GerenciarCardapioPage({
         ? form.allergens.split(",").map((a) => a.trim()).filter(Boolean)
         : [];
       const preparationTime = parseInt(form.preparationTime) || 15;
+      const sku = form.sku.trim() || undefined;
 
       if (editingId) {
         await updateItem({
@@ -175,6 +179,7 @@ export default function GerenciarCardapioPage({
           category: form.category,
           preparationTime,
           allergens,
+          sku,
         });
       } else {
         await createItem({
@@ -186,6 +191,7 @@ export default function GerenciarCardapioPage({
           category: form.category,
           preparationTime,
           allergens,
+          sku,
         });
       }
       closeForm();
@@ -417,17 +423,27 @@ export default function GerenciarCardapioPage({
                   </Field>
                 </div>
 
-                {/* Prep time */}
-                <Field label="Tempo de preparo (minutos)">
-                  <input
-                    className="cm-input"
-                    type="number"
-                    min="1"
-                    max="120"
-                    value={form.preparationTime}
-                    onChange={(e) => set("preparationTime", e.target.value)}
-                  />
-                </Field>
+                {/* Prep time + SKU row */}
+                <div className="cm-row-2">
+                  <Field label="Tempo de preparo (min)">
+                    <input
+                      className="cm-input"
+                      type="number"
+                      min="1"
+                      max="120"
+                      value={form.preparationTime}
+                      onChange={(e) => set("preparationTime", e.target.value)}
+                    />
+                  </Field>
+                  <Field label="Referência / SKU">
+                    <input
+                      className="cm-input"
+                      placeholder="Ex: BRG-001"
+                      value={form.sku}
+                      onChange={(e) => set("sku", e.target.value)}
+                    />
+                  </Field>
+                </div>
 
                 {/* Allergens */}
                 <div className="cm-allergens-section">
@@ -520,6 +536,7 @@ function MenuItemCard({
         <div className="cm-item-meta">
           <span className="cm-item-price">{formatPrice(item.price)}</span>
           <span className="cm-item-prep">⏱ {item.preparationTime} min</span>
+          {item.sku && <span className="cm-item-sku">🏷️ {item.sku}</span>}
           {item.allergens.length > 0 && (
             <span className="cm-item-allergens">⚠️ {item.allergens.join(", ")}</span>
           )}
@@ -614,6 +631,7 @@ const CSS = `
   .cm-item-meta { display: flex; gap: 10px; flex-wrap: wrap; }
   .cm-item-price { color: var(--orange); font-weight: 800; font-size: 16px; }
   .cm-item-prep { font-size: 12px; color: var(--muted); }
+  .cm-item-sku { font-size: 11px; color: var(--muted); font-family: monospace; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; }
   .cm-item-allergens { font-size: 11px; color: var(--amber); }
   .cm-item-actions { display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border); }
   .cm-item-edit { background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 7px 14px; font-size: 12px; cursor: pointer; font-family: var(--body); transition: background 0.2s; font-weight: 600; }
