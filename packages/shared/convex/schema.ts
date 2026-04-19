@@ -95,6 +95,7 @@ export default defineSchema({
       v.literal("cartao_debito"),
       v.literal("dinheiro")
     ),
+    manual: v.optional(v.boolean()),
     mercadoPagoPaymentId: v.optional(v.string()),
     estimatedTime: v.optional(v.number()),
   })
