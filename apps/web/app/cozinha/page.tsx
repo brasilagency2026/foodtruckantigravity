@@ -176,7 +176,17 @@ export default function CozinhaPage() {
                       🔔 Pronto!
                     </button>
                   )}
-                  {(order.status === "recebido" || order.status === "preparando") && (
+                  {order.status === "pronto" && (
+                    <button
+                      className="btn btn-delivered"
+                      onClick={() =>
+                        updateStatus({ orderId: order._id, status: "entregue" })
+                      }
+                    >
+                      ✅ Entregue
+                    </button>
+                  )}
+                  {(order.status === "recebido" || order.status === "preparando" || order.status === "pronto") && (
                     <button
                       className="btn btn-cancel"
                       onClick={() => {

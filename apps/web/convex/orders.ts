@@ -32,8 +32,15 @@ export const getActiveOrdersForTruck = query({
       )
       .collect();
 
+    const ready = await ctx.db
+      .query("orders")
+      .withIndex("by_truck_status", (q) =>
+        q.eq("truckId", truckId).eq("status", "pronto")
+      )
+      .collect();
+
     // Filtrer: n'afficher que les commandes payées OU en espèces
-    const all = [...active, ...preparing].filter(
+    const all = [...active, ...preparing, ...ready].filter(
       (o) => o.paymentStatus === "aprovado" || o.paymentMethod === "dinheiro"
     );
 
