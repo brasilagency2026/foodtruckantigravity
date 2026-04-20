@@ -1,4 +1,5 @@
 {
+  "name": "foodtruckantigravity-web",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "installCommand": "npm ci --no-audit --no-fund",
