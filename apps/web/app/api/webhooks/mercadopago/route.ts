@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
 import crypto from "crypto";
-
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL ?? "https://placeholder.convex.cloud");
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
+    // Lazily create Convex client to avoid running browser-only code at import time
+    const { ConvexHttpClient } = await import("convex/browser");
+    const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL ?? "https://placeholder.convex.cloud");
+
     const body = await req.text();
     let data: any;
     try {
