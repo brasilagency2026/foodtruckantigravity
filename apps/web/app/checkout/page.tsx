@@ -59,7 +59,10 @@ export default function CheckoutPage() {
         clientPhone: phone || "",
         items,
         totalPrice: total,
-        paymentMethod: paymentType === "dinheiro" ? "dinheiro" : "pix",
+        // When using Mercado Pago Checkout Pro we don't yet know the exact
+        // instrument (card vs pix). Default to a generic online method
+        // (credit card) and let the webhook correct it when it arrives.
+        paymentMethod: paymentType === "dinheiro" ? "dinheiro" : "cartao_credito",
       };
 
       const orderId = await createOrder(createPayload);

@@ -85,8 +85,14 @@ export const handleWebhook = mutation({
   args: {
     mercadoPagoPaymentId: v.string(),
     status: v.string(), // "approved", "rejected", "refunded"...
+    paymentMethod: v.optional(v.union(
+      v.literal("pix"),
+      v.literal("cartao_credito"),
+      v.literal("cartao_debito"),
+      v.literal("dinheiro")
+    )),
   },
-  handler: async (ctx, { mercadoPagoPaymentId, status }) => {
+  handler: async (ctx, { mercadoPagoPaymentId, status, paymentMethod }) => {
     const statusMap: Record<string, "aprovado" | "recusado" | "reembolsado"> = {
       approved: "aprovado",
       rejected: "recusado",
@@ -106,9 +112,12 @@ export const handleWebhook = mutation({
 
     if (!order) return;
 
-    await ctx.db.patch(order._id, { paymentStatus });
+    const patchFields: any = { paymentStatus };
+    if (paymentMethod) patchFields.paymentMethod = paymentMethod;
 
-    // Si paiement approuvé → changer le statut de la commande
+    await ctx.db.patch(order._id, patchFields);
+
+    // If approved, set the order status so it appears in the kitchen
     if (paymentStatus === "aprovado") {
       await ctx.db.patch(order._id, { status: "recebido" });
     }
