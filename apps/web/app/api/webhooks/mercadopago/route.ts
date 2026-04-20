@@ -74,10 +74,11 @@ export async function POST(req: NextRequest) {
     // If we still don't know the truck, we cannot fetch the payment by merchant token.
     // Try to proceed best-effort: if truck found, fetch MP payment details.
     let payment: any | null = null;
-    if (truck?.mpAccessToken) {
+    const tokenToUse = truck?.mpAccessToken ?? process.env.MERCADO_PAGO_ACCESS_TOKEN;
+    if (tokenToUse) {
       try {
         const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-          headers: { Authorization: `Bearer ${truck.mpAccessToken}` },
+          headers: { Authorization: `Bearer ${tokenToUse}` },
         });
         if (!mpRes.ok) {
           console.error("Webhook: MP fetch failed", await mpRes.text());
@@ -89,7 +90,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true });
       }
     } else {
-      console.warn("Webhook: no truck mpAccessToken available; cannot fetch payment details");
+      console.warn("Webhook: no MP access token available (truck or global); cannot fetch payment details");
     }
 
     if (!payment) {
