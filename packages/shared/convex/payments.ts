@@ -93,11 +93,13 @@ export const handleWebhook = mutation({
     )),
   },
   handler: async (ctx, { mercadoPagoPaymentId, status, paymentMethod }) => {
-    const statusMap: Record<string, "aprovado" | "recusado" | "reembolsado"> = {
+    const statusMap: Record<string, "aprovado" | "recusado" | "reembolsado" | "pendente"> = {
       approved: "aprovado",
+      in_process: "pendente",
+      pending: "pendente",
       rejected: "recusado",
-      refunded: "reembolsado",
       cancelled: "recusado",
+      refunded: "reembolsado",
     };
 
     const paymentStatus = statusMap[status];

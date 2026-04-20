@@ -98,10 +98,30 @@ export async function POST(req: NextRequest) {
     }
 
     // Determine order id from payment.external_reference (preference external_reference)
-    const externalReference = payment.external_reference ?? payment.preference_id ?? null;
+    let externalReference = payment.external_reference ?? null;
+
+    // If external_reference not present but we have a preference_id, fetch the preference
+    // to retrieve the external_reference we set when creating the preference.
+    if (!externalReference && payment.preference_id && truck?.mpAccessToken) {
+      try {
+        const prefRes = await fetch(
+          `https://api.mercadopago.com/checkout/preferences/${payment.preference_id}`,
+          { headers: { Authorization: `Bearer ${truck.mpAccessToken}` } }
+        );
+        if (prefRes.ok) {
+          const pref = await prefRes.json();
+          externalReference = pref.external_reference ?? pref.externalReference ?? null;
+        } else {
+          console.warn("Webhook: preference fetch failed", await prefRes.text());
+        }
+      } catch (e) {
+        console.warn("Webhook: preference fetch error", e);
+      }
+    }
+
     if (!order && externalReference) {
       try {
-        // external_reference should contain the orderId we used when creating the preference
+        // external_reference should contain the Convex orderId we used when creating the preference
         order = await convex.query(api.orders.getOrderById, { orderId: externalReference });
       } catch (e) {
         console.warn("Webhook: external_reference not a Convex id or order lookup failed", { externalReference, e });
