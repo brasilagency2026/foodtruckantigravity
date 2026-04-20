@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "installCommand": "cd ../.. && npm ci --no-audit --no-fund",
+  "installCommand": "cd ../.. && npm config set cache /tmp/.npm --global && npm ci --no-audit --no-fund",
   "framework": "nextjs"
 }
