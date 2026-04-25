@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, UserButton } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { useConvexAuth } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -106,6 +106,22 @@ export default function OnboardingPage() {
 
   return (
     <div style={{ minHeight:"100vh",background:"#0D0D0D",fontFamily:"'Nunito',system-ui,sans-serif",display:"flex",flexDirection:"column" }}>
+      
+      {/* Top Navbar */}
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 24px", borderBottom:"1px solid rgba(255,255,255,0.06)", background:"#0D0D0D", position:"sticky", top:0, zIndex:100 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <span style={{ fontSize:24 }}>🍔</span>
+          <span style={{ color:"#FFF", fontWeight:700, fontSize:16, fontFamily:"'Syne', system-ui" }}>Food Pronto</span>
+        </div>
+        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+          <span style={{ color:"rgba(255,255,255,0.4)", fontSize:13 }}>Cadastro do seu truck</span>
+          <div style={{ background:"#1A1A1A", borderRadius:"50%", padding:"4px", border:"1px solid rgba(255,255,255,0.1)" }}>
+            <UserButton afterSignOutUrl="/sign-in" />
+          </div>
+        </div>
+      </div>
+
+      {/* Progress bar */}
       <div style={{ height:3,background:"rgba(255,255,255,0.06)" }}>
         <div style={{ height:"100%",background:"#FF6B35",transition:"width 0.4s ease",width:`${((step+1)/STEPS.length)*100}%` }} />
       </div>
