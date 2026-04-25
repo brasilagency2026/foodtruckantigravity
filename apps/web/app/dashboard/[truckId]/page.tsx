@@ -7,6 +7,7 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
 import { getQRCodeImageUrl, downloadQRCode } from "shared/utils/qrCode";
+import { UserButton } from "@clerk/nextjs";
 
 export default function DashboardPage({
   params,
@@ -100,14 +101,19 @@ export default function DashboardPage({
           <p style={s.cuisine}>{truck.cuisine}</p>
         </div>
 
-        {/* Toggle aberto/fechado */}
-        <button
-          style={{ ...s.toggleBtn, ...(truck.isOpen ? s.toggleOpen : s.toggleClosed), opacity: locating ? 0.6 : 1 }}
-          onClick={handleToggle}
-          disabled={locating}
-        >
-          {locating ? "📍 Localizando..." : truck.isOpen ? "🟢 Aberto" : "🔴 Fechado"}
-        </button>
+        {/* Toggle aberto/fechado and User Button */}
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <button
+            style={{ ...s.toggleBtn, ...(truck.isOpen ? s.toggleOpen : s.toggleClosed), opacity: locating ? 0.6 : 1 }}
+            onClick={handleToggle}
+            disabled={locating}
+          >
+            {locating ? "📍 Localizando..." : truck.isOpen ? "🟢 Aberto" : "🔴 Fechado"}
+          </button>
+          <div style={{ background: '#1A1A1A', borderRadius: '50%', padding: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <UserButton />
+          </div>
+        </div>
       </div>
 
       {/* Location status */}
