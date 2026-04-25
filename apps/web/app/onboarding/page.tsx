@@ -50,11 +50,21 @@ export default function OnboardingPage() {
   function update(fields: Partial<OnboardingData>) { setData((p) => ({ ...p, ...fields })); }
   
   async function finish(connectPayment: boolean) {
+    setLoading(true);
+    // Wait for Convex auth to sync with Clerk (up to 5 seconds)
     if (!isAuthenticated) {
-      alert("Você precisa estar logado para cadastrar um truck.");
+      let waited = 0;
+      while (!isAuthenticated && waited < 5000) {
+        await new Promise((r) => setTimeout(r, 200));
+        waited += 200;
+      }
+    }
+    if (!isAuthenticated) {
+      alert("Sessão expirada. Por favor, faça login novamente.");
+      setLoading(false);
+      router.push("/sign-in");
       return;
     }
-    setLoading(true);
     try {
       const truckId = await createTruck({
         name: data.name!, description: data.description!, cuisine: data.cuisine!,
