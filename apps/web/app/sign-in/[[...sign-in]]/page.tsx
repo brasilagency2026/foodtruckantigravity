@@ -26,7 +26,7 @@ export default function SignInPage() {
 
     try {
       const result = await signIn.create({
-        identifier: email,
+        identifier: email.trim(),
         password,
       });
 
@@ -98,6 +98,10 @@ export default function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="seu@email.com"
+              autoComplete="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck="false"
               style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#fff", fontSize: 15, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
               onFocus={(e) => (e.target.style.borderColor = "rgba(255,107,53,0.5)")}
               onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
@@ -113,6 +117,7 @@ export default function SignInPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
+                autoComplete="current-password"
                 style={{ width: "100%", padding: "12px 14px", paddingRight: 48, borderRadius: 10, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#fff", fontSize: 15, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
                 onFocus={(e) => (e.target.style.borderColor = "rgba(255,107,53,0.5)")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}

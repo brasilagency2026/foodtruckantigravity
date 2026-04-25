@@ -28,7 +28,7 @@ export default function SignUpPage() {
 
     try {
       await signUp.create({
-        emailAddress: email,
+        emailAddress: email.trim(),
         password,
       });
 
@@ -146,6 +146,10 @@ export default function SignUpPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="seu@email.com"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck="false"
                   style={inputStyle}
                   onFocus={(e) => (e.target.style.borderColor = "rgba(255,107,53,0.5)")}
                   onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
@@ -161,6 +165,7 @@ export default function SignUpPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Mínimo 8 caracteres"
+                    autoComplete="new-password"
                     style={{ ...inputStyle, paddingRight: 48 }}
                     onFocus={(e) => (e.target.style.borderColor = "rgba(255,107,53,0.5)")}
                     onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
@@ -182,9 +187,11 @@ export default function SignUpPage() {
               <input
                 type="text"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
+                onChange={(e) => setCode(e.target.value.trim())}
                 required
                 placeholder="123456"
+                autoComplete="one-time-code"
+                inputMode="numeric"
                 style={{ ...inputStyle, textAlign: "center", fontSize: 24, letterSpacing: 8 }}
                 onFocus={(e) => (e.target.style.borderColor = "rgba(255,107,53,0.5)")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
