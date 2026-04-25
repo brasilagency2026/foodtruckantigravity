@@ -33,15 +33,18 @@ export default function SignInPage() {
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
         router.push("/onboarding");
+      } else {
+        setError(`Status inesperado: ${result.status}`);
       }
     } catch (err: any) {
-      const msg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message;
-      if (msg?.includes("password")) {
+      console.error("Sign in error:", err);
+      const msg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message || JSON.stringify(err);
+      if (typeof msg === 'string' && msg.includes("password")) {
         setError("Senha incorreta. Tente novamente.");
-      } else if (msg?.includes("identifier")) {
+      } else if (typeof msg === 'string' && msg.includes("identifier")) {
         setError("Nenhuma conta encontrada com esse e-mail.");
       } else {
-        setError("Falha na autenticação. Verifique suas credenciais.");
+        setError(`Erro: ${msg}`);
       }
     } finally {
       setIsSubmitting(false);
