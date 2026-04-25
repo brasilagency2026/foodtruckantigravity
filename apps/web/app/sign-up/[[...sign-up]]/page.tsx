@@ -97,6 +97,7 @@ export default function SignUpPage() {
         </div>
 
         <form
+          noValidate
           onSubmit={pendingVerification ? handleVerify : handleSubmit}
           style={{ background: "#0f0f1a", padding: 32, borderRadius: 16, border: "1px solid rgba(255,107,53,0.15)" }}
         >

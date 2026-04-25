@@ -60,7 +60,7 @@ export default function SignInPage() {
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: 0 }}>Entre na sua conta para gerenciar seu food truck.</p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ background: "#0f0f1a", padding: 32, borderRadius: 16, border: "1px solid rgba(255,107,53,0.15)" }}>
+        <form noValidate onSubmit={handleSubmit} style={{ background: "#0f0f1a", padding: 32, borderRadius: 16, border: "1px solid rgba(255,107,53,0.15)" }}>
           {error && (
             <div style={{ background: "rgba(239,68,68,0.1)", color: "#EF4444", padding: 12, borderRadius: 8, marginBottom: 20, fontSize: 14, textAlign: "center" }}>
               {error}
