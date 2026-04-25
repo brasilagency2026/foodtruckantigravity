@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
@@ -40,6 +40,10 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Partial<OnboardingData>>({});
 
+  // Ref so async finish() always reads the latest isAuthenticated (fixes stale closure)
+  const isAuthenticatedRef = useRef(isAuthenticated);
+  useEffect(() => { isAuthenticatedRef.current = isAuthenticated; }, [isAuthenticated]);
+
   // Redirect to dashboard if user already has a truck
   useEffect(() => {
     if (myTrucks && myTrucks.length > 0) {
@@ -51,18 +55,18 @@ export default function OnboardingPage() {
   
   async function finish(connectPayment: boolean) {
     setLoading(true);
-    // Wait for Convex auth to sync with Clerk (up to 5 seconds)
-    if (!isAuthenticated) {
+    // Wait for Convex auth to sync with Clerk (up to 8 seconds)
+    // Using ref so the while-loop reads the live value, not a stale closure
+    if (!isAuthenticatedRef.current) {
       let waited = 0;
-      while (!isAuthenticated && waited < 5000) {
-        await new Promise((r) => setTimeout(r, 200));
-        waited += 200;
+      while (!isAuthenticatedRef.current && waited < 8000) {
+        await new Promise((r) => setTimeout(r, 300));
+        waited += 300;
       }
     }
-    if (!isAuthenticated) {
-      alert("Sessão expirada. Por favor, faça login novamente.");
+    if (!isAuthenticatedRef.current) {
+      alert("Erro de autenticação. Verifique sua conexão e tente novamente.");
       setLoading(false);
-      router.push("/sign-in");
       return;
     }
     try {
