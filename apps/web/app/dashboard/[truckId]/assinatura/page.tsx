@@ -70,7 +70,7 @@ export default function AssinaturaPage() {
             <h2 className="text-xl font-bold mb-4">1. Escolha seu Plano</h2>
             
             <div className="space-y-4">
-              <label className={\`block p-4 rounded-lg border-2 cursor-pointer transition-colors \${selectedPlan === "monthly" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}\`}>
+              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === "monthly" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <input type="radio" name="plan" checked={selectedPlan === "monthly"} onChange={() => setSelectedPlan("monthly")} className="w-5 h-5 accent-[#FF6B35]"/>
@@ -80,7 +80,7 @@ export default function AssinaturaPage() {
                 </div>
               </label>
 
-              <label className={\`block p-4 rounded-lg border-2 cursor-pointer transition-colors \${selectedPlan === "annual" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}\`}>
+              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === "annual" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <input type="radio" name="plan" checked={selectedPlan === "annual"} onChange={() => setSelectedPlan("annual")} className="w-5 h-5 accent-[#FF6B35]"/>
@@ -100,7 +100,7 @@ export default function AssinaturaPage() {
             
             <div className="space-y-4">
               {selectedPlan === "monthly" && (
-                <label className={\`block p-4 rounded-lg border-2 cursor-pointer transition-colors \${paymentMethod === "cc" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}\`}>
+                <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${paymentMethod === "cc" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
                   <div className="flex items-center gap-3">
                     <input type="radio" name="method" checked={paymentMethod === "cc"} onChange={() => setPaymentMethod("cc")} className="w-5 h-5 accent-[#FF6B35]"/>
                     <div>
@@ -111,7 +111,7 @@ export default function AssinaturaPage() {
                 </label>
               )}
 
-              <label className={\`block p-4 rounded-lg border-2 cursor-pointer transition-colors \${paymentMethod === "pix" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}\`}>
+              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${paymentMethod === "pix" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
                 <div className="flex items-center gap-3">
                   <input type="radio" name="method" checked={paymentMethod === "pix"} onChange={() => setPaymentMethod("pix")} className="w-5 h-5 accent-[#FF6B35]"/>
                   <div>
