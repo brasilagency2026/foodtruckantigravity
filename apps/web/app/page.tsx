@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -253,8 +254,14 @@ export default function HomePage() {
             <span className="logo-text">Food Pronto</span>
           </div>
           <div className="nav-actions">
-            <a href="/sign-in" className="btn-ghost">Entrar</a>
-            <a href="/sign-up" className="btn-primary-sm">Cadastrar meu truck</a>
+            <SignedOut>
+              <a href="/sign-in" className="btn-ghost">Entrar</a>
+              <a href="/sign-up" className="btn-primary-sm">Cadastrar meu truck</a>
+            </SignedOut>
+            <SignedIn>
+              <a href="/onboarding" className="btn-primary-sm">Acessar Painel</a>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
           </div>
 
         </nav>
