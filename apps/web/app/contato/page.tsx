@@ -69,7 +69,6 @@ export default function ContatoPage() {
 
           <div className="company-info">
             <h3>Dados da Empresa</h3>
-            <p>Food Pronto</p>
             <p>CNPJ: 64.465.357/0001-28</p>
           </div>
         </div>
