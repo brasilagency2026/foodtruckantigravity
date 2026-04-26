@@ -199,6 +199,7 @@ export default function DashboardPage({
       {/* Links rápidos */}
       <div style={s.quickLinks}>
         {[
+          { href: `/dashboard/${params.truckId}/assinatura`, icon: "💎", label: "Meu Plano de Assinatura" },
           { href: `/dashboard/${params.truckId}/menu`, icon: "📋", label: "Gerenciar cardápio" },
           { href: `/cozinha`, icon: "👨‍🍳", label: "Painel da cozinha" },
           { href: `/dashboard/${params.truckId}/settings`, icon: "⚙️", label: "Configurações" },
