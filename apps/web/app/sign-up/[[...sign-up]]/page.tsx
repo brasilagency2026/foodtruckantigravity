@@ -29,6 +29,8 @@ export default function SignUpPage() {
             }
           }
         }}
+        signInUrl="/sign-in"
+        fallbackRedirectUrl="/onboarding"
       />
     </div>
   );
