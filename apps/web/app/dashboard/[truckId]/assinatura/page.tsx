@@ -19,7 +19,7 @@ export default function AssinaturaPage() {
   const [discount, setDiscount] = useState(0); // e.g., 10 for 10%
 
   const plans = {
-    monthly: { name: "Mensal", price: 199.90 },
+    monthly: { name: "Mensal", price: 200 },
     annual: { name: "Anual", price: 1920.00 } // 20% off from monthly
   };
 
@@ -76,7 +76,7 @@ export default function AssinaturaPage() {
                     <input type="radio" name="plan" checked={selectedPlan === "monthly"} onChange={() => setSelectedPlan("monthly")} className="w-5 h-5 accent-[#FF6B35]"/>
                     <span className="font-bold text-lg">Plano Mensal</span>
                   </div>
-                  <span className="text-xl font-bold">R$ 199,90</span>
+                  <span className="text-xl font-bold">R$ 200,00</span>
                 </div>
               </label>
 
