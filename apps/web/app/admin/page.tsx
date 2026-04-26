@@ -17,9 +17,7 @@ export default function AdminPage() {
   if (!isSignedIn) return <div className="p-10 text-white">Acesso negado. Faça login.</div>;
 
   // Simple superadmin check (could be refined with roles in Clerk/Convex)
-  const isAdmin = user?.primaryEmailAddress?.emailAddress === "contato@foodpronto.com.br" || 
-                  user?.primaryEmailAddress?.emailAddress === "gleveque@gmail.com" || // add your personal email if needed
-                  true; // Temporarily allow anyone logged in to see it during development. Remove '|| true' for prod.
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === "glwebagency2@gmail.com";
 
   if (!isAdmin) {
     return <div className="p-10 text-white">Você não tem permissão para acessar esta página.</div>;
