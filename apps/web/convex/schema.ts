@@ -139,6 +139,7 @@ export default defineSchema({
     paymentDate: v.number(), // Date the customer paid
     paymentType: v.union(v.literal("monthly"), v.literal("annual")), // To track if it was a monthly recurring or annual payment
     mercadopagoPaymentId: v.optional(v.string()), // To cross-reference with MP
+    paidAt: v.optional(v.number()), // Date and time when the admin paid the commercial
   })
     .index("by_partner", ["partnerId"])
     .index("by_status", ["status"]),

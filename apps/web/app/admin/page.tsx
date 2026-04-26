@@ -15,6 +15,7 @@ export default function AdminPage() {
   const createVoucher = useMutation(api.admin.createVoucher);
   const updateVoucher = useMutation(api.admin.updateVoucher);
   const deleteVoucher = useMutation(api.admin.deleteVoucher);
+  const payCommissions = useMutation(api.admin.payCommissions);
 
   const [activeTab, setActiveTab] = useState<"trucks" | "vouchers">("trucks");
   const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerPhone: "", discountPercentage: 10, commissionPercentage: 50 });
@@ -289,6 +290,23 @@ export default function AdminPage() {
                         <div className="font-bold text-green-400">
                           R$ {v.pendingCommission?.toFixed(2).replace('.', ',') || "0,00"}
                         </div>
+                        {(v.pendingCommission || 0) > 0 && (
+                          <button 
+                            className="btn-pay mt-2"
+                            onClick={() => {
+                              if (window.confirm(`Confirmar que você pagou R$ ${v.pendingCommission?.toFixed(2).replace('.', ',')} para ${v.partnerName}?`)) {
+                                payCommissions({ partnerId: v._id });
+                              }
+                            }}
+                          >
+                            💸 Marcar como Pago
+                          </button>
+                        )}
+                        {v.lastPaidAt && (
+                          <div className="text-xs text-gray-500 mt-2">
+                            Último pgto: {new Date(v.lastPaidAt).toLocaleString('pt-BR')}
+                          </div>
+                        )}
                       </td>
                       <td>
                         <button 
@@ -467,6 +485,21 @@ const CSS = `
   }
   .btn-delete:hover {
     background: #EF4444;
+    color: #fff;
+  }
+  .btn-pay {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-pay:hover {
+    background: #10B981;
     color: #fff;
   }
 `;

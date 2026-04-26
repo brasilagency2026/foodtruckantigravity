@@ -70,23 +70,50 @@ export const getAllVouchers = query({
   handler: async (ctx) => {
     const vouchers = await ctx.db.query("vouchers").order("desc").collect();
     
-    // For each voucher, calculate the total pending commission
+    // For each voucher, calculate the total pending commission and last paid date
     const vouchersWithCommissions = await Promise.all(vouchers.map(async (v) => {
-      const commissions = await ctx.db
+      const allCommissions = await ctx.db
         .query("commissions")
         .withIndex("by_partner", (q) => q.eq("partnerId", v._id))
-        .filter((q) => q.eq(q.field("status"), "pending"))
         .collect();
         
-      const pendingAmount = commissions.reduce((sum, c) => sum + c.amount, 0);
+      const pendingAmount = allCommissions
+        .filter(c => c.status === "pending")
+        .reduce((sum, c) => sum + c.amount, 0);
+
+      const paidCommissions = allCommissions
+        .filter(c => c.status === "paid" && c.paidAt)
+        .sort((a, b) => (b.paidAt || 0) - (a.paidAt || 0));
+        
+      const lastPaidAt = paidCommissions.length > 0 ? paidCommissions[0].paidAt : null;
       
       return {
         ...v,
         pendingCommission: pendingAmount,
+        lastPaidAt,
       };
     }));
     
     return vouchersWithCommissions;
+  },
+});
+
+export const payCommissions = mutation({
+  args: { partnerId: v.id("vouchers") },
+  handler: async (ctx, args) => {
+    const pendingCommissions = await ctx.db
+      .query("commissions")
+      .withIndex("by_partner", (q) => q.eq("partnerId", args.partnerId))
+      .filter((q) => q.eq(q.field("status"), "pending"))
+      .collect();
+
+    const now = Date.now();
+    for (const commission of pendingCommissions) {
+      await ctx.db.patch(commission._id, {
+        status: "paid",
+        paidAt: now,
+      });
+    }
   },
 });
 
