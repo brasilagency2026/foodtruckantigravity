@@ -129,7 +129,7 @@ export default function AdminPage() {
                     <button 
                       className="btn-delete"
                       onClick={() => {
-                        if (window.confirm(\`Tem certeza que deseja DELETAR o truck \${truck.name}?\`)) {
+                        if (window.confirm(`Tem certeza que deseja DELETAR o truck ${truck.name}?`)) {
                           deleteTruck({ id: truck._id });
                         }
                       }}
@@ -147,7 +147,7 @@ export default function AdminPage() {
   );
 }
 
-const CSS = \`
+const CSS = `
   .admin-container {
     padding: 40px;
     background: #080810;
@@ -265,4 +265,4 @@ const CSS = \`
     background: #EF4444;
     color: #fff;
   }
-\`;
+`;
