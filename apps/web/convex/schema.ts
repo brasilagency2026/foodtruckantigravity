@@ -36,11 +36,19 @@ export default defineSchema({
     mpRefreshToken: v.optional(v.string()),
     mpUserId: v.optional(v.string()),
     mpExpiresAt: v.optional(v.number()),
+    // Admin & Subscription Fields
+    approvalStatus: v.optional(v.union(v.literal("pending"), v.literal("approved"), v.literal("rejected"))),
+    isActive: v.optional(v.boolean()), // For pausing accounts
+    trialEndsAt: v.optional(v.number()), // Timestamp for end of free trial
+    nextPaymentAt: v.optional(v.number()), // Timestamp for next subscription payment
+    subscriptionStatus: v.optional(v.union(v.literal("trial"), v.literal("active"), v.literal("past_due"), v.literal("canceled"))),
+    subscriptionPlan: v.optional(v.union(v.literal("monthly"), v.literal("annual"))),
   })
     .index("by_owner", ["ownerId"])
     .index("by_open", ["isOpen"])
     .index("by_slug", ["slug"])
-    .index("by_city", ["state", "city"]),
+    .index("by_city", ["state", "city"])
+    .index("by_approval", ["approvalStatus"]),
 
   menuItems: defineTable({
     truckId: v.id("foodTrucks"),
