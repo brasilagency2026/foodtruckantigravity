@@ -128,7 +128,7 @@ export const sendStatusEmail = internalAction({
     try {
       await resend.emails.send({
         from: "Food Pronto <contato@foodpronto.com.br>", 
-        reply_to: "glwebagency2@gmail.com",
+        replyTo: "glwebagency2@gmail.com",
         to: [ownerEmail],
         subject: subject,
         html: htmlContent,
