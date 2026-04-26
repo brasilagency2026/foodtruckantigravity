@@ -258,15 +258,14 @@ export default function AdminPage() {
                 <tr>
                   <th>Código</th>
                   <th>Parceiro</th>
-                  <th>Desconto Cliente</th>
-                  <th>Comissão Vendedor</th>
+                  <th>Comissão a Pagar</th>
                   <th>Status</th>
                   <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {!vouchers || vouchers.length === 0 ? (
-                  <tr><td colSpan={6} className="text-center">Nenhum voucher encontrado.</td></tr>
+                  <tr><td colSpan={5} className="text-center">Nenhum voucher encontrado.</td></tr>
                 ) : (
                   vouchers.map(v => (
                     <tr key={v._id}>
@@ -286,8 +285,11 @@ export default function AdminPage() {
                           </div>
                         )}
                       </td>
-                      <td>{v.discountPercentage}%</td>
-                      <td>{v.commissionPercentage}%</td>
+                      <td>
+                        <div className="font-bold text-green-400">
+                          R$ {v.pendingCommission?.toFixed(2).replace('.', ',') || "0,00"}
+                        </div>
+                      </td>
                       <td>
                         <button 
                           className={`btn-toggle ${v.isActive ? "active" : "paused"}`}

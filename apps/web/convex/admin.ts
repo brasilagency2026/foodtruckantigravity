@@ -68,7 +68,25 @@ export const deleteFoodTruck = mutation({
 export const getAllVouchers = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("vouchers").order("desc").collect();
+    const vouchers = await ctx.db.query("vouchers").order("desc").collect();
+    
+    // For each voucher, calculate the total pending commission
+    const vouchersWithCommissions = await Promise.all(vouchers.map(async (v) => {
+      const commissions = await ctx.db
+        .query("commissions")
+        .withIndex("by_partner", (q) => q.eq("partnerId", v._id))
+        .filter((q) => q.eq(q.field("status"), "pending"))
+        .collect();
+        
+      const pendingAmount = commissions.reduce((sum, c) => sum + c.amount, 0);
+      
+      return {
+        ...v,
+        pendingCommission: pendingAmount,
+      };
+    }));
+    
+    return vouchersWithCommissions;
   },
 });
 
