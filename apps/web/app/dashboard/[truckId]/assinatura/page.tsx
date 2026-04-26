@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useQuery, useMutation } from "convex/react";
+import { useConvex } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 
 export default function AssinaturaPage() {
   const params = useParams();
   const truckId = params.truckId as string;
+  const convex = useConvex();
 
   // We should ideally fetch truck info here to show current plan status
   // const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
@@ -23,19 +24,23 @@ export default function AssinaturaPage() {
     annual: { name: "Anual", price: 1920.00 } // 20% off from monthly
   };
 
-  const handleApplyVoucher = () => {
+  const handleApplyVoucher = async () => {
     if (!voucherCode) return;
     setVoucherStatus("validating");
-    // Simulate API call to check voucher (to be implemented in Convex)
-    setTimeout(() => {
-      if (voucherCode.toUpperCase() === "CARLOS10" || voucherCode.length >= 5) {
+    
+    try {
+      const voucher = await convex.query(api.vouchers.getVoucherByCode, { code: voucherCode });
+      if (voucher) {
         setVoucherStatus("valid");
-        setDiscount(10);
+        setDiscount(voucher.discountPercentage);
       } else {
         setVoucherStatus("invalid");
         setDiscount(0);
       }
-    }, 1000);
+    } catch (error) {
+      setVoucherStatus("invalid");
+      setDiscount(0);
+    }
   };
 
   const calculateTotal = () => {
