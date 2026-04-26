@@ -538,6 +538,7 @@ export default function HomePage() {
             <a href="/termos">Termos</a>
             <a href="/privacidade">Privacidade</a>
             <a href="/contato">Contato</a>
+            <a href="/trabalhe-conosco">Trabalhe conosco</a>
           </div>
           <p className="footer-copy">© {new Date().getFullYear()} Food Pronto. Feito com ❤️ no Brasil.</p>
         </div>

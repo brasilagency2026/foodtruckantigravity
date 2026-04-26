@@ -304,6 +304,7 @@ export default function PricingClient() {
             <Link href="/termos">Termos</Link>
             <Link href="/privacidade">Privacidade</Link>
             <Link href="/contato">Contato</Link>
+            <Link href="/trabalhe-conosco">Trabalhe conosco</Link>
           </div>
           <p className="pr-footer-copy">© {new Date().getFullYear()} Food Pronto. Feito com ❤️ no Brasil.</p>
         </footer>
