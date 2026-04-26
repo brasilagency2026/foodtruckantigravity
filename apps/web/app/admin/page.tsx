@@ -11,6 +11,14 @@ export default function AdminPage() {
   const updateStatus = useMutation(api.admin.updateFoodTruckStatus);
   const deleteTruck = useMutation(api.admin.deleteFoodTruck);
 
+  const vouchers = useQuery(api.admin.getAllVouchers);
+  const createVoucher = useMutation(api.admin.createVoucher);
+  const updateVoucher = useMutation(api.admin.updateVoucher);
+  const deleteVoucher = useMutation(api.admin.deleteVoucher);
+
+  const [activeTab, setActiveTab] = useState<"trucks" | "vouchers">("trucks");
+  const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", discountPercentage: 10, commissionPercentage: 50 });
+
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"name" | "trial" | "payment">("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -73,109 +81,216 @@ export default function AdminPage() {
   return (
     <div className="admin-container">
       <style>{CSS}</style>
-      
       <header className="admin-header">
         <h1>👑 Painel Super Admin</h1>
-        <div className="admin-filters">
-          <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>Todos</button>
-          <button className={filter === "pending" ? "active" : ""} onClick={() => setFilter("pending")}>Pendentes</button>
-          <button className={filter === "approved" ? "active" : ""} onClick={() => setFilter("approved")}>Aprovados</button>
+        <div className="admin-tabs">
+          <button className={activeTab === "trucks" ? "active" : ""} onClick={() => setActiveTab("trucks")}>🚛 Food Trucks</button>
+          <button className={activeTab === "vouchers" ? "active" : ""} onClick={() => setActiveTab("vouchers")}>🎟️ Vouchers / Commerciaux</button>
         </div>
       </header>
 
-      <div className="admin-table-wrapper">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th className="sortable" onClick={() => toggleSort("name")}>Food Truck {getSortIcon("name")}</th>
-              <th>Contato</th>
-              <th>Status Aprovação</th>
-              <th>Status Operação</th>
-              <th className="sortable" onClick={() => toggleSort("trial")}>Vencimento Teste {getSortIcon("trial")}</th>
-              <th className="sortable" onClick={() => toggleSort("payment")}>Próximo Pgto {getSortIcon("payment")}</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTrucks.length === 0 ? (
-              <tr><td colSpan={7} className="text-center">Nenhum food truck encontrado.</td></tr>
-            ) : (
-              filteredTrucks.map(truck => (
-                <tr key={truck._id}>
-                  <td>
-                    <strong>{truck.name}</strong><br/>
-                    <small>{truck.cityDisplay} - {truck.stateDisplay}</small>
-                  </td>
-                  <td>
-                    {truck.phone}<br/>
-                    <a 
-                      href={`https://wa.me/55${truck.phone.replace(/\D/g, '')}?text=Olá! Aqui é do Food Pronto.`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="btn-whatsapp"
-                    >
-                      📱 WhatsApp
-                    </a>
-                  </td>
-                  <td>
-                    <select 
-                      value={truck.approvalStatus || "pending"}
-                      onChange={(e) => updateStatus({ id: truck._id, approvalStatus: e.target.value as any })}
-                      className={`status-select ${truck.approvalStatus || "pending"}`}
-                    >
-                      <option value="pending">Pendente</option>
-                      <option value="approved">Aprovado</option>
-                      <option value="rejected">Recusado</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button 
-                      className={`btn-toggle ${truck.isActive !== false ? "active" : "paused"}`}
-                      onClick={() => updateStatus({ id: truck._id, isActive: truck.isActive === false ? true : false })}
-                    >
-                      {truck.isActive !== false ? "🟢 Ativo" : "⏸️ Pausado"}
-                    </button>
-                  </td>
-                  <td>
-                    <input 
-                      type="date" 
-                      value={truck.trialEndsAt ? new Date(truck.trialEndsAt).toISOString().split('T')[0] : ''}
-                      onChange={(e) => {
-                        const date = new Date(e.target.value);
-                        updateStatus({ id: truck._id, trialEndsAt: date.getTime() });
-                      }}
-                      className="date-input"
-                    />
-                  </td>
-                  <td>
-                    <input 
-                      type="date" 
-                      value={truck.nextPaymentAt ? new Date(truck.nextPaymentAt).toISOString().split('T')[0] : ''}
-                      onChange={(e) => {
-                        const date = new Date(e.target.value);
-                        updateStatus({ id: truck._id, nextPaymentAt: date.getTime() });
-                      }}
-                      className="date-input"
-                    />
-                  </td>
-                  <td>
-                    <button 
-                      className="btn-delete"
-                      onClick={() => {
-                        if (window.confirm(`Tem certeza que deseja DELETAR o truck ${truck.name}?`)) {
-                          deleteTruck({ id: truck._id });
-                        }
-                      }}
-                    >
-                      🗑️ Excluir
-                    </button>
-                  </td>
+      {activeTab === "trucks" && (
+        <>
+          <div className="admin-filters mb-4">
+            <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>Todos</button>
+            <button className={filter === "pending" ? "active" : ""} onClick={() => setFilter("pending")}>Pendentes</button>
+            <button className={filter === "approved" ? "active" : ""} onClick={() => setFilter("approved")}>Aprovados</button>
+          </div>
+
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th className="sortable" onClick={() => toggleSort("name")}>Food Truck {getSortIcon("name")}</th>
+                  <th>Contato</th>
+                  <th>Status Aprovação</th>
+                  <th>Status Operação</th>
+                  <th className="sortable" onClick={() => toggleSort("trial")}>Vencimento Teste {getSortIcon("trial")}</th>
+                  <th className="sortable" onClick={() => toggleSort("payment")}>Próximo Pgto {getSortIcon("payment")}</th>
+                  <th>Ações</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {filteredTrucks.length === 0 ? (
+                  <tr><td colSpan={7} className="text-center">Nenhum food truck encontrado.</td></tr>
+                ) : (
+                  filteredTrucks.map(truck => (
+                    <tr key={truck._id}>
+                      <td>
+                        <strong>{truck.name}</strong><br/>
+                        <small>{truck.cityDisplay} - {truck.stateDisplay}</small>
+                      </td>
+                      <td>
+                        {truck.phone}<br/>
+                        <a 
+                          href={`https://wa.me/55${truck.phone.replace(/\D/g, '')}?text=Olá! Aqui é do Food Pronto.`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="btn-whatsapp"
+                        >
+                          📱 WhatsApp
+                        </a>
+                      </td>
+                      <td>
+                        <select 
+                          value={truck.approvalStatus || "pending"}
+                          onChange={(e) => updateStatus({ id: truck._id, approvalStatus: e.target.value as any })}
+                          className={`status-select ${truck.approvalStatus || "pending"}`}
+                        >
+                          <option value="pending">Pendente</option>
+                          <option value="approved">Aprovado</option>
+                          <option value="rejected">Recusado</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button 
+                          className={`btn-toggle ${truck.isActive !== false ? "active" : "paused"}`}
+                          onClick={() => updateStatus({ id: truck._id, isActive: truck.isActive === false ? true : false })}
+                        >
+                          {truck.isActive !== false ? "🟢 Ativo" : "⏸️ Pausado"}
+                        </button>
+                      </td>
+                      <td>
+                        <input 
+                          type="date" 
+                          value={truck.trialEndsAt ? new Date(truck.trialEndsAt).toISOString().split('T')[0] : ''}
+                          onChange={(e) => {
+                            const date = new Date(e.target.value);
+                            updateStatus({ id: truck._id, trialEndsAt: date.getTime() });
+                          }}
+                          className="date-input"
+                        />
+                      </td>
+                      <td>
+                        <input 
+                          type="date" 
+                          value={truck.nextPaymentAt ? new Date(truck.nextPaymentAt).toISOString().split('T')[0] : ''}
+                          onChange={(e) => {
+                            const date = new Date(e.target.value);
+                            updateStatus({ id: truck._id, nextPaymentAt: date.getTime() });
+                          }}
+                          className="date-input"
+                        />
+                      </td>
+                      <td>
+                        <button 
+                          className="btn-delete"
+                          onClick={() => {
+                            if (window.confirm(`Tem certeza que deseja DELETAR o truck ${truck.name}?`)) {
+                              deleteTruck({ id: truck._id });
+                            }
+                          }}
+                        >
+                          🗑️ Excluir
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {activeTab === "vouchers" && (
+        <div className="vouchers-section">
+          <div className="admin-table-wrapper mb-8" style={{ padding: 20 }}>
+            <h2 className="text-xl font-bold mb-4 text-[#FF6B35]">Criar Novo Voucher</h2>
+            <div className="flex gap-4 items-end">
+              <div>
+                <label className="block text-sm mb-1 text-gray-400">Código</label>
+                <input 
+                  type="text" 
+                  value={newVoucher.code} 
+                  onChange={e => setNewVoucher({...newVoucher, code: e.target.value})} 
+                  placeholder="Ex: CARLOS10"
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white uppercase"
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-1 text-gray-400">Nome do Comercial</label>
+                <input 
+                  type="text" 
+                  value={newVoucher.partnerName} 
+                  onChange={e => setNewVoucher({...newVoucher, partnerName: e.target.value})} 
+                  placeholder="Nome do Parceiro"
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
+                />
+              </div>
+              <button 
+                onClick={async () => {
+                  if (!newVoucher.code || !newVoucher.partnerName) return alert("Preencha código e nome.");
+                  try {
+                    await createVoucher({
+                      code: newVoucher.code,
+                      partnerName: newVoucher.partnerName,
+                      isActive: true,
+                      discountPercentage: newVoucher.discountPercentage,
+                      commissionPercentage: newVoucher.commissionPercentage
+                    });
+                    setNewVoucher({ code: "", partnerName: "", discountPercentage: 10, commissionPercentage: 50 });
+                  } catch (e: any) {
+                    alert(e.message);
+                  }
+                }}
+                className="bg-[#FF6B35] text-white px-4 py-2 rounded font-bold hover:bg-[#e05a2b]"
+              >
+                + Adicionar
+              </button>
+            </div>
+          </div>
+
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Parceiro</th>
+                  <th>Desconto Cliente</th>
+                  <th>Comissão Vendedor</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!vouchers || vouchers.length === 0 ? (
+                  <tr><td colSpan={6} className="text-center">Nenhum voucher encontrado.</td></tr>
+                ) : (
+                  vouchers.map(v => (
+                    <tr key={v._id}>
+                      <td><strong>{v.code}</strong></td>
+                      <td>{v.partnerName}</td>
+                      <td>{v.discountPercentage}%</td>
+                      <td>{v.commissionPercentage}%</td>
+                      <td>
+                        <button 
+                          className={`btn-toggle ${v.isActive ? "active" : "paused"}`}
+                          onClick={() => updateVoucher({ id: v._id, isActive: !v.isActive })}
+                        >
+                          {v.isActive ? "🟢 Ativo" : "🔴 Inativo"}
+                        </button>
+                      </td>
+                      <td>
+                        <button 
+                          className="btn-delete"
+                          onClick={() => {
+                            if (window.confirm(`Deletar voucher ${v.code}?`)) {
+                              deleteVoucher({ id: v._id });
+                            }
+                          }}
+                        >
+                          🗑️ Excluir
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -199,9 +314,30 @@ const CSS = `
     font-size: 28px;
     color: #FF6B35;
   }
+  .admin-tabs {
+    display: flex;
+    gap: 10px;
+  }
+  .admin-tabs button {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .admin-tabs button.active {
+    color: #FF6B35;
+    border-bottom: 2px solid #FF6B35;
+  }
   .admin-filters {
     display: flex;
     gap: 10px;
+  }
+  .admin-filters.mb-4 {
+    margin-bottom: 20px;
   }
   .admin-filters button {
     background: #16162a;

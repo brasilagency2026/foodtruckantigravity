@@ -64,3 +64,65 @@ export const deleteFoodTruck = mutation({
     }
   },
 });
+
+export const getAllVouchers = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("vouchers").order("desc").collect();
+  },
+});
+
+export const createVoucher = mutation({
+  args: {
+    code: v.string(),
+    partnerName: v.string(),
+    partnerCnpj: v.optional(v.string()),
+    isActive: v.boolean(),
+    discountPercentage: v.number(),
+    commissionPercentage: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // Basic uniqueness check for code
+    const existing = await ctx.db
+      .query("vouchers")
+      .withIndex("by_code", (q) => q.eq("code", args.code.toUpperCase()))
+      .first();
+
+    if (existing) {
+      throw new Error("Um voucher com este código já existe.");
+    }
+
+    await ctx.db.insert("vouchers", {
+      ...args,
+      code: args.code.toUpperCase(),
+    });
+  },
+});
+
+export const updateVoucher = mutation({
+  args: {
+    id: v.id("vouchers"),
+    code: v.optional(v.string()),
+    partnerName: v.optional(v.string()),
+    partnerCnpj: v.optional(v.string()),
+    isActive: v.optional(v.boolean()),
+    discountPercentage: v.optional(v.number()),
+    commissionPercentage: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...updates } = args;
+    
+    if (updates.code) {
+      updates.code = updates.code.toUpperCase();
+    }
+    
+    await ctx.db.patch(id, updates);
+  },
+});
+
+export const deleteVoucher = mutation({
+  args: { id: v.id("vouchers") },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.id);
+  },
+});
