@@ -119,5 +119,27 @@ export default defineSchema({
     rating: v.number(),
     comment: v.string(),
   }).index("by_truck", ["truckId"]),
+
+  // Commerciaux / Partenaires
+  vouchers: defineTable({
+    code: v.string(), // e.g. "CARLOS10"
+    partnerName: v.string(), // e.g. "Carlos Silva"
+    partnerCnpj: v.optional(v.string()), // Optional, the partner's CNPJ
+    isActive: v.boolean(),
+    discountPercentage: v.number(), // Always 10 for now
+    commissionPercentage: v.number(), // Always 50 for now
+  }).index("by_code", ["code"]),
+
+  commissions: defineTable({
+    partnerId: v.id("vouchers"),
+    truckId: v.id("foodTrucks"),
+    amount: v.number(), // Commission amount in BRL
+    status: v.union(v.literal("pending"), v.literal("paid"), v.literal("cancelled")),
+    paymentDate: v.number(), // Date the customer paid
+    paymentType: v.union(v.literal("monthly"), v.literal("annual")), // To track if it was a monthly recurring or annual payment
+    mercadopagoPaymentId: v.optional(v.string()), // To cross-reference with MP
+  })
+    .index("by_partner", ["partnerId"])
+    .index("by_status", ["status"]),
 });
 
