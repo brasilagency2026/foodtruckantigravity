@@ -12,6 +12,8 @@ export default function AdminPage() {
   const deleteTruck = useMutation(api.admin.deleteFoodTruck);
 
   const [filter, setFilter] = useState("all");
+  const [sortBy, setSortBy] = useState<"name" | "trial" | "payment">("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   if (!isLoaded) return <div className="p-10 text-white">Carregando...</div>;
   if (!isSignedIn) return <div className="p-10 text-white">Acesso negado. Faça login.</div>;
@@ -25,12 +27,43 @@ export default function AdminPage() {
 
   if (trucks === undefined) return <div className="p-10 text-white">Carregando dados...</div>;
 
-  const filteredTrucks = trucks.filter(t => {
+  let filteredTrucks = trucks.filter(t => {
     if (filter === "pending") return t.approvalStatus === "pending";
     if (filter === "approved") return t.approvalStatus === "approved";
     if (filter === "rejected") return t.approvalStatus === "rejected";
     return true;
   });
+
+  filteredTrucks.sort((a, b) => {
+    let valA: any = a.name;
+    let valB: any = b.name;
+
+    if (sortBy === "trial") {
+      valA = a.trialEndsAt || 0;
+      valB = b.trialEndsAt || 0;
+    } else if (sortBy === "payment") {
+      valA = a.nextPaymentAt || 0;
+      valB = b.nextPaymentAt || 0;
+    }
+
+    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const toggleSort = (field: "name" | "trial" | "payment") => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const getSortIcon = (field: "name" | "trial" | "payment") => {
+    if (sortBy !== field) return "↕️";
+    return sortOrder === "asc" ? "↑" : "↓";
+  };
 
   const formatDate = (timestamp?: number) => {
     if (!timestamp) return "N/A";
@@ -54,12 +87,12 @@ export default function AdminPage() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Food Truck</th>
+              <th className="sortable" onClick={() => toggleSort("name")}>Food Truck {getSortIcon("name")}</th>
               <th>Contato</th>
               <th>Status Aprovação</th>
               <th>Status Operação</th>
-              <th>Vencimento Teste</th>
-              <th>Próximo Pgto</th>
+              <th className="sortable" onClick={() => toggleSort("trial")}>Vencimento Teste {getSortIcon("trial")}</th>
+              <th className="sortable" onClick={() => toggleSort("payment")}>Próximo Pgto {getSortIcon("payment")}</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -207,6 +240,14 @@ const CSS = `
   }
   .admin-table tr:hover {
     background: rgba(255,255,255,0.02);
+  }
+  .admin-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+  }
+  .admin-table th.sortable:hover {
+    color: #fff;
   }
   .btn-whatsapp {
     display: inline-block;
