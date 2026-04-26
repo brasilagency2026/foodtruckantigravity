@@ -1,7 +1,8 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
@@ -51,6 +52,34 @@ export default function OrderPage({
 }) {
   const orderId = params.orderId as Id<"orders">;
   const order = useQuery(api.orders.getOrderById, { orderId });
+  const searchParams = useSearchParams();
+  const linkPayment = useMutation(api.orders.linkPaymentId);
+  const handlePayment = useMutation(api.payments.handleWebhook);
+
+  // Fallback: Se o Mercado Pago redirecionar de volta com status=approved, confirmar o pagamento
+  useEffect(() => {
+    if (!order || order.paymentStatus === "aprovado") return;
+    
+    const paymentId = searchParams.get("payment_id") || searchParams.get("collection_id");
+    const mpStatus = searchParams.get("status") || searchParams.get("collection_status");
+    const paymentType = searchParams.get("payment_type");
+    
+    if (paymentId && mpStatus === "approved") {
+      // Tentar linkar e confirmar imediatamente pelo cliente (optimistic)
+      let pmType: any = undefined;
+      if (paymentType === "credit_card") pmType = "cartao_credito";
+      else if (paymentType === "debit_card") pmType = "cartao_debito";
+      else if (paymentType === "pix" || paymentType === "account_money") pmType = "pix";
+
+      linkPayment({ orderId, mercadoPagoPaymentId: paymentId })
+        .then(() => handlePayment({ 
+          mercadoPagoPaymentId: paymentId, 
+          status: mpStatus,
+          paymentMethod: pmType 
+        }))
+        .catch(console.error);
+    }
+  }, [order, searchParams, linkPayment, handlePayment]);
 
   const prevStatus = useRef<string | null>(null);
 
