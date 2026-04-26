@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { internal } from "./_generated/api";
 
 export const getAllFoodTrucks = query({
   args: {},
@@ -20,6 +21,11 @@ export const updateFoodTruckStatus = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
+    
+    // Fetch the truck to get its name and ownerId for the email
+    const truck = await ctx.db.get(id);
+    if (!truck) throw new Error("Food Truck not found");
+
     const updateObj: any = {};
     if (updates.approvalStatus !== undefined) updateObj.approvalStatus = updates.approvalStatus;
     if (updates.isActive !== undefined) updateObj.isActive = updates.isActive;
@@ -28,13 +34,33 @@ export const updateFoodTruckStatus = mutation({
     if (updates.nextPaymentAt !== undefined) updateObj.nextPaymentAt = updates.nextPaymentAt;
 
     await ctx.db.patch(id, updateObj);
+
+    // If approval status changed, send email
+    if (updates.approvalStatus && updates.approvalStatus !== truck.approvalStatus) {
+      await ctx.scheduler.runAfter(0, internal.emails.sendStatusEmail, {
+        ownerId: truck.ownerId,
+        truckName: truck.name,
+        newStatus: updates.approvalStatus,
+      });
+    }
   },
 });
 
 export const deleteFoodTruck = mutation({
   args: { id: v.id("foodTrucks") },
   handler: async (ctx, args) => {
+    const truck = await ctx.db.get(args.id);
+    
     // Delete the truck (In a real app, you might want to also delete menus/orders or do a soft delete)
     await ctx.db.delete(args.id);
+
+    // Send email notifying deletion
+    if (truck) {
+      await ctx.scheduler.runAfter(0, internal.emails.sendStatusEmail, {
+        ownerId: truck.ownerId,
+        truckName: truck.name,
+        newStatus: "deleted",
+      });
+    }
   },
 });
