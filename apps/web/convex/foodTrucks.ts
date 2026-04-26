@@ -21,7 +21,8 @@ export const getTruckBySlug = query({
         q.and(
           q.eq(q.field("state"), state),
           q.eq(q.field("city"), city),
-          q.neq(q.field("isActive"), false)
+          q.neq(q.field("isActive"), false),
+          q.neq(q.field("approvalStatus"), "rejected")
         )
       )
       .first();
@@ -35,7 +36,12 @@ export const getTrucksByCity = query({
     return await ctx.db
       .query("foodTrucks")
       .withIndex("by_city", (q) => q.eq("state", state).eq("city", city))
-      .filter((q) => q.neq(q.field("isActive"), false))
+      .filter((q) => 
+        q.and(
+          q.neq(q.field("isActive"), false),
+          q.neq(q.field("approvalStatus"), "rejected")
+        )
+      )
       .collect();
   },
 });
@@ -51,6 +57,7 @@ export const getNearbyTrucks = query({
     const trucks = await ctx.db.query("foodTrucks").collect();
     return trucks.filter((truck) => {
       if (truck.isActive === false) return false;
+      if (truck.approvalStatus === "rejected") return false;
       
       const R = 6371;
       const dLat = ((truck.latitude - latitude) * Math.PI) / 180;
@@ -96,7 +103,12 @@ export const getAllTrucks = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("foodTrucks")
-      .filter((q) => q.neq(q.field("isActive"), false))
+      .filter((q) => 
+        q.and(
+          q.neq(q.field("isActive"), false),
+          q.neq(q.field("approvalStatus"), "rejected")
+        )
+      )
       .collect();
   },
 });
