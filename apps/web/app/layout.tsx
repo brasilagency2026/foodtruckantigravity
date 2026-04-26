@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider, SignedIn, UserButton } from "@clerk/nextjs";
+import { ptBR } from "@clerk/localizations";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import "./globals.css";
 import "./cozinha/cozinha.css";
@@ -17,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <ClerkProvider>
+        <ClerkProvider localization={ptBR}>
           <ConvexClientProvider>
             {children}
           </ConvexClientProvider>
