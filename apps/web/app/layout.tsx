@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <ClerkProvider localization={ptBR}>
+        <ClerkProvider localization={ptBR as any}>
           <ConvexClientProvider>
             {children}
           </ConvexClientProvider>
