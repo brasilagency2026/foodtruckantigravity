@@ -47,19 +47,27 @@ export default function AssinaturaPage() {
     const basePrice = plans[selectedPlan].price;
     return basePrice - (basePrice * (discount / 100));
   };
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleCheckout = async () => {
-    // This will call the Convex mutation / Next.js backend to generate the MercadoPago preference or preapproval link.
-    const checkoutData = {
-      truckId,
-      plan: selectedPlan,
-      method: paymentMethod,
-      voucher: voucherStatus === "valid" ? voucherCode : null,
-      total: calculateTotal()
-    };
+    setIsProcessing(true);
+    try {
+      // Call the Convex mutation to generate the MercadoPago preference or preapproval link.
+      const checkoutUrl = await convex.action(api.billing.createCheckoutUrl, {
+        truckId: truckId as any,
+        plan: selectedPlan,
+        method: paymentMethod,
+        voucherCode: voucherStatus === "valid" ? voucherCode : undefined,
+        totalAmount: calculateTotal(),
+      });
 
-    console.log("Proceeding to checkout with:", checkoutData);
-    alert("Redirecionando para Mercado Pago... (Em breve)");
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      }
+    } catch (e: any) {
+      alert("Erro ao processar pagamento: " + e.message);
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -189,9 +197,10 @@ export default function AssinaturaPage() {
 
             <button 
               onClick={handleCheckout}
-              className="w-full bg-[#FF6B35] hover:bg-[#e05a2b] text-white font-bold py-4 rounded-xl text-lg transition-transform hover:scale-[1.02] shadow-lg shadow-[#FF6B35]/20 flex items-center justify-center gap-2"
+              disabled={isProcessing}
+              className="w-full bg-[#FF6B35] hover:bg-[#e05a2b] text-white font-bold py-4 rounded-xl text-lg transition-transform hover:scale-[1.02] shadow-lg shadow-[#FF6B35]/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              🔒 Pagar com Mercado Pago
+              {isProcessing ? "Gerando pagamento..." : "🔒 Pagar com Mercado Pago"}
             </button>
             <div className="text-center mt-4 text-xs text-gray-500">
               Pagamento 100% seguro.
