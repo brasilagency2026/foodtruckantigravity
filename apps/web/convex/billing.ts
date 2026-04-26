@@ -11,7 +11,7 @@ export const createCheckoutUrl = action({
     totalAmount: v.number(), // The final price after discounts
   },
   handler: async (ctx, args) => {
-    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
+    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
     if (!accessToken) {
       throw new Error("MercadoPago access token is not configured on the server.");
     }

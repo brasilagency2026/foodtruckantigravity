@@ -22,9 +22,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
+    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
     if (!accessToken) {
-      console.error("MERCADOPAGO_ACCESS_TOKEN is missing.");
+      console.error("MERCADO_PAGO_ACCESS_TOKEN is missing.");
       return NextResponse.json({ ok: true });
     }
 
