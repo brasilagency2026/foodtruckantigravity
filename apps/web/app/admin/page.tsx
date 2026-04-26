@@ -17,7 +17,7 @@ export default function AdminPage() {
   const deleteVoucher = useMutation(api.admin.deleteVoucher);
 
   const [activeTab, setActiveTab] = useState<"trucks" | "vouchers">("trucks");
-  const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", discountPercentage: 10, commissionPercentage: 50 });
+  const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerPhone: "", discountPercentage: 10, commissionPercentage: 50 });
 
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"name" | "trial" | "payment">("name");
@@ -218,6 +218,16 @@ export default function AdminPage() {
                   className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
                 />
               </div>
+              <div>
+                <label className="block text-sm mb-1 text-gray-400">WhatsApp</label>
+                <input 
+                  type="text" 
+                  value={newVoucher.partnerPhone} 
+                  onChange={e => setNewVoucher({...newVoucher, partnerPhone: e.target.value})} 
+                  placeholder="Ex: 11999999999"
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white w-32"
+                />
+              </div>
               <button 
                 onClick={async () => {
                   if (!newVoucher.code || !newVoucher.partnerName) return alert("Preencha código e nome.");
@@ -225,11 +235,12 @@ export default function AdminPage() {
                     await createVoucher({
                       code: newVoucher.code,
                       partnerName: newVoucher.partnerName,
+                      partnerPhone: newVoucher.partnerPhone,
                       isActive: true,
                       discountPercentage: newVoucher.discountPercentage,
                       commissionPercentage: newVoucher.commissionPercentage
                     });
-                    setNewVoucher({ code: "", partnerName: "", discountPercentage: 10, commissionPercentage: 50 });
+                    setNewVoucher({ code: "", partnerName: "", partnerPhone: "", discountPercentage: 10, commissionPercentage: 50 });
                   } catch (e: any) {
                     alert(e.message);
                   }
@@ -260,7 +271,21 @@ export default function AdminPage() {
                   vouchers.map(v => (
                     <tr key={v._id}>
                       <td><strong>{v.code}</strong></td>
-                      <td>{v.partnerName}</td>
+                      <td>
+                        {v.partnerName}
+                        {v.partnerPhone && (
+                          <div style={{ marginTop: 4 }}>
+                            <a 
+                              href={`https://wa.me/55${v.partnerPhone.replace(/\D/g, '')}?text=Olá ${v.partnerName}!`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="btn-whatsapp"
+                            >
+                              📱 WhatsApp
+                            </a>
+                          </div>
+                        )}
+                      </td>
                       <td>{v.discountPercentage}%</td>
                       <td>{v.commissionPercentage}%</td>
                       <td>

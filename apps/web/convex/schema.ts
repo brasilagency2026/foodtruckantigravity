@@ -125,6 +125,7 @@ export default defineSchema({
     code: v.string(), // e.g. "CARLOS10"
     partnerName: v.string(), // e.g. "Carlos Silva"
     partnerCnpj: v.optional(v.string()), // Optional, the partner's CNPJ
+    partnerPhone: v.optional(v.string()),
     isActive: v.boolean(),
     discountPercentage: v.number(), // Always 10 for now
     commissionPercentage: v.number(), // Always 50 for now
