@@ -16,6 +16,7 @@ function isPublicRoute(req: any) {
       pathname.startsWith('/api/mercadopago') ||
       pathname.startsWith('/api/upload') ||
       pathname.startsWith('/contato') ||
+      pathname.startsWith('/termos') ||
       pathname.startsWith('/trabalhe-conosco')
     )
   } catch (e) {

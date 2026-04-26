@@ -248,7 +248,6 @@ export default function TrabalheConoscoPage() {
         <div className="tc-footer-links">
           <a href="/precos">Preços</a>
           <a href="/termos">Termos</a>
-          <a href="/privacidade">Privacidade</a>
           <a href="/contato">Contato</a>
           <a href="/trabalhe-conosco">Trabalhe conosco</a>
         </div>

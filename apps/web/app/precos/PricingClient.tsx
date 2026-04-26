@@ -302,7 +302,6 @@ export default function PricingClient() {
           <Link href="/" className="pr-footer-logo">🍔 Food Pronto</Link>
           <div className="pr-footer-links">
             <Link href="/termos">Termos</Link>
-            <Link href="/privacidade">Privacidade</Link>
             <Link href="/contato">Contato</Link>
             <Link href="/trabalhe-conosco">Trabalhe conosco</Link>
           </div>

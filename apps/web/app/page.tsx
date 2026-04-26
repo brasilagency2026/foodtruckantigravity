@@ -536,7 +536,6 @@ export default function HomePage() {
           <div className="footer-links">
             <a href="/precos">Preços</a>
             <a href="/termos">Termos</a>
-            <a href="/privacidade">Privacidade</a>
             <a href="/contato">Contato</a>
             <a href="/trabalhe-conosco">Trabalhe conosco</a>
           </div>
