@@ -22,10 +22,8 @@ export const sendNewTruckEmail = internalAction({
 
     try {
       await resend.emails.send({
-        // Resend requires a verified domain to send FROM. If you haven't verified a domain on Resend,
-        // you MUST use 'onboarding@resend.dev' as the "from" address and send ONLY to the email
-        // you used to register your Resend account.
-        from: "Acme <onboarding@resend.dev>", 
+        // Since the domain foodpronto.com.br is verified in Resend, we can use it as the sender
+        from: "Food Pronto Alertas <alertas@foodpronto.com.br>", 
         to: ["glwebagency2@gmail.com"],
         subject: "🎉 Novo Food Truck Cadastrado: " + args.name,
         html: `
