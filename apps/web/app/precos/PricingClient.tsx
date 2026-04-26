@@ -19,7 +19,7 @@ export default function PricingClient() {
           <Link href="/" className="pr-logo">
             <span>🍔</span> Food Pronto
           </Link>
-          <Link href="/onboarding" className="pr-nav-cta">
+          <Link href="/sign-up" className="pr-nav-cta">
             Começar grátis →
           </Link>
         </nav>
@@ -98,7 +98,7 @@ export default function PricingClient() {
 
             <div className="pr-divider" />
 
-            <Link href="/onboarding" className="pr-cta-btn">
+            <Link href="/sign-up" className="pr-cta-btn">
               Começar 30 dias grátis — sem cartão
             </Link>
             <p className="pr-cta-note">
@@ -288,7 +288,7 @@ export default function PricingClient() {
             <p className="pr-final-sub">
               Cadastre seu food truck agora e comece a receber pedidos hoje mesmo.
             </p>
-            <Link href="/onboarding" className="pr-final-btn">
+            <Link href="/sign-up" className="pr-final-btn">
               Quero testar grátis por 30 dias →
             </Link>
             <p className="pr-final-note">
