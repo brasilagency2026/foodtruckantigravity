@@ -155,15 +155,47 @@ export default function TrabalheConoscoPage() {
         </div>
       </section>
 
+      {/* MEI / CNPJ INFO BOX */}
+      <section className="tc-mei">
+        <div className="tc-mei-inner">
+          <div className="tc-mei-icon">📄</div>
+          <div className="tc-mei-text">
+            <h3>Parceria formal com contrato de prestação de serviços</h3>
+            <p>
+              Para ser parceiro comercial do Food Pronto, é obrigatório ter um <strong>CNPJ ativo</strong>.
+              Após a aprovação, enviamos um <strong>contrato de prestação de serviços</strong> para assinatura digital.
+              Não tem CNPJ ainda? Recomendamos a abertura de uma <strong>MEI</strong> — gratuito, 100% online e leva menos de 10 minutos.
+            </p>
+            <div className="tc-mei-cnae">
+              <div className="tc-cnae-badge">CNAE recomendado para MEI</div>
+              <div className="tc-cnae-code">7490-1/04</div>
+              <div className="tc-cnae-desc">
+                <strong>Atividades de intermediação e agenciamento de serviços e negócios em geral</strong><br />
+                <span>Este CNAE enquadra perfeitamente a atividade de representante comercial que indica e intermedia contratos de serviços de tecnologia como o Food Pronto.</span>
+              </div>
+            </div>
+            <a
+              href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/quero-ser-mei"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tc-mei-link"
+            >
+              🔗 Abrir minha MEI no portal do governo (gratuito)
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* HOW IT WORKS */}
       <section className="tc-how">
         <h2 className="tc-how-h2">Como funciona?</h2>
         <div className="tc-steps">
           {[
-            { n: "1", title: "Fale com a gente", desc: "Mande um WhatsApp e receba seu código de parceiro e voucher de 10% em minutos." },
-            { n: "2", title: "Ofereça o voucher ao cliente", desc: "Apresente o Food Pronto e ofereça o voucher de 10%: o cliente tem 30 dias grátis para testar, sem cartão. Depois paga R$180/mês (ou R$1.728/ano)." },
-            { n: "3", title: "Comissão começa após os 30 dias grátis", desc: "O cliente testa grátis por 30 dias. Quando faz o 1º pagamento, sua comissão começa: R$90/mês no plano mensal ou R$864 no plano anual." },
-            { n: "4", title: "Escale sem limite", desc: "10 clientes mensais = R$900/mês. 50 clientes = R$4.500/mês. 100 clientes = R$9.000/mês. Sem teto." },
+            { n: "1", title: "Fale com a gente", desc: "Mande um WhatsApp. Nossa equipe vai te explicar tudo e verificar seu CNPJ ativo." },
+            { n: "2", title: "Assine o contrato de parceria", desc: "Enviamos um contrato de prestação de serviços para assinatura digital. Simples e rápido. Sem MEI? Te ajudamos a abrir um." },
+            { n: "3", title: "Ofereça o voucher ao cliente", desc: "Apresente o Food Pronto com o voucher de 10%: o cliente tem 30 dias grátis para testar. Depois paga R$180/mês (ou R$1.728/ano)." },
+            { n: "4", title: "Comissão começa após os 30 dias grátis", desc: "Quando o cliente faz o 1º pagamento, sua comissão é gerada: R$90/mês (plano mensal) ou R$864 (plano anual)." },
+            { n: "5", title: "Escale sem limite", desc: "10 clientes = R$900/mês. 50 clientes = R$4.500/mês. 100 clientes = R$9.000/mês. Sem teto, sem custo fixo." },
           ].map((s) => (
             <div key={s.n} className="tc-step">
               <div className="tc-step-n">{s.n}</div>
@@ -242,12 +274,13 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 const FAQ = [
   { q: "Quanto eu ganho exatamente?", a: "Você ganha 50% do valor que o cliente paga. Com o voucher de 10%: plano mensal → cliente paga R$180, você ganha R$90/mês. Plano anual → cliente paga R$1.728/ano, você ganha R$864 de uma vez." },
   { q: "Quando começa minha comissão?", a: "O cliente tem 30 dias grátis para testar o Food Pronto. Sua comissão começa quando ele faz o primeiro pagamento — ou seja, a partir do 31º dia. Para clientes anuais, você recebe R$864 assim que o pagamento anual é confirmado." },
+  { q: "Preciso de CNPJ para ser parceiro?", a: "Sim. É obrigatório ter CNPJ ativo para assinar o contrato de prestação de serviços. A forma mais simples é abrir uma MEI — é gratuito, online e leva menos de 10 minutos no portal do governo. O CNAE indicado para a atividade de representante comercial é o 7490-1/04 (Atividades de intermediação e agenciamento de serviços e negócios em geral)." },
+  { q: "Como funciona o contrato?", a: "Enviamos um contrato de prestação de serviços para assinatura digital após a aprovação do seu cadastro. Ele formaliza a parceria, define as comissões e garante os seus direitos." },
   { q: "O voucher de 10% reduz minha comissão?", a: "Não. O voucher é aplicado no preço do cliente, e você ganha 50% do valor real pago. Ou seja, quanto mais barato para o cliente, mais fácil você fecha — e você ainda ganha 50%." },
-  { q: "Como recebo minhas comissões?", a: "As comissões são pagas mensalmente via Pix. Para clientes anuais, você recebe R$864 no momento em que o cliente confirma o pagamento anual." },
-  { q: "Preciso ter CNPJ para ser parceiro?", a: "Não. Qualquer pessoa física pode participar. Basta falar com a gente pelo WhatsApp para começar." },
+  { q: "Como recebo minhas comissões?", a: "As comissões são pagas mensalmente via Pix para a conta vinculada ao seu CNPJ. Para clientes anuais, você recebe R$864 no momento em que o cliente confirma o pagamento anual." },
   { q: "Existe algum custo para ser parceiro?", a: "Zero. Não existe taxa de adesão, treinamento pago ou mensalidade. Você só ganha." },
-  { q: "E se o cliente cancelar durante os 30 dias grátis?", a: "Sem problema — nenhuma comissão foi gerada ainda. A comissão só existe quando há pagamento real. Foque em clientes que realmente vão se beneficiar do sistema." },
-  { q: "E se o cliente cancelar depois de pagar?", a: "A comissão é recorrente enquanto o cliente pagar. Se ele cancelar, a comissão daquele cliente para. Por isso, clientes anuais são mais vantajosos — você recebe tudo de uma vez e não depende do mês a mês." },
+  { q: "E se o cliente cancelar durante os 30 dias grátis?", a: "Sem problema — nenhuma comissão foi gerada ainda. A comissão só existe quando há pagamento real." },
+  { q: "E se o cliente cancelar depois de pagar?", a: "A comissão é recorrente enquanto o cliente pagar. Se ele cancelar, a comissão daquele cliente para. Clientes anuais são mais vantajosos — você recebe tudo de uma vez." },
   { q: "Posso indicar clientes de qualquer cidade?", a: "Sim! O Food Pronto funciona em todo o Brasil. Sem restrição geográfica." },
 ];
 
@@ -282,6 +315,21 @@ const CSS = `
   /* WA Button */
   .tc-btn-wa { display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: #fff; padding: 16px 32px; border-radius: 100px; font-size: 16px; font-weight: 800; font-family: var(--b); transition: transform .2s, box-shadow .2s; box-shadow: 0 6px 24px rgba(37,211,102,0.3); }
   .tc-btn-wa:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(37,211,102,0.4); }
+
+  /* MEI INFO BOX */
+  .tc-mei { padding: 0 40px 60px; }
+  .tc-mei-inner { max-width: 860px; margin: 0 auto; background: var(--surface); border: 1px solid rgba(255,193,7,0.2); border-radius: 20px; padding: 32px; display: flex; gap: 24px; align-items: flex-start; }
+  .tc-mei-icon { font-size: 36px; flex-shrink: 0; margin-top: 4px; }
+  .tc-mei-text h3 { font-family: var(--d); font-size: 18px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
+  .tc-mei-text p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .tc-mei-text strong { color: var(--text); }
+  .tc-mei-cnae { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 18px; }
+  .tc-cnae-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,193,7,0.9); border: 1px solid rgba(255,193,7,0.25); border-radius: 100px; padding: 3px 12px; margin-bottom: 10px; }
+  .tc-cnae-code { font-family: var(--d); font-size: 28px; font-weight: 900; color: rgba(255,193,7,0.9); margin-bottom: 8px; }
+  .tc-cnae-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .tc-cnae-desc strong { color: var(--text); }
+  .tc-mei-link { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: rgba(255,193,7,0.9); border: 1px solid rgba(255,193,7,0.25); border-radius: 10px; padding: 10px 18px; background: rgba(255,193,7,0.06); transition: background .2s; }
+  .tc-mei-link:hover { background: rgba(255,193,7,0.12); }
 
   /* CARDS */
   .tc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; padding: 0 40px 70px; max-width: 1000px; margin: 0 auto; }
