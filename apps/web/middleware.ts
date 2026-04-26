@@ -14,7 +14,8 @@ function isPublicRoute(req: any) {
       pathname.startsWith('/onboarding') ||
       pathname.startsWith('/api/webhooks') ||
       pathname.startsWith('/api/mercadopago') ||
-      pathname.startsWith('/api/upload')
+      pathname.startsWith('/api/upload') ||
+      pathname.startsWith('/contato')
     )
   } catch (e) {
     return false
