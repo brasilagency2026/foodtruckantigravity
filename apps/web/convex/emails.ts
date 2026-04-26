@@ -139,3 +139,49 @@ export const sendStatusEmail = internalAction({
     }
   },
 });
+
+export const sendNewCommissionEmail = internalAction({
+  args: {
+    partnerName: v.string(),
+    partnerPhone: v.optional(v.string()),
+    amount: v.number(),
+    truckName: v.string(),
+    paymentType: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) {
+      console.warn("RESEND_API_KEY is not set. Email not sent for commission.");
+      return;
+    }
+
+    const resend = new Resend(resendKey);
+
+    const whatsappLink = args.partnerPhone 
+      ? `https://wa.me/55${args.partnerPhone.replace(/\D/g, '')}?text=Olá ${args.partnerName}, vi que temos uma nova comissão de R$ ${args.amount.toFixed(2).replace('.', ',')} pendente!` 
+      : "#";
+
+    try {
+      await resend.emails.send({
+        from: "Food Pronto Alertas <alertas@foodpronto.com.br>", 
+        to: ["glwebagency2@gmail.com"],
+        subject: `💰 Nova Comissão a Pagar: R$ ${args.amount.toFixed(2).replace('.', ',')} para ${args.partnerName}`,
+        html: `
+          <h2>Nova Comissão de Venda Registrada!</h2>
+          <p>Um food truck assinou um plano usando o voucher do comercial.</p>
+          <ul>
+            <li><strong>Comercial:</strong> ${args.partnerName} ${args.partnerPhone ? `(${args.partnerPhone})` : ""}</li>
+            <li><strong>Valor a pagar:</strong> R$ ${args.amount.toFixed(2).replace('.', ',')}</li>
+            <li><strong>Food Truck:</strong> ${args.truckName}</li>
+            <li><strong>Tipo de Plano:</strong> ${args.paymentType === "monthly" ? "Mensal" : "Anual"}</li>
+          </ul>
+          ${args.partnerPhone ? `<p><a href="${whatsappLink}">📱 Falar com ${args.partnerName} no WhatsApp</a></p>` : ""}
+          <p>Acesse o painel Super Admin para conferir: <a href="https://www.foodpronto.com.br/admin">foodpronto.com.br/admin</a></p>
+        `,
+      });
+      console.log(`Commission email sent for partner ${args.partnerName}`);
+    } catch (error) {
+      console.error("Failed to send commission email via Resend:", error);
+    }
+  },
+});
