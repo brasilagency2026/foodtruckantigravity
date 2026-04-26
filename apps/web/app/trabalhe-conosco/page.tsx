@@ -61,7 +61,7 @@ export default function TrabalheConoscoPage() {
         <div className="tc-card">
           <div className="tc-card-icon">💸</div>
           <h3>50% do que o cliente paga</h3>
-          <p>Plano mensal com voucher: cliente paga R$&nbsp;180 → você ganha <strong>R$&nbsp;90/mês</strong>, todo mês.</p>
+          <p>Plano mensal com voucher: cliente paga R$&nbsp;180 → você ganha <strong>R$&nbsp;90/mês</strong>, todo mês — a partir do 2º mês, após os 30 dias grátis.</p>
         </div>
         <div className="tc-card highlight">
           <div className="tc-card-icon">🎟️</div>
@@ -147,10 +147,11 @@ export default function TrabalheConoscoPage() {
 
           <p className="tc-sim-note">
             {annual
-              ? `${clients} clientes × R$ 864 comissão/ano (50% de R$ 1.728)`
-              : `${clients} clientes × R$ 90 comissão/mês (50% de R$ 180)`
+              ? `${clients} clientes × R$ 864 comissão/ano (50% de R$ 1.728) — a partir do 1º pagamento`
+              : `${clients} clientes × R$ 90 comissão/mês (50% de R$ 180) — a partir do 31º dia`
             }
           </p>
+          <p className="tc-sim-trial-note">⚠️ Os primeiros 30 dias são gratuitos para o cliente. Sua comissão começa quando ele faz o primeiro pagamento.</p>
         </div>
       </section>
 
@@ -160,8 +161,8 @@ export default function TrabalheConoscoPage() {
         <div className="tc-steps">
           {[
             { n: "1", title: "Fale com a gente", desc: "Mande um WhatsApp e receba seu código de parceiro e voucher de 10% em minutos." },
-            { n: "2", title: "Ofereça o voucher ao cliente", desc: "Apresente o Food Pronto e ofereça o voucher de 10%: o cliente paga R$180/mês (ou R$1.728/ano) em vez do preço cheio." },
-            { n: "3", title: "Receba 50% do que o cliente paga", desc: "Plano mensal: R$90/mês por cliente. Plano anual: R$864 por cliente. Automaticamente, sem esforço extra." },
+            { n: "2", title: "Ofereça o voucher ao cliente", desc: "Apresente o Food Pronto e ofereça o voucher de 10%: o cliente tem 30 dias grátis para testar, sem cartão. Depois paga R$180/mês (ou R$1.728/ano)." },
+            { n: "3", title: "Comissão começa após os 30 dias grátis", desc: "O cliente testa grátis por 30 dias. Quando faz o 1º pagamento, sua comissão começa: R$90/mês no plano mensal ou R$864 no plano anual." },
             { n: "4", title: "Escale sem limite", desc: "10 clientes mensais = R$900/mês. 50 clientes = R$4.500/mês. 100 clientes = R$9.000/mês. Sem teto." },
           ].map((s) => (
             <div key={s.n} className="tc-step">
@@ -240,11 +241,13 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 const FAQ = [
   { q: "Quanto eu ganho exatamente?", a: "Você ganha 50% do valor que o cliente paga. Com o voucher de 10%: plano mensal → cliente paga R$180, você ganha R$90/mês. Plano anual → cliente paga R$1.728/ano, você ganha R$864 de uma vez." },
+  { q: "Quando começa minha comissão?", a: "O cliente tem 30 dias grátis para testar o Food Pronto. Sua comissão começa quando ele faz o primeiro pagamento — ou seja, a partir do 31º dia. Para clientes anuais, você recebe R$864 assim que o pagamento anual é confirmado." },
   { q: "O voucher de 10% reduz minha comissão?", a: "Não. O voucher é aplicado no preço do cliente, e você ganha 50% do valor real pago. Ou seja, quanto mais barato para o cliente, mais fácil você fecha — e você ainda ganha 50%." },
-  { q: "Como recebo minhas comissões?", a: "As comissões são pagas mensalmente via Pix. Para clientes anuais, você recebe R$864 no momento em que o cliente assina." },
+  { q: "Como recebo minhas comissões?", a: "As comissões são pagas mensalmente via Pix. Para clientes anuais, você recebe R$864 no momento em que o cliente confirma o pagamento anual." },
   { q: "Preciso ter CNPJ para ser parceiro?", a: "Não. Qualquer pessoa física pode participar. Basta falar com a gente pelo WhatsApp para começar." },
   { q: "Existe algum custo para ser parceiro?", a: "Zero. Não existe taxa de adesão, treinamento pago ou mensalidade. Você só ganha." },
-  { q: "E se o cliente cancelar?", a: "A comissão é recorrente enquanto o cliente pagar. Se ele cancelar, a comissão daquele cliente para. Por isso, clientes anuais são mais vantajosos — você recebe tudo de uma vez." },
+  { q: "E se o cliente cancelar durante os 30 dias grátis?", a: "Sem problema — nenhuma comissão foi gerada ainda. A comissão só existe quando há pagamento real. Foque em clientes que realmente vão se beneficiar do sistema." },
+  { q: "E se o cliente cancelar depois de pagar?", a: "A comissão é recorrente enquanto o cliente pagar. Se ele cancelar, a comissão daquele cliente para. Por isso, clientes anuais são mais vantajosos — você recebe tudo de uma vez e não depende do mês a mês." },
   { q: "Posso indicar clientes de qualquer cidade?", a: "Sim! O Food Pronto funciona em todo o Brasil. Sem restrição geográfica." },
 ];
 
@@ -321,7 +324,8 @@ const CSS = `
   .tc-sim-money { font-family: var(--d); font-size: 56px; font-weight: 900; color: var(--green); line-height: 1; }
   .tc-sim-desc { font-size: 13px; color: var(--muted); font-weight: 600; }
   .tc-sim-arrow { font-size: 28px; color: var(--muted); }
-  .tc-sim-note { font-size: 12px; color: var(--muted); }
+  .tc-sim-note { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .tc-sim-trial-note { font-size: 12px; color: rgba(255,193,7,0.8); background: rgba(255,193,7,0.07); border: 1px solid rgba(255,193,7,0.15); border-radius: 10px; padding: 10px 16px; margin-top: 8px; line-height: 1.5; }
 
   /* HOW */
   .tc-how { padding: 80px 40px; max-width: 700px; margin: 0 auto; }
