@@ -2,11 +2,22 @@
 
 import { useState } from "react";
 
+// Pricing constants
+// Normal monthly: R$200 | With voucher: R$180 | Commission: R$90/mo
+// Normal annual:  R$1920 | With voucher: R$1728 | Commission: R$864/yr
+const MONTHLY_CLIENT = 180;  // after 10% voucher
+const MONTHLY_COMM   = 90;   // 50% of 180
+const ANNUAL_CLIENT  = 1728; // after 10% voucher
+const ANNUAL_COMM    = 864;  // 50% of 1728
+
 export default function TrabalheConoscoPage() {
   const [clients, setClients] = useState(10);
-  const monthly = 200;
-  const commission = 0.5;
-  const earned = clients * monthly * commission;
+  const [annual, setAnnual]   = useState(false);
+
+  const commPerClient = annual ? ANNUAL_COMM    : MONTHLY_COMM;
+  const clientPays    = annual ? ANNUAL_CLIENT  : MONTHLY_CLIENT;
+  const period        = annual ? "por ano"      : "por mês";
+  const total         = clients * commPerClient;
 
   return (
     <>
@@ -49,23 +60,23 @@ export default function TrabalheConoscoPage() {
       <section className="tc-cards">
         <div className="tc-card">
           <div className="tc-card-icon">💸</div>
-          <h3>50% recorrente</h3>
-          <p>R$&nbsp;100 por cliente, todo mês — enquanto ele pagar.</p>
+          <h3>50% do que o cliente paga</h3>
+          <p>Plano mensal com voucher: cliente paga R$&nbsp;180 → você ganha <strong>R$&nbsp;90/mês</strong>, todo mês.</p>
         </div>
         <div className="tc-card highlight">
           <div className="tc-card-icon">🎟️</div>
-          <h3>Cupom de 10%</h3>
-          <p>Ofereça desconto exclusivo para fechar mais negócios.</p>
+          <h3>Voucher de 10% para seu cliente</h3>
+          <p>Seu cliente paga menos, você fecha mais vendas — e ganha 50% do valor real pago.</p>
         </div>
         <div className="tc-card">
-          <div className="tc-card-icon">🌎</div>
-          <h3>Sem limite de ganhos</h3>
-          <p>Quanto mais clientes, maior sua renda mensal fixa.</p>
+          <div className="tc-card-icon">📅</div>
+          <h3>Plano anual = comissão maior</h3>
+          <p>Cliente anual com voucher: R$&nbsp;1.728/ano → você ganha <strong>R$&nbsp;864 de uma vez</strong>.</p>
         </div>
         <div className="tc-card">
           <div className="tc-card-icon">🚀</div>
-          <h3>Produto fácil de vender</h3>
-          <p>Substitui maquininha e painel LED — economia real para o cliente.</p>
+          <h3>Sem limite de ganhos</h3>
+          <p>10 clientes mensais = R$&nbsp;900/mês. 50 clientes = R$&nbsp;4.500/mês. Sem teto.</p>
         </div>
       </section>
 
@@ -74,7 +85,38 @@ export default function TrabalheConoscoPage() {
         <div className="tc-sim-inner">
           <div className="tc-sim-label">Simulador de Ganhos</div>
           <h2 className="tc-sim-h2">Quanto você pode ganhar?</h2>
-          <p className="tc-sim-sub">Arraste o slider para ver sua renda mensal estimada</p>
+
+          {/* Toggle mensal / anual */}
+          <div className="tc-toggle-row">
+            <span className={!annual ? "tc-toggle-lbl active" : "tc-toggle-lbl"}>Mensal</span>
+            <button
+              className={`tc-toggle${annual ? " on" : ""}`}
+              onClick={() => setAnnual(v => !v)}
+            >
+              <div className="tc-toggle-knob" />
+            </button>
+            <span className={annual ? "tc-toggle-lbl active" : "tc-toggle-lbl"}>
+              Anual <span className="tc-save-badge">Comissão maior</span>
+            </span>
+          </div>
+
+          {/* Breakdown box */}
+          <div className="tc-breakdown">
+            <div className="tc-bk-item">
+              <span className="tc-bk-label">Preço normal</span>
+              <span className="tc-bk-val muted">{annual ? "R$ 1.920/ano" : "R$ 200/mês"}</span>
+            </div>
+            <div className="tc-bk-item">
+              <span className="tc-bk-label">Com voucher 10%</span>
+              <span className="tc-bk-val">{annual ? "R$ 1.728/ano" : "R$ 180/mês"}</span>
+            </div>
+            <div className="tc-bk-item">
+              <span className="tc-bk-label">Sua comissão (50%)</span>
+              <span className="tc-bk-val green">{annual ? "R$ 864/ano" : "R$ 90/mês"}</span>
+            </div>
+          </div>
+
+          <p className="tc-sim-sub" style={{marginBottom: 24}}>Arraste para ver seu ganho total</p>
 
           <div className="tc-slider-wrap">
             <input
@@ -94,19 +136,20 @@ export default function TrabalheConoscoPage() {
           <div className="tc-sim-result">
             <div className="tc-sim-clients">
               <span className="tc-sim-num">{clients}</span>
-              <span className="tc-sim-desc">clientes ativos</span>
+              <span className="tc-sim-desc">clientes</span>
             </div>
             <div className="tc-sim-arrow">→</div>
             <div className="tc-sim-earn">
-              <span className="tc-sim-money">
-                R$ {earned.toLocaleString("pt-BR")}
-              </span>
-              <span className="tc-sim-desc">por mês</span>
+              <span className="tc-sim-money">R$ {total.toLocaleString("pt-BR")}</span>
+              <span className="tc-sim-desc">{period}</span>
             </div>
           </div>
 
           <p className="tc-sim-note">
-            Baseado em R$ 200/mês por cliente × 50% de comissão
+            {annual
+              ? `${clients} clientes × R$ 864 comissão/ano (50% de R$ 1.728)`
+              : `${clients} clientes × R$ 90 comissão/mês (50% de R$ 180)`
+            }
           </p>
         </div>
       </section>
@@ -116,10 +159,10 @@ export default function TrabalheConoscoPage() {
         <h2 className="tc-how-h2">Como funciona?</h2>
         <div className="tc-steps">
           {[
-            { n: "1", title: "Fale com a gente", desc: "Mande um WhatsApp e receba seu link e cupom de parceiro em minutos." },
-            { n: "2", title: "Indique food trucks", desc: "Apresente o Food Pronto para donos de trucks. Use o cupom de 10% para facilitar o fechamento." },
-            { n: "3", title: "Receba todo mês", desc: "Cada cliente ativo gera R$ 100/mês para você — automaticamente, todo mês." },
-            { n: "4", title: "Escale sem limite", desc: "50 clientes = R$ 5.000/mês. 100 clientes = R$ 10.000/mês. Sem teto." },
+            { n: "1", title: "Fale com a gente", desc: "Mande um WhatsApp e receba seu código de parceiro e voucher de 10% em minutos." },
+            { n: "2", title: "Ofereça o voucher ao cliente", desc: "Apresente o Food Pronto e ofereça o voucher de 10%: o cliente paga R$180/mês (ou R$1.728/ano) em vez do preço cheio." },
+            { n: "3", title: "Receba 50% do que o cliente paga", desc: "Plano mensal: R$90/mês por cliente. Plano anual: R$864 por cliente. Automaticamente, sem esforço extra." },
+            { n: "4", title: "Escale sem limite", desc: "10 clientes mensais = R$900/mês. 50 clientes = R$4.500/mês. 100 clientes = R$9.000/mês. Sem teto." },
           ].map((s) => (
             <div key={s.n} className="tc-step">
               <div className="tc-step-n">{s.n}</div>
@@ -196,11 +239,12 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 const FAQ = [
-  { q: "Como recebo minhas comissões?", a: "As comissões são pagas mensalmente via Pix, na data de vencimento das assinaturas dos seus clientes." },
+  { q: "Quanto eu ganho exatamente?", a: "Você ganha 50% do valor que o cliente paga. Com o voucher de 10%: plano mensal → cliente paga R$180, você ganha R$90/mês. Plano anual → cliente paga R$1.728/ano, você ganha R$864 de uma vez." },
+  { q: "O voucher de 10% reduz minha comissão?", a: "Não. O voucher é aplicado no preço do cliente, e você ganha 50% do valor real pago. Ou seja, quanto mais barato para o cliente, mais fácil você fecha — e você ainda ganha 50%." },
+  { q: "Como recebo minhas comissões?", a: "As comissões são pagas mensalmente via Pix. Para clientes anuais, você recebe R$864 no momento em que o cliente assina." },
   { q: "Preciso ter CNPJ para ser parceiro?", a: "Não. Qualquer pessoa física pode participar. Basta falar com a gente pelo WhatsApp para começar." },
-  { q: "O que é o cupom de 10%?", a: "Você recebe um código exclusivo para oferecer 10% de desconto ao cliente no primeiro mês. Isso facilita o fechamento da venda sem afetar sua comissão dos meses seguintes." },
   { q: "Existe algum custo para ser parceiro?", a: "Zero. Não existe taxa de adesão, treinamento pago ou mensalidade. Você só ganha." },
-  { q: "E se o cliente cancelar?", a: "A comissão é recorrente enquanto o cliente pagar. Se ele cancelar, a comissão daquele cliente para. Por isso, indicar bons clientes é o segredo do sucesso." },
+  { q: "E se o cliente cancelar?", a: "A comissão é recorrente enquanto o cliente pagar. Se ele cancelar, a comissão daquele cliente para. Por isso, clientes anuais são mais vantajosos — você recebe tudo de uma vez." },
   { q: "Posso indicar clientes de qualquer cidade?", a: "Sim! O Food Pronto funciona em todo o Brasil. Sem restrição geográfica." },
 ];
 
@@ -249,10 +293,26 @@ const CSS = `
   .tc-sim { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 40px; }
   .tc-sim-inner { max-width: 680px; margin: 0 auto; text-align: center; }
   .tc-sim-label { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); border: 1px solid rgba(34,197,94,0.22); border-radius: 100px; padding: 4px 14px; margin-bottom: 16px; }
-  .tc-sim-h2 { font-family: var(--d); font-size: clamp(26px,4vw,42px); font-weight: 900; margin-bottom: 12px; }
-  .tc-sim-sub { font-size: 15px; color: var(--muted); margin-bottom: 40px; }
-  .tc-slider-wrap { margin-bottom: 40px; }
-  .tc-slider { width: 100%; height: 6px; -webkit-appearance: none; appearance: none; background: linear-gradient(to right, var(--green) 0%, var(--green) calc(var(--v,50)*1%), var(--surface2) calc(var(--v,50)*1%), var(--surface2) 100%); border-radius: 100px; outline: none; cursor: pointer; }
+  .tc-sim-h2 { font-family: var(--d); font-size: clamp(26px,4vw,42px); font-weight: 900; margin-bottom: 24px; }
+  .tc-sim-sub { font-size: 15px; color: var(--muted); }
+  /* Toggle */
+  .tc-toggle-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 28px; }
+  .tc-toggle-lbl { font-size: 14px; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 8px; transition: color .2s; }
+  .tc-toggle-lbl.active { color: var(--text); }
+  .tc-toggle { width: 48px; height: 26px; border-radius: 100px; border: none; cursor: pointer; padding: 3px; display: flex; align-items: center; background: rgba(255,255,255,0.1); transition: background .25s; }
+  .tc-toggle.on { background: var(--green); justify-content: flex-end; }
+  .tc-toggle-knob { width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+  .tc-save-badge { background: rgba(34,197,94,0.15); color: var(--green); border-radius: 100px; padding: 2px 10px; font-size: 11px; font-weight: 700; }
+  /* Breakdown */
+  .tc-breakdown { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; display: flex; flex-direction: column; gap: 12px; text-align: left; }
+  .tc-bk-item { display: flex; justify-content: space-between; align-items: center; }
+  .tc-bk-label { font-size: 13px; color: var(--muted); }
+  .tc-bk-val { font-size: 14px; font-weight: 700; }
+  .tc-bk-val.muted { color: var(--muted); text-decoration: line-through; }
+  .tc-bk-val.green { color: var(--green); font-size: 16px; }
+  /* Slider */
+  .tc-slider-wrap { margin-bottom: 32px; }
+  .tc-slider { width: 100%; height: 6px; -webkit-appearance: none; appearance: none; background: linear-gradient(to right, var(--green) 0%, var(--green) 50%, var(--surface2) 50%, var(--surface2) 100%); border-radius: 100px; outline: none; cursor: pointer; }
   .tc-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(34,197,94,0.2); cursor: pointer; }
   .tc-slider-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: var(--muted); }
   .tc-sim-result { display: flex; align-items: center; justify-content: center; gap: 32px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 32px; margin-bottom: 16px; }
