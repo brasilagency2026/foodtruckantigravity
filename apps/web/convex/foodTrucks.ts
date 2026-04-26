@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 
 // ============================================
 // QUERIES
@@ -150,12 +151,23 @@ export const createTruck = mutation({
       ? `${args.slug}-${Date.now().toString(36)}`
       : args.slug;
 
-    return await ctx.db.insert("foodTrucks", {
+    const truckId = await ctx.db.insert("foodTrucks", {
       ...args,
       ownerId: identity.subject,
       slug: finalSlug,
       isOpen: false,
     });
+
+    // Schedule the email notification asynchronously
+    await ctx.scheduler.runAfter(0, internal.emails.sendNewTruckEmail, {
+      truckId,
+      name: args.name,
+      city: args.cityDisplay,
+      state: args.stateDisplay,
+      phone: args.phone,
+    });
+
+    return truckId;
   },
 });
 
