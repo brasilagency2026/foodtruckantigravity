@@ -126,6 +126,7 @@ export default defineSchema({
     partnerName: v.string(), // e.g. "Carlos Silva"
     partnerCnpj: v.optional(v.string()), // Optional, the partner's CNPJ
     partnerPhone: v.optional(v.string()),
+    partnerPixKey: v.optional(v.string()), // PIX key for commission payments
     isActive: v.boolean(),
     discountPercentage: v.number(), // Always 10 for now
     commissionPercentage: v.number(), // Always 50 for now

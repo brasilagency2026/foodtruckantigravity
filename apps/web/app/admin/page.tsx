@@ -18,7 +18,7 @@ export default function AdminPage() {
   const payCommissions = useMutation(api.admin.payCommissions);
 
   const [activeTab, setActiveTab] = useState<"trucks" | "vouchers">("trucks");
-  const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerPhone: "", discountPercentage: 10, commissionPercentage: 50 });
+  const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
 
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"name" | "trial" | "payment">("name");
@@ -229,6 +229,16 @@ export default function AdminPage() {
                   className="bg-[#16162a] border border-white/20 p-2 rounded text-white w-32"
                 />
               </div>
+              <div>
+                <label className="block text-sm mb-1 text-gray-400">Chave PIX</label>
+                <input 
+                  type="text" 
+                  value={newVoucher.partnerPixKey} 
+                  onChange={e => setNewVoucher({...newVoucher, partnerPixKey: e.target.value})} 
+                  placeholder="CPF, Email ou Telefone"
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
+                />
+              </div>
               <button 
                 onClick={async () => {
                   if (!newVoucher.code || !newVoucher.partnerName) return alert("Preencha código e nome.");
@@ -237,11 +247,12 @@ export default function AdminPage() {
                       code: newVoucher.code,
                       partnerName: newVoucher.partnerName,
                       partnerPhone: newVoucher.partnerPhone,
+                      partnerPixKey: newVoucher.partnerPixKey,
                       isActive: true,
                       discountPercentage: newVoucher.discountPercentage,
                       commissionPercentage: newVoucher.commissionPercentage
                     });
-                    setNewVoucher({ code: "", partnerName: "", partnerPhone: "", discountPercentage: 10, commissionPercentage: 50 });
+                    setNewVoucher({ code: "", partnerName: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
                   } catch (e: any) {
                     alert(e.message);
                   }
@@ -283,6 +294,11 @@ export default function AdminPage() {
                             >
                               📱 WhatsApp
                             </a>
+                          </div>
+                        )}
+                        {v.partnerPixKey && (
+                          <div className="text-xs text-gray-400 mt-2">
+                            PIX: <span className="text-white font-mono">{v.partnerPixKey}</span>
                           </div>
                         )}
                       </td>
