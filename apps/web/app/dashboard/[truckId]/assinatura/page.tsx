@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
-import { useConvex } from "convex/react";
+import { useParams, useSearchParams } from "next/navigation";
+import { useConvex, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 
 export default function AssinaturaPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const truckId = params.truckId as string;
   const convex = useConvex();
+  const searchStatus = searchParams.get("status");
 
-  // We should ideally fetch truck info here to show current plan status
-  // const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
+  const truck = useQuery(api.foodTrucks.getTruckById, { truckId: truckId as any });
 
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "annual">("monthly");
   const [paymentMethod, setPaymentMethod] = useState<"cc" | "pix">("cc");
@@ -73,7 +74,31 @@ export default function AssinaturaPage() {
   return (
     <div className="max-w-4xl mx-auto p-6 text-white bg-[#0f0f1a] min-h-screen">
       <h1 className="text-3xl font-bold text-[#FF6B35] mb-2 font-syne">Meu Plano de Assinatura</h1>
-      <p className="text-gray-400 mb-8">Gerencie seu acesso à plataforma Food Pronto.</p>
+      <p className="text-gray-400 mb-8">Gerencie seu acesso à plateforme Food Pronto.</p>
+
+      {/* Status Banner */}
+      {truck && (
+        <div className={`mb-8 p-6 rounded-xl border flex flex-col md:flex-row justify-between items-center gap-4 ${truck.subscriptionStatus === "active" ? "bg-green-500/10 border-green-500/30" : "bg-orange-500/10 border-orange-500/30"}`}>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className={`w-3 h-3 rounded-full ${truck.subscriptionStatus === "active" ? "bg-green-500 animate-pulse" : "bg-orange-500"}`}></span>
+              <h2 className="font-bold text-lg">
+                Status: {truck.subscriptionStatus === "active" ? "Assinatura Ativa" : "Aguardando Pagamento"}
+              </h2>
+            </div>
+            <p className="text-sm text-gray-400">
+              {truck.subscriptionStatus === "active" 
+                ? `Sua assinatura está em dia. Próxima renovação: ${new Date(truck.nextPaymentAt || 0).toLocaleDateString('pt-BR')}`
+                : "Seu acesso está limitado. Realize o pagamento abaixo para ativar seu Food Truck no mapa."}
+            </p>
+          </div>
+          {searchStatus === "success" && (
+            <div className="bg-green-500 text-white px-4 py-2 rounded-lg font-bold animate-bounce">
+              🎉 Pagamento Processado!
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 gap-8">
         
