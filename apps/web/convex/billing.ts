@@ -12,10 +12,15 @@ export const createCheckoutUrl = action({
     totalAmount: v.number(), // The final price after discounts
   },
   handler: async (ctx, args) => {
+    console.log("--- Début de l'action createCheckoutUrl ---");
+    console.log("Args:", args);
+
     const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
     if (!accessToken) {
+      console.error("ERREUR: MERCADO_PAGO_ACCESS_TOKEN manquant");
       throw new ConvexError("A chave de acesso do Mercado Pago (MERCADO_PAGO_ACCESS_TOKEN) não está configurada no servidor Convex.");
     }
+    console.log("Token détecté (prefix):", accessToken.substring(0, 7));
 
     const backUrl = `https://www.foodpronto.com.br/dashboard/${args.truckId}/assinatura`;
     let checkoutUrl = "";
@@ -23,19 +28,25 @@ export const createCheckoutUrl = action({
     // Generate external reference to identify this later
     const extRef = `${args.truckId}|${args.plan}|${args.voucherCode || "none"}`;
 
+    console.log("Récupération du truck via runQuery...");
     const truck = await ctx.runQuery(api.foodTrucks.getTruckById, { truckId: args.truckId });
     if (!truck) {
+      console.error("ERREUR: Truck non trouvé");
       throw new ConvexError("Food Truck não encontrado.");
     }
+    console.log("Truck trouvé:", truck.name);
     
     // Detect if we are using a test token or production token
     const isTestMode = accessToken.startsWith("TEST-");
     
     // Get the identity of the logged-in user
+    console.log("Récupération de l'identité de l'utilisateur...");
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
+      console.error("ERREUR: Utilisateur non connecté");
       throw new ConvexError("Você precisa estar logado para realizar o pagamento.");
     }
+    console.log("Identité trouvée:", identity.email);
     
     // Neutral email for production to avoid "self-payment" errors
     const neutralEmail = `cliente.${args.truckId.substring(0,8)}@gmail.com`;
@@ -43,7 +54,7 @@ export const createCheckoutUrl = action({
       ? "test_user_12345678@testuser.com" 
       : (identity.email || neutralEmail);
 
-    console.log(`[MP Request] Mode: ${isTestMode ? "TEST" : "PROD"}, Token Prefix: ${accessToken.substring(0, 7)}, Email: ${payerEmail}, Method: ${args.method}`);
+    console.log(`[MP Request] Mode: ${isTestMode ? "TEST" : "PROD"}, Email: ${payerEmail}, Method: ${args.method}`);
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
