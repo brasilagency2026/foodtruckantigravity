@@ -103,7 +103,7 @@ export const createCheckoutUrl = action({
           auto_return: "approved",
           external_reference: extRef,
           payment_methods: args.method === "pix" ? {
-            included_payment_methods: [{ id: "pix" }],
+            default_payment_method_id: "pix",
             excluded_payment_types: [
               { id: "credit_card" },
               { id: "debit_card" },
