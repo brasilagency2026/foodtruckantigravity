@@ -37,11 +37,11 @@ export const createCheckoutUrl = action({
       throw new ConvexError("Você precisa estar logado para realizar o pagamento.");
     }
     
-    // For Test Mode, Mercado Pago REQUIRES a test user email.
-    // For Production, it requires a real email (and NOT the collector's email).
+    // Neutral email for production to avoid "self-payment" errors if the admin uses their own email
+    const neutralEmail = `cliente.${args.truckId.substring(0,8)}@gmail.com`;
     const payerEmail = isTestMode 
-      ? "test_user_12345678@testuser.com" // Generic MP test email
-      : (identity.email || `cliente_${args.truckId}@foodpronto.com.br`);
+      ? "test_user_12345678@testuser.com" 
+      : neutralEmail;
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -101,10 +101,15 @@ export const createCheckoutUrl = action({
           auto_return: "approved",
           external_reference: extRef,
           payment_methods: args.method === "pix" ? {
-            included_payment_methods: [{ id: "pix" }],
+            excluded_payment_types: [
+              { id: "credit_card" },
+              { id: "debit_card" },
+              { id: "ticket" },
+              { id: "atm" }
+            ],
             installments: 1,
           } : undefined,
-          notification_url: "https://www.foodpronto.com.br/api/webhooks/billing", // Custom webhook route
+          notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
         }),
       });
 
