@@ -48,13 +48,9 @@ export const createCheckoutUrl = action({
     }
     console.log("Identité trouvée:", identity.email);
     
-    // Neutral email for production to avoid "self-payment" errors
-    const neutralEmail = `cliente.${args.truckId.substring(0,8)}@gmail.com`;
-    const payerEmail = isTestMode 
-      ? "test_user_12345678@testuser.com" 
-      : (identity.email || neutralEmail);
+    const payerEmail = identity.email || `cliente.${args.truckId.substring(0,8)}@gmail.com`;
 
-    console.log(`[MP Request] Mode: ${isTestMode ? "TEST" : "PROD"}, Email: ${payerEmail}, Method: ${args.method}`);
+    console.log(`[MP Request] Mode: PROD, Email: ${payerEmail}, Method: ${args.method}`);
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -74,7 +70,7 @@ export const createCheckoutUrl = action({
           },
           back_url: backUrl,
           external_reference: extRef,
-          payer_email: isTestMode ? "test_user_12345678@testuser.com" : `comprador.${Math.floor(Math.random() * 100000)}@gmail.com`,
+          payer_email: payerEmail,
         }),
       });
 
@@ -103,6 +99,9 @@ export const createCheckoutUrl = action({
               currency_id: "BRL",
             },
           ],
+          payer: {
+            email: payerEmail,
+          },
           back_urls: {
             success: backUrl + "?status=success",
             failure: backUrl + "?status=failure",
@@ -111,7 +110,6 @@ export const createCheckoutUrl = action({
           auto_return: "approved",
           external_reference: extRef,
           payment_methods: args.method === "pix" ? {
-            default_payment_method_id: "pix",
             installments: 1,
           } : undefined,
           notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
