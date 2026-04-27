@@ -15,12 +15,11 @@ export const createCheckoutUrl = action({
     console.log("--- Début de l'action createCheckoutUrl ---");
     console.log("Args:", args);
 
-    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim();
     if (!accessToken) {
       console.error("ERREUR: MERCADO_PAGO_ACCESS_TOKEN manquant");
       throw new ConvexError("A chave de acesso do Mercado Pago (MERCADO_PAGO_ACCESS_TOKEN) não está configurada no servidor Convex.");
     }
-    console.log("Token détecté (prefix):", accessToken.substring(0, 7));
 
     const backUrl = `https://www.foodpronto.com.br/dashboard/${args.truckId}/assinatura`;
     let checkoutUrl = "";
@@ -36,21 +35,10 @@ export const createCheckoutUrl = action({
     }
     console.log("Truck trouvé:", truck.name);
     
-    // Detect if we are using a test token or production token
-    const isTestMode = accessToken.startsWith("TEST-");
-    
     // Get the identity of the logged-in user
     console.log("Récupération de l'identité de l'utilisateur...");
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      console.error("ERREUR: Utilisateur non connecté");
-      throw new ConvexError("Você precisa estar logado para realizar o pagamento.");
-    }
-    console.log("Identité trouvée:", identity.email);
-    
-    const payerEmail = identity.email || `cliente.${args.truckId.substring(0,8)}@gmail.com`;
-
-    console.log(`[MP Request] Mode: PROD, Email: ${payerEmail}, Method: ${args.method}`);
+    const payerEmail = identity?.email || `cliente.${args.truckId.substring(0,8)}@gmail.com`;
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -99,9 +87,6 @@ export const createCheckoutUrl = action({
               currency_id: "BRL",
             },
           ],
-          payer: {
-            email: payerEmail,
-          },
           back_urls: {
             success: backUrl + "?status=success",
             failure: backUrl + "?status=failure",
