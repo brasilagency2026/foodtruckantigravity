@@ -28,10 +28,13 @@ export const createCheckoutUrl = action({
       throw new ConvexError("Food Truck não encontrado.");
     }
     
-    // Attempt to get user email. Fallback to generic if not found.
-    // Assuming ownerId is a valid user ID or we can just use a placeholder
-    // because MP often just requires ANY valid email format.
-    const dummyEmail = `cliente_${args.truckId}@foodpronto.com.br`;
+    // Get the identity of the logged-in user to get their real email
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new ConvexError("Você precisa estar logado para realizar o pagamento.");
+    }
+    
+    const payerEmail = identity.email || `cliente_${args.truckId}@foodpronto.com.br`;
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -51,7 +54,7 @@ export const createCheckoutUrl = action({
           },
           back_url: backUrl,
           external_reference: extRef,
-          payer_email: dummyEmail,
+          payer_email: payerEmail,
         }),
       });
 
