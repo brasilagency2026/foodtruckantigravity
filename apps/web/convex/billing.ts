@@ -12,33 +12,28 @@ export const createCheckoutUrl = action({
     totalAmount: v.number(), // The final price after discounts
   },
   handler: async (ctx, args) => {
-    console.log("--- Début de l'action createCheckoutUrl ---");
-    console.log("Args:", args);
-
     const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim();
     if (!accessToken) {
-      console.error("ERREUR: MERCADO_PAGO_ACCESS_TOKEN manquant");
-      throw new ConvexError("A chave de acesso do Mercado Pago (MERCADO_PAGO_ACCESS_TOKEN) não está configurada no servidor Convex.");
+      throw new ConvexError("Configuração do Mercado Pago incompleta (Token ausente).");
     }
-
+    
     const backUrl = `https://www.foodpronto.com.br/dashboard/${args.truckId}/assinatura`;
     let checkoutUrl = "";
 
     // Generate external reference to identify this later
     const extRef = `${args.truckId}|${args.plan}|${args.voucherCode || "none"}`;
 
-    console.log("Récupération du truck via runQuery...");
     const truck = await ctx.runQuery(api.foodTrucks.getTruckById, { truckId: args.truckId });
     if (!truck) {
-      console.error("ERREUR: Truck non trouvé");
       throw new ConvexError("Food Truck não encontrado.");
     }
-    console.log("Truck trouvé:", truck.name);
     
-    // Get the identity of the logged-in user
-    console.log("Récupération de l'identité de l'utilisateur...");
     const identity = await ctx.auth.getUserIdentity();
-    const payerEmail = identity?.email || `cliente.${args.truckId.substring(0,8)}@gmail.com`;
+    if (!identity) {
+      throw new ConvexError("Sessão expirada. Por favor, faça login novamente.");
+    }
+    
+    const payerEmail = identity.email || "";
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -87,6 +82,9 @@ export const createCheckoutUrl = action({
               currency_id: "BRL",
             },
           ],
+          payer: {
+            email: payerEmail,
+          },
           back_urls: {
             success: backUrl + "?status=success",
             failure: backUrl + "?status=failure",
@@ -95,6 +93,7 @@ export const createCheckoutUrl = action({
           auto_return: "approved",
           external_reference: extRef,
           payment_methods: args.method === "pix" ? {
+            default_payment_method_id: "pix",
             installments: 1,
           } : undefined,
           notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
