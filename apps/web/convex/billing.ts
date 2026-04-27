@@ -74,6 +74,7 @@ export const createCheckoutUrl = action({
           },
           back_url: backUrl,
           external_reference: extRef,
+          payer_email: isTestMode ? "test_user_12345678@testuser.com" : `comprador.${Math.floor(Math.random() * 100000)}@gmail.com`,
         }),
       });
 
