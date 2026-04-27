@@ -63,7 +63,6 @@ export const createCheckoutUrl = action({
           },
           back_url: backUrl,
           external_reference: extRef,
-          payer_email: payerEmail,
         }),
       });
 
@@ -92,9 +91,6 @@ export const createCheckoutUrl = action({
               currency_id: "BRL",
             },
           ],
-          payer: {
-            email: payerEmail,
-          },
           back_urls: {
             success: backUrl + "?status=success",
             failure: backUrl + "?status=failure",
