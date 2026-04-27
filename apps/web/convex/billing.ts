@@ -37,11 +37,13 @@ export const createCheckoutUrl = action({
       throw new ConvexError("Você precisa estar logado para realizar o pagamento.");
     }
     
-    // Neutral email for production to avoid "self-payment" errors if the admin uses their own email
+    // Neutral email for production to avoid "self-payment" errors
     const neutralEmail = `cliente.${args.truckId.substring(0,8)}@gmail.com`;
     const payerEmail = isTestMode 
       ? "test_user_12345678@testuser.com" 
-      : neutralEmail;
+      : (identity.email || neutralEmail);
+
+    console.log(`[MP Request] Mode: ${isTestMode ? "TEST" : "PROD"}, Token Prefix: ${accessToken.substring(0, 7)}, Email: ${payerEmail}, Method: ${args.method}`);
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -101,11 +103,13 @@ export const createCheckoutUrl = action({
           auto_return: "approved",
           external_reference: extRef,
           payment_methods: args.method === "pix" ? {
+            included_payment_methods: [{ id: "pix" }],
             excluded_payment_types: [
               { id: "credit_card" },
               { id: "debit_card" },
               { id: "ticket" },
-              { id: "atm" }
+              { id: "atm" },
+              { id: "prepaid_card" }
             ],
             installments: 1,
           } : undefined,
