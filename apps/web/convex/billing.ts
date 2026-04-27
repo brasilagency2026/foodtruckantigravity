@@ -84,16 +84,15 @@ export const createCheckoutUrl = action({
         body: JSON.stringify({
           items: [
             {
-              title: `Plano ${args.plan === "annual" ? "Anual" : "Mensal"} - Food Pronto`,
+              title: args.plan === "annual" ? "Assinatura Anual - Food Pronto" : "Assinatura Mensal - Food Pronto",
               quantity: 1,
-              currency_id: "BRL",
               unit_price: args.totalAmount,
+              currency_id: "BRL",
             },
           ],
-          payment_methods: args.method === "pix" ? {
-            excluded_payment_types: [{ id: "credit_card" }, { id: "ticket" }, { id: "debit_card" }],
-            installments: 1,
-          } : undefined,
+          payer: {
+            email: payerEmail,
+          },
           back_urls: {
             success: backUrl + "?status=success",
             failure: backUrl + "?status=failure",
@@ -101,6 +100,10 @@ export const createCheckoutUrl = action({
           },
           auto_return: "approved",
           external_reference: extRef,
+          payment_methods: args.method === "pix" ? {
+            included_payment_methods: [{ id: "pix" }],
+            installments: 1,
+          } : undefined,
           notification_url: "https://www.foodpronto.com.br/api/webhooks/billing", // Custom webhook route
         }),
       });
