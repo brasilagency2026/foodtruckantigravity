@@ -23,9 +23,9 @@ export const createCheckoutUrl = action({
     // Generate external reference to identify this later
     const extRef = `${args.truckId}|${args.plan}|${args.voucherCode || "none"}`;
 
-    const truck = await ctx.db.get(args.truckId);
+    const truck = await ctx.runQuery(api.foodTrucks.getTruckById, { truckId: args.truckId });
     if (!truck) {
-      throw new Error("Food Truck não encontrado.");
+      throw new ConvexError("Food Truck não encontrado.");
     }
     
     // Attempt to get user email. Fallback to generic if not found.
