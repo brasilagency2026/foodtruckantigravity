@@ -28,13 +28,20 @@ export const createCheckoutUrl = action({
       throw new ConvexError("Food Truck não encontrado.");
     }
     
-    // Get the identity of the logged-in user to get their real email
+    // Detect if we are using a test token or production token
+    const isTestMode = accessToken.startsWith("TEST-");
+    
+    // Get the identity of the logged-in user
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new ConvexError("Você precisa estar logado para realizar o pagamento.");
     }
     
-    const payerEmail = identity.email || `cliente_${args.truckId}@foodpronto.com.br`;
+    // For Test Mode, Mercado Pago REQUIRES a test user email.
+    // For Production, it requires a real email (and NOT the collector's email).
+    const payerEmail = isTestMode 
+      ? "test_user_12345678@testuser.com" // Generic MP test email
+      : (identity.email || `cliente_${args.truckId}@foodpronto.com.br`);
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
