@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { action, mutation } from "./_generated/server";
 import { api, internal } from "./_generated/api";
+import { ConvexError } from "convex/values";
 
 export const createCheckoutUrl = action({
   args: {
@@ -13,7 +14,7 @@ export const createCheckoutUrl = action({
   handler: async (ctx, args) => {
     const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
     if (!accessToken) {
-      throw new Error("MercadoPago access token is not configured on the server.");
+      throw new ConvexError("A chave de acesso do Mercado Pago (MERCADO_PAGO_ACCESS_TOKEN) não está configurada no servidor Convex.");
     }
 
     const backUrl = `https://www.foodpronto.com.br/dashboard/${args.truckId}/assinatura`;
@@ -21,6 +22,16 @@ export const createCheckoutUrl = action({
 
     // Generate external reference to identify this later
     const extRef = `${args.truckId}|${args.plan}|${args.voucherCode || "none"}`;
+
+    const truck = await ctx.db.get(args.truckId);
+    if (!truck) {
+      throw new Error("Food Truck não encontrado.");
+    }
+    
+    // Attempt to get user email. Fallback to generic if not found.
+    // Assuming ownerId is a valid user ID or we can just use a placeholder
+    // because MP often just requires ANY valid email format.
+    const dummyEmail = `cliente_${args.truckId}@foodpronto.com.br`;
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -40,13 +51,14 @@ export const createCheckoutUrl = action({
           },
           back_url: backUrl,
           external_reference: extRef,
+          payer_email: dummyEmail,
         }),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error("MP Preapproval Error:", errorText);
-        throw new Error("Falha ao gerar link de assinatura.");
+        throw new ConvexError(`Falha ao gerar link de assinatura (MP: ${errorText})`);
       }
 
       const data = await response.json();
@@ -86,7 +98,7 @@ export const createCheckoutUrl = action({
       if (!response.ok) {
         const errorText = await response.text();
         console.error("MP Preference Error:", errorText);
-        throw new Error("Falha ao gerar link de pagamento.");
+        throw new ConvexError(`Falha ao gerar link de pagamento (MP: ${errorText})`);
       }
 
       const data = await response.json();
