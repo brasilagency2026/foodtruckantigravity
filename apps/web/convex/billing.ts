@@ -104,13 +104,6 @@ export const createCheckoutUrl = action({
           external_reference: extRef,
           payment_methods: args.method === "pix" ? {
             default_payment_method_id: "pix",
-            excluded_payment_types: [
-              { id: "credit_card" },
-              { id: "debit_card" },
-              { id: "ticket" },
-              { id: "atm" },
-              { id: "prepaid_card" }
-            ],
             installments: 1,
           } : undefined,
           notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
