@@ -21,8 +21,8 @@ export default function AssinaturaPage() {
   const [discount, setDiscount] = useState(0); // e.g., 10 for 10%
 
   const plans = {
-    monthly: { name: "Mensal", price: 200 },
-    annual: { name: "Anual", price: 1920.00 } // 20% off from monthly
+    monthly: { name: "Mensal", price: 10 },
+    annual: { name: "Anual", price: 100.00 } // Testing price
   };
 
   const handleApplyVoucher = async () => {

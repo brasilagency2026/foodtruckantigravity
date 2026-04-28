@@ -157,8 +157,8 @@ export const handleBillingWebhook = mutation({
 
       if (voucher && voucher.isActive) {
         // Calculate commission amount
-        // Annual is 1920, Monthly is 200
-        const basePrice = plan === "annual" ? 1920 : 200;
+        // Annual is 100, Monthly is 10 (Testing)
+        const basePrice = plan === "annual" ? 100 : 10;
         const priceAfterDiscount = basePrice - (basePrice * (voucher.discountPercentage / 100));
         const commissionAmount = priceAfterDiscount * (voucher.commissionPercentage / 100);
 
