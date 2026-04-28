@@ -118,6 +118,7 @@ export const handleBillingWebhook = mutation({
   args: {
     externalReference: v.string(), // "truckId|plan|voucherCode"
     mpPaymentId: v.string(),
+    amount: v.optional(v.number()), // Amount actually paid in BRL
   },
   handler: async (ctx, args) => {
     const parts = args.externalReference.split("|");
@@ -157,10 +158,13 @@ export const handleBillingWebhook = mutation({
 
       if (voucher && voucher.isActive) {
         // Calculate commission amount
-        // Annual is 100, Monthly is 10 (Testing)
+        // If amount is passed from webhook (real payment), use it directly.
+        // Otherwise fallback to hardcoded base prices (legacy/safety).
         const basePrice = plan === "annual" ? 100 : 10;
         const priceAfterDiscount = basePrice - (basePrice * (voucher.discountPercentage / 100));
-        const commissionAmount = priceAfterDiscount * (voucher.commissionPercentage / 100);
+        
+        const finalAmountForCommission = args.amount ?? priceAfterDiscount;
+        const commissionAmount = finalAmountForCommission * (voucher.commissionPercentage / 100);
 
         await ctx.db.insert("commissions", {
           partnerId: voucher._id,

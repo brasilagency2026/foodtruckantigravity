@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     // Is it a preapproval payment or a regular checkout preference payment?
     let paymentStatus = null;
     let externalReference = null;
+    let paymentAmount = null;
 
     if (data.type === "payment" || data?.topic === "payment" || data?.action?.includes("payment")) {
       const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
         const payment = await mpRes.json();
         paymentStatus = payment.status;
         externalReference = payment.external_reference;
+        paymentAmount = payment.transaction_amount;
       }
     } else if (data.type === "subscription_preapproval" || data.type === "subscription_preapproval_plan") {
       // Preapproval webhook
@@ -52,6 +54,7 @@ export async function POST(req: NextRequest) {
         const preapproval = await mpRes.json();
         paymentStatus = preapproval.status; // "authorized" means it's active
         externalReference = preapproval.external_reference;
+        paymentAmount = preapproval.auto_recurring?.transaction_amount;
       }
     } else {
       // Trying generic fetch
@@ -71,6 +74,7 @@ export async function POST(req: NextRequest) {
         await convex.mutation(api.billing.handleBillingWebhook, {
           externalReference: externalReference,
           mpPaymentId: String(paymentId),
+          amount: paymentAmount,
         });
       }
     }
