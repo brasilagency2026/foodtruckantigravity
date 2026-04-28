@@ -45,7 +45,7 @@ export const createCheckoutUrl = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          reason: `Assinatura Mensal - Food Pronto`,
+          reason: `Assinatura Mensal - Food Pronto (Ref: ${args.truckId})`,
           auto_recurring: {
             frequency: 1,
             frequency_type: "months",
@@ -55,6 +55,7 @@ export const createCheckoutUrl = action({
           back_url: backUrl,
           external_reference: extRef,
           payer_email: payerEmail,
+          status: "authorized",
         }),
       });
 
