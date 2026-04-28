@@ -19,6 +19,7 @@ export default function AssinaturaPage() {
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherStatus, setVoucherStatus] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
   const [discount, setDiscount] = useState(0); // e.g., 10 for 10%
+  const [mpEmail, setMpEmail] = useState(""); // Email for Mercado Pago account
 
   const plans = {
     monthly: { name: "Mensal", price: 10 },
@@ -50,6 +51,13 @@ export default function AssinaturaPage() {
   };
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Initialize mpEmail when truck/user loads
+  useState(() => {
+    if (typeof window !== "undefined") {
+      // We'll set it in an effect or use a default
+    }
+  });
+
   const handleCheckout = async () => {
     setIsProcessing(true);
     try {
@@ -60,6 +68,7 @@ export default function AssinaturaPage() {
         method: paymentMethod,
         voucherCode: voucherStatus === "valid" ? voucherCode : undefined,
         totalAmount: calculateTotal(),
+        payerEmail: mpEmail || undefined, // Use the manually entered email
       });
 
       if (checkoutUrl) {
@@ -200,6 +209,24 @@ export default function AssinaturaPage() {
               {voucherStatus === "valid" && <p className="text-green-400 text-sm mt-2">✅ Cupom aplicado! 10% de desconto.</p>}
               {voucherStatus === "invalid" && <p className="text-red-400 text-sm mt-2">❌ Cupom inválido.</p>}
             </div>
+
+            {paymentMethod === "cc" && selectedPlan === "monthly" && (
+              <div className="mb-6 bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
+                <label className="block text-sm font-bold text-blue-300 mb-2 italic">
+                  Email da sua conta Mercado Pago:
+                </label>
+                <input 
+                  type="email" 
+                  value={mpEmail}
+                  onChange={(e) => setMpEmail(e.target.value)}
+                  placeholder="Seu email no Mercado Pago"
+                  className="bg-[#0f0f1a] border border-blue-500/30 rounded-lg px-4 py-2 w-full text-white"
+                />
+                <p className="text-[10px] text-gray-400 mt-2">
+                  * Importante: Use o mesmo email que você usa para entrar no Mercado Pago para evitar erros.
+                </p>
+              </div>
+            )}
 
             {discount > 0 && (
               <div className="flex justify-between text-green-400 font-bold mb-4 border-b border-white/10 pb-4">

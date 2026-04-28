@@ -10,6 +10,7 @@ export const createCheckoutUrl = action({
     method: v.union(v.literal("cc"), v.literal("pix")),
     voucherCode: v.optional(v.string()),
     totalAmount: v.number(), // The final price after discounts
+    payerEmail: v.optional(v.string()), // Optional override for MP email
   },
   handler: async (ctx, args) => {
     console.log("Billing Action: createCheckoutUrl v1.2", { plan: args.plan, method: args.method });
@@ -35,7 +36,7 @@ export const createCheckoutUrl = action({
     }
     
     // Ensure we have a valid email or fallback
-    const payerEmail = identity.email || "contato@foodpronto.com.br";
+    const payerEmail = args.payerEmail || identity.email || "contato@foodpronto.com.br";
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
