@@ -10,6 +10,8 @@ function isPublicRoute(req: any) {
       pathname.startsWith('/sign-up') ||
       pathname.startsWith('/menu') ||
       pathname.startsWith('/t') ||
+      pathname.startsWith('/checkout') ||
+      pathname.startsWith('/order') ||
       pathname.startsWith('/precos') ||
       pathname.startsWith('/onboarding') ||
       pathname.startsWith('/api/webhooks') ||
