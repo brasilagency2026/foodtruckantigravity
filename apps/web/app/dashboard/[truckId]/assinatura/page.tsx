@@ -114,7 +114,7 @@ export default function AssinaturaPage() {
                     <input type="radio" name="plan" checked={selectedPlan === "monthly"} onChange={() => setSelectedPlan("monthly")} className="w-5 h-5 accent-[#FF6B35]"/>
                     <span className="font-bold text-lg">Plano Mensal</span>
                   </div>
-                  <span className="text-xl font-bold">R$ 200,00</span>
+                  <span className="text-xl font-bold">R$ {plans.monthly.price.toFixed(2).replace('.', ',')}</span>
                 </div>
               </label>
 
@@ -125,8 +125,8 @@ export default function AssinaturaPage() {
                     <span className="font-bold text-lg">Plano Anual</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-xl font-bold">R$ 1.920,00</span><br/>
-                    <span className="text-xs text-green-400">Equivale a R$ 160/mês (20% OFF)</span>
+                    <span className="text-xl font-bold">R$ {plans.annual.price.toFixed(2).replace('.', ',')}</span><br/>
+                    <span className="text-xs text-green-400">Equivale a R$ {(plans.annual.price / 12).toFixed(2).replace('.', ',')}/mês</span>
                   </div>
                 </div>
               </label>
