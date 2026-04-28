@@ -12,6 +12,7 @@ export const createCheckoutUrl = action({
     totalAmount: v.number(), // The final price after discounts
   },
   handler: async (ctx, args) => {
+    console.log("Billing Action: createCheckoutUrl v1.2", { plan: args.plan, method: args.method });
     const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim();
     if (!accessToken) {
       throw new ConvexError("Configuração do Mercado Pago incompleta (Token ausente).");
@@ -121,6 +122,7 @@ export const handleBillingWebhook = mutation({
     amount: v.optional(v.number()), // Amount actually paid in BRL
   },
   handler: async (ctx, args) => {
+    console.log("Billing Mutation: handleBillingWebhook v1.2", { extRef: args.externalReference, amount: args.amount });
     const parts = args.externalReference.split("|");
     if (parts.length < 2) return;
     
