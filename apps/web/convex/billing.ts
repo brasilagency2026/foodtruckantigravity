@@ -47,12 +47,14 @@ export const createCheckoutUrl = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          reason: `Mensal Food Pronto`,
+          reason: `Assinatura Food Pronto`,
           auto_recurring: {
             frequency: 1,
             frequency_type: "months",
             transaction_amount: Number(args.totalAmount.toFixed(2)),
             currency_id: "BRL",
+            start_date: new Date().toISOString(),
+            end_date: new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 years
           },
           back_url: backUrl,
           external_reference: extRef,
