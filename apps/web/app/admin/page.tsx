@@ -239,6 +239,24 @@ export default function AdminPage() {
                   className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
                 />
               </div>
+              <div className="w-20">
+                <label className="block text-sm mb-1 text-gray-400">Desc %</label>
+                <input 
+                  type="number" 
+                  value={newVoucher.discountPercentage} 
+                  onChange={e => setNewVoucher({...newVoucher, discountPercentage: Number(e.target.value)})} 
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white w-full"
+                />
+              </div>
+              <div className="w-20">
+                <label className="block text-sm mb-1 text-gray-400">Com %</label>
+                <input 
+                  type="number" 
+                  value={newVoucher.commissionPercentage} 
+                  onChange={e => setNewVoucher({...newVoucher, commissionPercentage: Number(e.target.value)})} 
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white w-full"
+                />
+              </div>
               <button 
                 onClick={async () => {
                   if (!newVoucher.code || !newVoucher.partnerName) return alert("Preencha código e nome.");
@@ -305,6 +323,9 @@ export default function AdminPage() {
                       <td>
                         <div className="font-bold text-green-400">
                           R$ {v.pendingCommission?.toFixed(2).replace('.', ',') || "0,00"}
+                        </div>
+                        <div className="text-[10px] text-gray-400 mt-1">
+                          Taxa: {v.commissionPercentage}%
                         </div>
                         {(v.pendingCommission || 0) > 0 && (
                           <button 
