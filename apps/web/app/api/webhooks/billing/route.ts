@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    // Is it a preapproval payment or a regular checkout preference payment?
+    let mpPreapprovalId = null;
     let paymentStatus = null;
     let externalReference = null;
     let paymentAmount = null;
@@ -43,28 +43,20 @@ export async function POST(req: NextRequest) {
         paymentStatus = payment.status;
         externalReference = payment.external_reference;
         paymentAmount = payment.transaction_amount;
+        mpPreapprovalId = payment.metadata?.preapproval_id || payment.order?.id; 
+        // Note: Mercado Pago sometimes stores preapproval_id in different fields depending on the integration.
       }
     } else if (data.type === "subscription_preapproval" || data.type === "subscription_preapproval_plan") {
       // Preapproval webhook
       const mpRes = await fetch(`https://api.mercadopago.com/preapproval/${paymentId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-
       if (mpRes.ok) {
         const preapproval = await mpRes.json();
         paymentStatus = preapproval.status; // "authorized" means it's active
         externalReference = preapproval.external_reference;
         paymentAmount = preapproval.auto_recurring?.transaction_amount;
-      }
-    } else {
-      // Trying generic fetch
-      const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (mpRes.ok) {
-        const payment = await mpRes.json();
-        paymentStatus = payment.status;
-        externalReference = payment.external_reference;
+        mpPreapprovalId = preapproval.id;
       }
     }
 
@@ -75,6 +67,7 @@ export async function POST(req: NextRequest) {
           externalReference: externalReference,
           mpPaymentId: String(paymentId),
           amount: paymentAmount,
+          mpPreapprovalId: mpPreapprovalId ? String(mpPreapprovalId) : undefined,
         });
       }
     }

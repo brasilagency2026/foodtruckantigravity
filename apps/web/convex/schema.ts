@@ -43,6 +43,7 @@ export default defineSchema({
     nextPaymentAt: v.optional(v.number()), // Timestamp for next subscription payment
     subscriptionStatus: v.optional(v.union(v.literal("trial"), v.literal("active"), v.literal("past_due"), v.literal("canceled"))),
     subscriptionPlan: v.optional(v.union(v.literal("monthly"), v.literal("annual"))),
+    mpPreapprovalId: v.optional(v.string()), // ID of the Mercado Pago Subscription
   })
     .index("by_owner", ["ownerId"])
     .index("by_open", ["isOpen"])

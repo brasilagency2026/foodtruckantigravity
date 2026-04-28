@@ -17,7 +17,7 @@ export default function AdminPage() {
   const deleteVoucher = useMutation(api.admin.deleteVoucher);
   const payCommissions = useMutation(api.admin.payCommissions);
 
-  const [activeTab, setActiveTab] = useState<"trucks" | "vouchers">("trucks");
+  const [activeTab, setActiveTab] = useState<"trucks" | "vouchers" | "assinaturas">("trucks");
   const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
 
   const [filter, setFilter] = useState("all");
@@ -87,6 +87,7 @@ export default function AdminPage() {
         <div className="admin-tabs">
           <button className={activeTab === "trucks" ? "active" : ""} onClick={() => setActiveTab("trucks")}>🚛 Food Trucks</button>
           <button className={activeTab === "vouchers" ? "active" : ""} onClick={() => setActiveTab("vouchers")}>🎟️ Vouchers / Commerciaux</button>
+          <button className={activeTab === "assinaturas" ? "active" : ""} onClick={() => setActiveTab("assinaturas")}>💳 Assinaturas</button>
         </div>
       </header>
 
@@ -367,6 +368,65 @@ export default function AdminPage() {
                       </td>
                     </tr>
                   ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "assinaturas" && (
+        <div className="admin-content">
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Food Truck</th>
+                  <th>Plano</th>
+                  <th>Status</th>
+                  <th>MP Subscription ID</th>
+                  <th>Próximo Pgto</th>
+                  <th>Ativo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trucks?.filter(t => t.subscriptionStatus === "active" || t.mpPreapprovalId).map((t: any) => (
+                  <tr key={t._id}>
+                    <td>
+                      <div className="font-bold">{t.name}</div>
+                      <div className="text-xs text-gray-500">{t.ownerId}</div>
+                    </td>
+                    <td>
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${t.subscriptionPlan === "annual" ? "bg-purple-900 text-purple-200" : "bg-blue-900 text-blue-200"}`}>
+                        {t.subscriptionPlan === "annual" ? "ANUAL" : "MENSAL"}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${t.subscriptionStatus === "active" ? "bg-green-900 text-green-200" : "bg-yellow-900 text-yellow-200"}`}>
+                        {t.subscriptionStatus?.toUpperCase() || "N/A"}
+                      </span>
+                    </td>
+                    <td>
+                      <code className="text-xs bg-black/30 p-1 rounded">
+                        {t.mpPreapprovalId || "N/A (Checkout Pro)"}
+                      </code>
+                    </td>
+                    <td>
+                      {t.nextPaymentAt ? new Date(t.nextPaymentAt).toLocaleDateString('pt-BR') : "N/A"}
+                    </td>
+                    <td>
+                      <span className={t.isActive ? "text-green-400" : "text-red-400"}>
+                        {t.isActive ? "✔ Sim" : "✘ Não"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                {!trucks?.some(t => t.subscriptionStatus === "active" || t.mpPreapprovalId) && (
+                  <tr>
+                    <td colSpan={6} className="text-center py-8 text-gray-500 italic">
+                      Nenhuma assinatura recorrente ativa encontrada.
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

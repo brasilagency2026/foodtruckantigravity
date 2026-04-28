@@ -13,6 +13,7 @@
     "@clerk/localizations": "^4.5.5",
     "@clerk/nextjs": "^5.7.6",
     "@convex-dev/auth": "^0.0.91",
+    "@esbuild/win32-x64": "^0.28.0",
     "aws4fetch": "^1.0.18",
     "convex": "^1.35.1",
     "esbuild": "^0.20.2",

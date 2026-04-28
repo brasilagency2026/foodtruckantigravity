@@ -120,6 +120,7 @@ export const handleBillingWebhook = mutation({
     externalReference: v.string(), // "truckId|plan|voucherCode"
     mpPaymentId: v.string(),
     amount: v.optional(v.number()), // Amount actually paid in BRL
+    mpPreapprovalId: v.optional(v.string()), // ID of the subscription
   },
   handler: async (ctx, args) => {
     console.log("Billing Mutation: handleBillingWebhook v1.2", { extRef: args.externalReference, amount: args.amount });
@@ -149,6 +150,7 @@ export const handleBillingWebhook = mutation({
       nextPaymentAt: newNextPayment,
       subscriptionStatus: "active",
       isActive: true, // Auto-activate if suspended
+      mpPreapprovalId: args.mpPreapprovalId ?? truck.mpPreapprovalId,
     });
 
     // Send confirmation email to owner
