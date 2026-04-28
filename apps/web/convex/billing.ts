@@ -151,6 +151,15 @@ export const handleBillingWebhook = mutation({
       isActive: true, // Auto-activate if suspended
     });
 
+    // Send confirmation email to owner
+    await ctx.scheduler.runAfter(0, internal.emails.sendSubscriptionEmail, {
+      ownerId: truck.ownerId,
+      truckName: truck.name,
+      plan: plan,
+      amount: args.amount ?? (plan === "monthly" ? 10 : 100),
+      nextPaymentAt: newNextPayment,
+    });
+
     // Handle Commissions
     if (voucherCode) {
       const voucher = await ctx.db

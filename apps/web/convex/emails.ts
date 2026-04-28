@@ -185,3 +185,63 @@ export const sendNewCommissionEmail = internalAction({
     }
   },
 });
+
+export const sendSubscriptionEmail = internalAction({
+  args: {
+    ownerId: v.string(),
+    truckName: v.string(),
+    plan: v.string(),
+    amount: v.number(),
+    nextPaymentAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const resendKey = process.env.RESEND_API_KEY;
+    const clerkKey = process.env.CLERK_SECRET_KEY;
+    
+    if (!resendKey) return;
+    
+    let ownerEmail = null;
+    if (clerkKey && args.ownerId) {
+      try {
+        const response = await fetch(`https://api.clerk.com/v1/users/${args.ownerId}`, {
+          headers: { Authorization: `Bearer ${clerkKey}` },
+        });
+        if (response.ok) {
+          const user = await response.json();
+          if (user && user.email_addresses && user.email_addresses.length > 0) {
+            ownerEmail = user.email_addresses[0].email_address;
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching from Clerk:", err);
+      }
+    }
+
+    if (!ownerEmail) return;
+
+    const resend = new Resend(resendKey);
+    const dateStr = new Date(args.nextPaymentAt).toLocaleDateString('pt-BR');
+
+    try {
+      await resend.emails.send({
+        from: "Food Pronto <contato@foodpronto.com.br>",
+        to: [ownerEmail],
+        bcc: ["glwebagency2@gmail.com"],
+        subject: `✅ Pagamento Confirmado: Assinatura ${args.plan === "monthly" ? "Mensal" : "Anual"}`,
+        html: `
+          <h2>Pagamento Confirmado!</h2>
+          <p>Olá! Recebemos com sucesso o pagamento da sua assinatura para o food truck <strong>${args.truckName}</strong>.</p>
+          <ul>
+            <li><strong>Plano:</strong> ${args.plan === "monthly" ? "Mensal" : "Anual"}</li>
+            <li><strong>Valor:</strong> R$ ${args.amount.toFixed(2).replace('.', ',')}</li>
+            <li><strong>Próxima Renovação:</strong> ${dateStr}</li>
+          </ul>
+          <p>Seu acesso total à plataforma continua ativo. Boas vendas!</p>
+          <p>Equipe Food Pronto</p>
+        `,
+      });
+    } catch (error) {
+      console.error("Failed to send subscription email:", error);
+    }
+  },
+});
