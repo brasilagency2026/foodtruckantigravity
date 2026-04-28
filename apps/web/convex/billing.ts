@@ -21,8 +21,8 @@ export const createCheckoutUrl = action({
     const backUrl = `https://www.foodpronto.com.br/dashboard/${args.truckId}/assinatura`;
     let checkoutUrl = "";
 
-    // Generate external reference to identify this later
-    const extRef = `${args.truckId}|${args.plan}|${args.voucherCode || "none"}`;
+    // Generate external reference to identify this later (using - instead of | for safety)
+    const extRef = `${args.truckId}-${args.plan}-${args.voucherCode || "none"}`;
 
     const truck = await ctx.runQuery(api.foodTrucks.getTruckById, { truckId: args.truckId });
     if (!truck) {
@@ -34,7 +34,8 @@ export const createCheckoutUrl = action({
       throw new ConvexError("Sessão expirada. Por favor, faça login novamente.");
     }
     
-    const payerEmail = identity.email || "";
+    // Ensure we have a valid email or fallback
+    const payerEmail = identity.email || "contato@foodpronto.com.br";
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -45,17 +46,16 @@ export const createCheckoutUrl = action({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          reason: `Assinatura Mensal - Food Pronto (Ref: ${args.truckId})`,
+          reason: `Mensal Food Pronto`,
           auto_recurring: {
             frequency: 1,
             frequency_type: "months",
-            transaction_amount: args.totalAmount,
+            transaction_amount: Number(args.totalAmount.toFixed(2)),
             currency_id: "BRL",
           },
           back_url: backUrl,
           external_reference: extRef,
           payer_email: payerEmail,
-          status: "authorized",
         }),
       });
 
@@ -122,7 +122,10 @@ export const handleBillingWebhook = mutation({
   },
   handler: async (ctx, args) => {
     console.log("Billing Mutation: handleBillingWebhook v1.2", { extRef: args.externalReference, amount: args.amount });
-    const parts = args.externalReference.split("|");
+    // Support both | and - as delimiters for backward compatibility during transition
+    const parts = args.externalReference.includes("-") 
+      ? args.externalReference.split("-")
+      : args.externalReference.split("|");
     if (parts.length < 2) return;
     
     const truckIdStr = parts[0];
