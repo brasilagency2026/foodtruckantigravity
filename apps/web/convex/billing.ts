@@ -54,6 +54,7 @@ export const createCheckoutUrl = action({
           },
           back_url: backUrl,
           external_reference: extRef,
+          payer_email: payerEmail,
           status: "authorized",
         }),
       });
