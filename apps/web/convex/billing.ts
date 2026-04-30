@@ -55,18 +55,15 @@ export const createCheckoutUrl = action({
       const finalPayerEmail = payerEmail;
       
       const body = {
-        reason: `Assinatura Food Pronto Mensal`,
+        reason: "Assinatura Food Pronto",
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
           transaction_amount: Number(args.totalAmount.toFixed(2)),
           currency_id: "BRL",
-          end_date: "2030-12-31T23:59:59.000Z",
         },
-        back_url: backUrl,
-        external_reference: extRef,
-        payer_email: finalPayerEmail,
-        status: "pending",
+        payer_email: payerEmail,
+        back_url: "https://foodpronto.com.br",
       };
 
       console.log("MP Preapproval Request (v1.9):", JSON.stringify(body));
