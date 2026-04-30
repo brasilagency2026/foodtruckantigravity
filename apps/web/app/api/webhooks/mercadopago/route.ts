@@ -112,18 +112,30 @@ export async function POST(req: NextRequest) {
 
     if (!order && externalReference) {
       // Check if this is a billing notification (subscription) instead of an order
-      // Billing refs look like "truckId-monthly-none" or "truckId|annual|..."
       const isBillingRef = externalReference.includes("-") || externalReference.includes("|");
       
-      if (!isBillingRef) {
+      if (isBillingRef) {
+        console.log("Webhook: Detected billing notification, forwarding to billing handler...");
         try {
-          // external_reference should contain the Convex orderId we used when creating the preference
-          order = await convex.query(api.orders.getOrderById, { orderId: externalReference });
+          await convex.mutation(api.billing.handleBillingWebhook, {
+            externalReference: externalReference,
+            mpPaymentId: String(payment.id),
+            amount: payment.transaction_amount,
+            mpPreapprovalId: payment.metadata?.preapproval_id || payment.id,
+          });
+          console.log("Webhook: Billing activation successful!");
+          return NextResponse.json({ ok: true });
         } catch (e) {
-          console.warn("Webhook: external_reference not a Convex id or order lookup failed", { externalReference, e });
+          console.error("Webhook: Billing activation failed", e);
+          return NextResponse.json({ ok: true });
         }
-      } else {
-        console.log("Webhook: Ignoring billing notification in order webhook", { externalReference });
+      }
+
+      try {
+        // Normal order lookup
+        order = await convex.query(api.orders.getOrderById, { orderId: externalReference });
+      } catch (e) {
+        console.warn("Webhook: external_reference not a Convex id or order lookup failed", { externalReference, e });
       }
     }
 
