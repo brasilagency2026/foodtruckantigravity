@@ -48,30 +48,23 @@ export const createCheckoutUrl = action({
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
-      // IMPORTANT: In Sandbox, using a real email can cause the "Orange Error Page".
-      // We force a test email if testMode is active.
-      const testPayerEmail = args.testMode ? `test_user_${Math.floor(Math.random() * 1000000)}@testuser.com` : payerEmail;
+      // Extreme simplification to avoid Mercado Pago 500 Internal Server Errors
+      const testPayerEmail = args.testMode ? `user_test_${Math.floor(Math.random() * 10000)}@test.com` : payerEmail;
       
-      const startDate = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // +10 minutes
-      const endDate = new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString(); // 2 years
-
       const body = {
-        reason: `Assinatura Food Pronto Mensal ${args.testMode ? '(TEST)' : ''}`,
+        reason: `Assinatura Food Pronto Mensal`,
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
           transaction_amount: Number(args.totalAmount.toFixed(2)),
           currency_id: "BRL",
-          start_date: startDate,
-          end_date: endDate,
         },
         back_url: backUrl,
         external_reference: extRef,
         payer_email: testPayerEmail,
-        status: "pending"
       };
 
-      console.log("MP Preapproval Request (v1.7):", JSON.stringify(body));
+      console.log("MP Preapproval Request (v1.8):", JSON.stringify(body));
 
       const response = await fetch("https://api.mercadopago.com/preapproval", {
         method: "POST",
@@ -83,7 +76,7 @@ export const createCheckoutUrl = action({
       });
 
       const data = await response.json();
-      console.log("MP Preapproval Response (v1.7):", JSON.stringify(data));
+      console.log("MP Preapproval Response (v1.8):", JSON.stringify(data));
 
       if (!response.ok) {
         throw new ConvexError(`Falha ao gerar link de assinatura (MP: ${JSON.stringify(data)})`);
