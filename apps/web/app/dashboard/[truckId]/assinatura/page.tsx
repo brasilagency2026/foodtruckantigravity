@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useConvex, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -23,21 +23,21 @@ export default function AssinaturaPage() {
   const [testMode, setTestMode] = useState(false); // Enable Sandbox mode
 
   // Automatic Verification on return
-  useState(() => {
+  useEffect(() => {
     const paymentId = searchParams.get("payment_id") || searchParams.get("preapproval_id") || searchParams.get("collection_id");
     if (paymentId && truckId) {
-      console.log("Verifying payment on return:", paymentId);
+      console.log("!!! PAGE LOAD: Verifying payment !!!", paymentId);
       convex.action(api.billing.checkPaymentStatus, {
         paymentId: paymentId,
         truckId: truckId as any,
-        testMode: true, // In sandbox, we check with test token
+        testMode: true,
       }).then(res => {
         console.log("Verification result:", res);
       }).catch(err => {
         console.error("Verification failed:", err);
       });
     }
-  });
+  }, [truckId, searchParams, convex]);
 
   const plans = {
     monthly: { name: "Mensal", price: 10 },
