@@ -21,6 +21,8 @@ export const createCheckoutUrl = action({
       ? process.env.MERCADO_PAGO_ACCESS_TOKEN_TEST?.trim()
       : process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim();
       
+    console.log("Using Access Token starting with:", accessToken?.substring(0, 15));
+      
     if (!accessToken) {
       throw new ConvexError("Configuração do Mercado Pago incompleta (Token ausente).");
     }
