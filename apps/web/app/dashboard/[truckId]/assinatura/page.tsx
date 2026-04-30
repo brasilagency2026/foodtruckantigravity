@@ -22,6 +22,23 @@ export default function AssinaturaPage() {
   const [mpEmail, setMpEmail] = useState(""); // Email for Mercado Pago account
   const [testMode, setTestMode] = useState(false); // Enable Sandbox mode
 
+  // Automatic Verification on return
+  useState(() => {
+    const paymentId = searchParams.get("payment_id") || searchParams.get("preapproval_id") || searchParams.get("collection_id");
+    if (paymentId && truckId) {
+      console.log("Verifying payment on return:", paymentId);
+      convex.action(api.billing.checkPaymentStatus, {
+        paymentId: paymentId,
+        truckId: truckId as any,
+        testMode: true, // In sandbox, we check with test token
+      }).then(res => {
+        console.log("Verification result:", res);
+      }).catch(err => {
+        console.error("Verification failed:", err);
+      });
+    }
+  });
+
   const plans = {
     monthly: { name: "Mensal", price: 10 },
     annual: { name: "Anual", price: 100.00 } // Testing price

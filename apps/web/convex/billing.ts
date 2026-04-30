@@ -222,3 +222,60 @@ export const handleBillingWebhook = mutation({
     }
   },
 });
+export const checkPaymentStatus = action({
+  args: {
+    paymentId: v.string(),
+    truckId: v.id("foodTrucks"),
+    testMode: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const accessToken = args.testMode 
+      ? process.env.MERCADO_PAGO_ACCESS_TOKEN_TEST 
+      : process.env.MERCADO_PAGO_ACCESS_TOKEN;
+
+    if (!accessToken) return { status: "error", message: "Token missing" };
+
+    try {
+      console.log(`Checking payment status for ${args.paymentId}...`);
+      const response = await fetch(`https://api.mercadopago.com/v1/payments/${args.paymentId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (!response.ok) {
+        // Try preapproval if payment not found
+        const preRes = await fetch(`https://api.mercadopago.com/preapproval/${args.paymentId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (preRes.ok) {
+          const pre = await preRes.json();
+          if (pre.status === "authorized" || pre.status === "active") {
+            await ctx.runMutation(api.billing.handleBillingWebhook, {
+              externalReference: pre.external_reference,
+              mpPaymentId: pre.id,
+              amount: pre.auto_recurring?.transaction_amount,
+              mpPreapprovalId: pre.id,
+            });
+            return { status: "approved" };
+          }
+          return { status: pre.status };
+        }
+        return { status: "not_found" };
+      }
+
+      const payment = await response.json();
+      if (payment.status === "approved" || payment.status === "authorized") {
+        await ctx.runMutation(api.billing.handleBillingWebhook, {
+          externalReference: payment.external_reference,
+          mpPaymentId: String(payment.id),
+          amount: payment.transaction_amount,
+          mpPreapprovalId: payment.metadata?.preapproval_id || payment.order?.id,
+        });
+        return { status: "approved" };
+      }
+      return { status: payment.status };
+    } catch (e) {
+      console.error("CheckPaymentStatus error:", e);
+      return { status: "error" };
+    }
+  },
+});
