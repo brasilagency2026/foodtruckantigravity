@@ -48,35 +48,44 @@ export const createCheckoutUrl = action({
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
+      // We set start_date 2 minutes in the future to avoid "start_date must be greater than now" errors
+      const startDate = new Date(Date.now() + 120000).toISOString().split('.')[0] + "Z"; 
+      const endDate = new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString().split('.')[0] + "Z";
+
+      const body = {
+        reason: `Assinatura Food Pronto`,
+        auto_recurring: {
+          frequency: 1,
+          frequency_type: "months",
+          transaction_amount: Number(args.totalAmount.toFixed(2)),
+          currency_id: "BRL",
+          start_date: startDate,
+          end_date: endDate,
+        },
+        back_url: backUrl,
+        external_reference: extRef,
+        payer_email: payerEmail,
+      };
+
+      console.log("MP Preapproval Request Body:", JSON.stringify(body));
+
       const response = await fetch("https://api.mercadopago.com/preapproval", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          reason: `Assinatura Food Pronto`,
-          auto_recurring: {
-            frequency: 1,
-            frequency_type: "months",
-            transaction_amount: Number(args.totalAmount.toFixed(2)),
-            currency_id: "BRL",
-            start_date: new Date().toISOString(),
-            end_date: new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 years
-          },
-          back_url: backUrl,
-          external_reference: extRef,
-          payer_email: payerEmail,
-        }),
+        body: JSON.stringify(body),
       });
 
+      const data = await response.json();
+      console.log("MP Preapproval Response:", JSON.stringify(data));
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("MP Preapproval Error:", errorText);
-        throw new ConvexError(`Falha ao gerar link de assinatura (MP: ${errorText})`);
+        console.error("MP Preapproval Error Details:", JSON.stringify(data));
+        throw new ConvexError(`Falha ao gerar link de assinatura (MP: ${JSON.stringify(data)})`);
       }
 
-      const data = await response.json();
       checkoutUrl = data.init_point;
     } else {
       // Create a Checkout Preference for one-time PIX or Annual plans
