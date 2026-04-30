@@ -5,6 +5,7 @@ import crypto from "crypto";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  console.log("!!! MAIN WEBHOOK HIT !!!");
   try {
     // Lazily create Convex client to avoid running browser-only code at import time
     const { ConvexHttpClient } = await import("convex/browser");

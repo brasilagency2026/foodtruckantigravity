@@ -4,6 +4,7 @@ import { api } from "../../../../convex/_generated/api";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  console.log("!!! BILLING WEBHOOK HIT !!!");
   try {
     const { ConvexHttpClient } = await import("convex/browser");
     const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL ?? "https://placeholder.convex.cloud");
