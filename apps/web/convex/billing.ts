@@ -45,6 +45,9 @@ export const createCheckoutUrl = action({
     
     // Ensure we have a valid email or fallback
     const payerEmail = args.payerEmail || identity.email || "contato@foodpronto.com.br";
+    
+    // In Sandbox, using "APRO" as first name can trigger automatic approval
+    const firstName = args.testMode ? "APRO" : (identity.firstName || "Cliente");
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
@@ -68,6 +71,9 @@ export const createCheckoutUrl = action({
         back_url: backUrl,
         external_reference: extRef,
         payer_email: finalPayerEmail,
+        payer: {
+          first_name: firstName,
+        },
         status: "pending",
       };
 
@@ -115,6 +121,10 @@ export const createCheckoutUrl = action({
           auto_return: "approved",
           external_reference: extRef,
           notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
+          payer: {
+            email: payerEmail,
+            first_name: firstName,
+          },
         }),
       });
 
