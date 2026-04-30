@@ -27,7 +27,7 @@ export const createCheckoutUrl = action({
       throw new ConvexError("Configuração do Mercado Pago incompleta (Token ausente).");
     }
     
-    const backUrl = `https://www.foodpronto.com.br/dashboard/${args.truckId}/assinatura`;
+    const backUrl = `https://foodpronto.com.br/dashboard/${args.truckId}/assinatura`;
     let checkoutUrl = "";
 
     // Generate external reference to identify this later (using - instead of | for safety)
@@ -113,7 +113,7 @@ export const createCheckoutUrl = action({
           },
           auto_return: "approved",
           external_reference: extRef,
-          notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
+          notification_url: "https://foodpronto.com.br/api/webhooks/billing",
           payer: {
             email: payerEmail,
             first_name: firstName,
