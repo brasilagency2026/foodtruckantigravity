@@ -47,7 +47,7 @@ export const createCheckoutUrl = action({
     const payerEmail = args.payerEmail || identity.email || "contato@foodpronto.com.br";
     
     // In Sandbox, using "APRO" as first name can trigger automatic approval
-    const firstName = args.testMode ? "APRO" : (identity.firstName || "Cliente");
+    const firstName = args.testMode ? "APRO" : (identity?.firstName || "Cliente");
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
