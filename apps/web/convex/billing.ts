@@ -48,9 +48,9 @@ export const createCheckoutUrl = action({
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
-      // We set start_date 2 minutes in the future to avoid "start_date must be greater than now" errors
-      const startDate = new Date(Date.now() + 120000).toISOString().split('.')[0] + "Z"; 
-      const endDate = new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString().split('.')[0] + "Z";
+      // We set start_date 5 minutes in the future to be very safe
+      const startDate = new Date(Date.now() + 5 * 60 * 1000).toISOString(); 
+      const endDate = new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString();
 
       const body = {
         reason: `Assinatura Food Pronto`,
