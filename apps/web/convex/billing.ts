@@ -46,88 +46,41 @@ export const createCheckoutUrl = action({
     // Ensure we have a valid email or fallback
     const payerEmail = args.payerEmail || identity.email || "contato@foodpronto.com.br";
 
-    if (args.plan === "monthly" && args.method === "cc") {
-      // Create a Preapproval (Recurring Subscription) for Credit Card
-      // We set start_date 5 minutes in the future to be very safe
-      const startDate = new Date(Date.now() + 5 * 60 * 1000).toISOString(); 
-      const endDate = new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString();
-
-      const body = {
-        reason: `Assinatura Food Pronto`,
-        auto_recurring: {
-          frequency: 1,
-          frequency_type: "months",
-          transaction_amount: Number(args.totalAmount.toFixed(2)),
-          currency_id: "BRL",
-          start_date: startDate,
-          end_date: endDate,
-        },
-        back_url: backUrl,
-        external_reference: extRef,
-        payer_email: payerEmail,
-      };
-
-      console.log("MP Preapproval Request Body:", JSON.stringify(body));
-
-      const response = await fetch("https://api.mercadopago.com/preapproval", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-      console.log("MP Preapproval Response:", JSON.stringify(data));
-
-      if (!response.ok) {
-        console.error("MP Preapproval Error Details:", JSON.stringify(data));
-        throw new ConvexError(`Falha ao gerar link de assinatura (MP: ${JSON.stringify(data)})`);
-      }
-
-      checkoutUrl = data.init_point;
-    } else {
-      // Create a Checkout Preference for one-time PIX or Annual plans
-      const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          items: [
-            {
-              title: args.plan === "annual" ? "Assinatura Anual - Food Pronto" : "Assinatura Mensal - Food Pronto",
-              quantity: 1,
-              unit_price: args.totalAmount,
-              currency_id: "BRL",
-            },
-          ],
-          back_urls: {
-            success: backUrl + "?status=success",
-            failure: backUrl + "?status=failure",
-            pending: backUrl + "?status=pending",
+    // Unified Payment Preference (works for both Monthly and Annual)
+    const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        items: [
+          {
+            title: args.plan === "annual" ? "Assinatura Anual - Food Pronto" : "Assinatura Mensal - Food Pronto",
+            quantity: 1,
+            unit_price: Number(args.totalAmount.toFixed(2)),
+            currency_id: "BRL",
           },
-          auto_return: "approved",
-          external_reference: extRef,
-          payment_methods: args.method === "pix" ? {
-            default_payment_method_id: "pix",
-            installments: 1,
-          } : undefined,
-          notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
-        }),
-      });
+        ],
+        back_urls: {
+          success: backUrl + "?status=success",
+          failure: backUrl + "?status=failure",
+          pending: backUrl + "?status=pending",
+        },
+        auto_return: "approved",
+        external_reference: extRef,
+        notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
+      }),
+    });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("MP Preference Error:", errorText);
-        throw new ConvexError(`Falha ao gerar link de pagamento (MP: ${errorText})`);
-      }
-
-      const data = await response.json();
-      checkoutUrl = data.init_point; // Redirect user here
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("MP Preference Error:", errorText);
+      throw new ConvexError(`Falha ao gerar link de paiement (MP: ${errorText})`);
     }
+
+    const data = await response.json();
+    checkoutUrl = data.init_point;
 
     return checkoutUrl;
   },
