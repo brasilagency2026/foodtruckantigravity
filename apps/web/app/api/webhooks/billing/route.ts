@@ -17,10 +17,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const paymentId = data?.data?.id ?? data?.id;
-    if (!paymentId) {
-      return NextResponse.json({ ok: true });
-    }
+    // Extract payment id from several possible shapes (Notification or IPN)
+    const paymentId = data?.data?.id ?? data?.id ?? data?.resource?.split('/').pop();
+    const type = data?.type ?? data?.topic ?? "payment";
 
     const isLive = data?.live_mode !== false; // If explicitly false, it's sandbox
     console.log(`Billing Webhook: Received ${data.type || "unknown"} notification. live_mode: ${isLive}`);
