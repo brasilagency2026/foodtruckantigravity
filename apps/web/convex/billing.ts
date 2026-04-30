@@ -46,42 +46,86 @@ export const createCheckoutUrl = action({
     // Ensure we have a valid email or fallback
     const payerEmail = args.payerEmail || identity.email || "contato@foodpronto.com.br";
 
-    // Unified Payment Preference (works for both Monthly and Annual)
-    const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        items: [
-          {
-            title: args.plan === "annual" ? "Assinatura Anual - Food Pronto" : "Assinatura Mensal - Food Pronto",
-            quantity: 1,
-            unit_price: Number(args.totalAmount.toFixed(2)),
-            currency_id: "BRL",
-          },
-        ],
-        back_urls: {
-          success: backUrl + "?status=success",
-          failure: backUrl + "?status=failure",
-          pending: backUrl + "?status=pending",
+    if (args.plan === "monthly" && args.method === "cc") {
+      // Create a Preapproval (Recurring Subscription) for Credit Card
+      // IMPORTANT: In Sandbox, using a real email can cause the "Orange Error Page".
+      // We force a test email if testMode is active.
+      const testPayerEmail = args.testMode ? `test_user_${Math.floor(Math.random() * 1000000)}@testuser.com` : payerEmail;
+      
+      const startDate = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // +10 minutes
+      const endDate = new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString(); // 2 years
+
+      const body = {
+        reason: `Assinatura Food Pronto Mensal ${args.testMode ? '(TEST)' : ''}`,
+        auto_recurring: {
+          frequency: 1,
+          frequency_type: "months",
+          transaction_amount: Number(args.totalAmount.toFixed(2)),
+          currency_id: "BRL",
+          start_date: startDate,
+          end_date: endDate,
         },
-        auto_return: "approved",
+        back_url: backUrl,
         external_reference: extRef,
-        notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
-      }),
-    });
+        payer_email: testPayerEmail,
+        status: "pending"
+      };
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("MP Preference Error:", errorText);
-      throw new ConvexError(`Falha ao gerar link de paiement (MP: ${errorText})`);
+      console.log("MP Preapproval Request (v1.7):", JSON.stringify(body));
+
+      const response = await fetch("https://api.mercadopago.com/preapproval", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      console.log("MP Preapproval Response (v1.7):", JSON.stringify(data));
+
+      if (!response.ok) {
+        throw new ConvexError(`Falha ao gerar link de assinatura (MP: ${JSON.stringify(data)})`);
+      }
+
+      checkoutUrl = data.init_point;
+    } else {
+      // Create a Checkout Preference for Annual or PIX
+      const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: [
+            {
+              title: args.plan === "annual" ? "Assinatura Anual - Food Pronto" : "Assinatura Mensal - Food Pronto",
+              quantity: 1,
+              unit_price: Number(args.totalAmount.toFixed(2)),
+              currency_id: "BRL",
+            },
+          ],
+          back_urls: {
+            success: backUrl + "?status=success",
+            failure: backUrl + "?status=failure",
+            pending: backUrl + "?status=pending",
+          },
+          auto_return: "approved",
+          external_reference: extRef,
+          notification_url: "https://www.foodpronto.com.br/api/webhooks/billing",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new ConvexError(`Falha ao gerar link de paiement (MP: ${errorText})`);
+      }
+
+      const data = await response.json();
+      checkoutUrl = data.init_point;
     }
-
-    const data = await response.json();
-    checkoutUrl = data.init_point;
-
     return checkoutUrl;
   },
 });
