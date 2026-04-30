@@ -59,8 +59,9 @@ export const createCheckoutUrl = action({
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
-          transaction_amount: Number(args.totalAmount.toFixed(2)),
+          transaction_amount: 10,
           currency_id: "BRL",
+          billing_day: 1,
         },
         payer_email: payerEmail,
         back_url: "https://foodpronto.com.br",
