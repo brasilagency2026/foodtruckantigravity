@@ -11,10 +11,16 @@ export const createCheckoutUrl = action({
     voucherCode: v.optional(v.string()),
     totalAmount: v.number(), // The final price after discounts
     payerEmail: v.optional(v.string()), // Optional override for MP email
+    testMode: v.optional(v.boolean()), // If true, use sandbox credentials
   },
   handler: async (ctx, args) => {
-    console.log("Billing Action: createCheckoutUrl v1.2", { plan: args.plan, method: args.method });
-    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim();
+    console.log("Billing Action: createCheckoutUrl v1.3", { plan: args.plan, method: args.method, testMode: args.testMode });
+    
+    // Use test token if testMode is active
+    const accessToken = (args.testMode && process.env.MERCADO_PAGO_ACCESS_TOKEN_TEST)
+      ? process.env.MERCADO_PAGO_ACCESS_TOKEN_TEST?.trim()
+      : process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim();
+      
     if (!accessToken) {
       throw new ConvexError("Configuração do Mercado Pago incompleta (Token ausente).");
     }

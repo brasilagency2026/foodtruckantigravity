@@ -20,6 +20,7 @@ export default function AssinaturaPage() {
   const [voucherStatus, setVoucherStatus] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
   const [discount, setDiscount] = useState(0); // e.g., 10 for 10%
   const [mpEmail, setMpEmail] = useState(""); // Email for Mercado Pago account
+  const [testMode, setTestMode] = useState(false); // Enable Sandbox mode
 
   const plans = {
     monthly: { name: "Mensal", price: 10 },
@@ -69,6 +70,7 @@ export default function AssinaturaPage() {
         voucherCode: voucherStatus === "valid" ? voucherCode : undefined,
         totalAmount: calculateTotal(),
         payerEmail: mpEmail || undefined, // Use the manually entered email
+        testMode: testMode, // Pass the test mode flag
       });
 
       if (checkoutUrl) {
@@ -177,6 +179,20 @@ export default function AssinaturaPage() {
 
         {/* Right Col: Summary & Checkout */}
         <div className="space-y-6">
+          {/* Admin/Debug: Sandbox Mode Toggle */}
+          <div className="bg-yellow-500/10 p-4 rounded-xl border border-yellow-500/30 flex items-center justify-between shadow-lg">
+            <div>
+              <h3 className="text-yellow-500 font-bold text-sm">Modo de Teste (Sandbox)</h3>
+              <p className="text-[10px] text-yellow-500/70">Use para validar o fluxo com cartões de teste.</p>
+            </div>
+            <button 
+              onClick={() => setTestMode(!testMode)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-md ${testMode ? 'bg-yellow-500 text-black' : 'bg-gray-800 text-gray-400 border border-white/10'}`}
+            >
+              {testMode ? "ATIVADO" : "DESATIVADO"}
+            </button>
+          </div>
+
           <div className="bg-[#16162a] p-6 rounded-xl border border-white/5 shadow-lg sticky top-6">
             <h2 className="text-xl font-bold mb-4">Resumo do Pedido</h2>
             

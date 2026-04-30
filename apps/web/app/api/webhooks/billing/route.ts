@@ -22,9 +22,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
+    // Determine which token to use (Sandbox or Production)
+    const isLive = data?.live_mode !== false; // If explicitly false, it's sandbox
+    const accessToken = isLive 
+      ? process.env.MERCADO_PAGO_ACCESS_TOKEN 
+      : (process.env.MERCADO_PAGO_ACCESS_TOKEN_TEST || process.env.MERCADO_PAGO_ACCESS_TOKEN);
+
     if (!accessToken) {
-      console.error("MERCADO_PAGO_ACCESS_TOKEN is missing.");
+      console.error(`MERCADO_PAGO_ACCESS_TOKEN${!isLive ? '_TEST' : ''} is missing.`);
       return NextResponse.json({ ok: true });
     }
 
