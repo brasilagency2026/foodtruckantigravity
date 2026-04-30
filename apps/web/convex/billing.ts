@@ -65,9 +65,6 @@ export const createCheckoutUrl = action({
         back_url: backUrl,
         external_reference: extRef,
         payer_email: finalPayerEmail,
-        payer: {
-          first_name: firstName,
-        },
       };
 
       console.log("MP Preapproval Request (v1.9):", JSON.stringify(body));
