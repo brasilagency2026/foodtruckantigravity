@@ -55,16 +55,17 @@ export const createCheckoutUrl = action({
       const finalPayerEmail = payerEmail;
       
       const body = {
-        reason: "Assinatura Food Pronto",
+        reason: "Assinatura Food Pronto (Teste Prod)",
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
-          transaction_amount: 10,
+          transaction_amount: 1,
           currency_id: "BRL",
-          billing_day: 1,
         },
         payer_email: payerEmail,
-        back_url: "https://foodpronto.com.br",
+        back_url: backUrl,
+        external_reference: extRef,
+        status: "pending",
       };
 
       console.log("MP Preapproval Request (v1.9):", JSON.stringify(body));
