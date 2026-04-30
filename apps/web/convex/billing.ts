@@ -39,7 +39,7 @@ export const createCheckoutUrl = action({
     }
     
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    if (!identity && !args.payerEmail) {
       throw new ConvexError("Sessão expirada. Por favor, faça login novamente.");
     }
     
