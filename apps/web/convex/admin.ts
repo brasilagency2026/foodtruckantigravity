@@ -15,7 +15,7 @@ export const updateFoodTruckStatus = mutation({
     id: v.id("foodTrucks"),
     approvalStatus: v.optional(v.union(v.literal("pending"), v.literal("approved"), v.literal("rejected"))),
     isActive: v.optional(v.boolean()),
-    subscriptionStatus: v.optional(v.union(v.literal("trial"), v.literal("active"), v.literal("past_due"), v.literal("canceled"), v.literal("inactive"))),
+    subscriptionStatus: v.optional(v.union(v.literal("trial"), v.literal("active"), v.literal("past_due"), v.literal("canceled"))),
     trialEndsAt: v.optional(v.number()),
     nextPaymentAt: v.optional(v.number()),
   },
