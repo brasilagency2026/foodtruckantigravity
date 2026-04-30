@@ -61,6 +61,7 @@ export const createCheckoutUrl = action({
           frequency_type: "months",
           transaction_amount: Number(args.totalAmount.toFixed(2)),
           currency_id: "BRL",
+          end_date: "2030-12-31T23:59:59.000Z",
         },
         back_url: backUrl,
         external_reference: extRef,
