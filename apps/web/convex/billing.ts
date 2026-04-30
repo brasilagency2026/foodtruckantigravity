@@ -54,11 +54,6 @@ export const createCheckoutUrl = action({
       // We use the email provided by the user to avoid "Email mismatch" errors.
       const finalPayerEmail = payerEmail;
       
-      // Precise start_date (ISO 8601 without ms)
-      const startDate = new Date();
-      startDate.setSeconds(0, 0);
-      const startDateStr = startDate.toISOString().split('.')[0] + "Z";
-      
       const body = {
         reason: `Assinatura Food Pronto Mensal`,
         auto_recurring: {
@@ -66,7 +61,6 @@ export const createCheckoutUrl = action({
           frequency_type: "months",
           transaction_amount: Number(args.totalAmount.toFixed(2)),
           currency_id: "BRL",
-          start_date: startDateStr,
         },
         back_url: backUrl,
         external_reference: extRef,
@@ -74,7 +68,6 @@ export const createCheckoutUrl = action({
         payer: {
           first_name: firstName,
         },
-        status: "pending",
       };
 
       console.log("MP Preapproval Request (v1.9):", JSON.stringify(body));
