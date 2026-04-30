@@ -48,8 +48,8 @@ export const createCheckoutUrl = action({
 
     if (args.plan === "monthly" && args.method === "cc") {
       // Create a Preapproval (Recurring Subscription) for Credit Card
-      // Extreme simplification to avoid Mercado Pago 500 Internal Server Errors
-      const testPayerEmail = args.testMode ? `user_test_${Math.floor(Math.random() * 10000)}@test.com` : payerEmail;
+      // We use the email provided by the user to avoid "Email mismatch" errors.
+      const finalPayerEmail = payerEmail;
       
       const body = {
         reason: `Assinatura Food Pronto Mensal`,
@@ -61,10 +61,10 @@ export const createCheckoutUrl = action({
         },
         back_url: backUrl,
         external_reference: extRef,
-        payer_email: testPayerEmail,
+        payer_email: finalPayerEmail,
       };
 
-      console.log("MP Preapproval Request (v1.8):", JSON.stringify(body));
+      console.log("MP Preapproval Request (v1.9):", JSON.stringify(body));
 
       const response = await fetch("https://api.mercadopago.com/preapproval", {
         method: "POST",
@@ -76,7 +76,7 @@ export const createCheckoutUrl = action({
       });
 
       const data = await response.json();
-      console.log("MP Preapproval Response (v1.8):", JSON.stringify(data));
+      console.log("MP Preapproval Response (v1.9):", JSON.stringify(data));
 
       if (!response.ok) {
         throw new ConvexError(`Falha ao gerar link de assinatura (MP: ${JSON.stringify(data)})`);
