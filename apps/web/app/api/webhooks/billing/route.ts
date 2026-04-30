@@ -22,14 +22,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    // Determine which token to use (Sandbox or Production)
     const isLive = data?.live_mode !== false; // If explicitly false, it's sandbox
+    console.log(`Billing Webhook: Received ${data.type || "unknown"} notification. live_mode: ${isLive}`);
+
     const accessToken = isLive 
       ? process.env.MERCADO_PAGO_ACCESS_TOKEN 
       : (process.env.MERCADO_PAGO_ACCESS_TOKEN_TEST || process.env.MERCADO_PAGO_ACCESS_TOKEN);
 
     if (!accessToken) {
-      console.error(`MERCADO_PAGO_ACCESS_TOKEN${!isLive ? '_TEST' : ''} is missing.`);
+      console.error(`Billing Webhook: ERROR - MERCADO_PAGO_ACCESS_TOKEN${!isLive ? '_TEST' : ''} is missing.`);
       return NextResponse.json({ ok: true });
     }
 
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
     let paymentAmount = null;
 
     if (data.type === "payment" || data?.topic === "payment" || data?.action?.includes("payment")) {
+      console.log(`Billing Webhook: Fetching payment ${paymentId}...`);
       const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -49,25 +51,30 @@ export async function POST(req: NextRequest) {
         externalReference = payment.external_reference;
         paymentAmount = payment.transaction_amount;
         mpPreapprovalId = payment.metadata?.preapproval_id || payment.order?.id; 
-        // Note: Mercado Pago sometimes stores preapproval_id in different fields depending on the integration.
+        console.log(`Billing Webhook: Payment details - Status: ${paymentStatus}, Ref: ${externalReference}`);
+      } else {
+        console.error(`Billing Webhook: Failed to fetch payment ${paymentId}. Status: ${mpRes.status}`);
       }
     } else if (data.type === "subscription_preapproval" || data.type === "subscription_preapproval_plan") {
-      // Preapproval webhook
+      console.log(`Billing Webhook: Fetching preapproval ${paymentId}...`);
       const mpRes = await fetch(`https://api.mercadopago.com/preapproval/${paymentId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (mpRes.ok) {
         const preapproval = await mpRes.json();
-        paymentStatus = preapproval.status; // "authorized" means it's active
+        paymentStatus = preapproval.status;
         externalReference = preapproval.external_reference;
         paymentAmount = preapproval.auto_recurring?.transaction_amount;
         mpPreapprovalId = preapproval.id;
+        console.log(`Billing Webhook: Preapproval details - Status: ${paymentStatus}, Ref: ${externalReference}`);
+      } else {
+        console.error(`Billing Webhook: Failed to fetch preapproval ${paymentId}. Status: ${mpRes.status}`);
       }
     }
 
     if (paymentStatus === "approved" || paymentStatus === "authorized") {
       if (externalReference) {
-        console.log(`Billing Webhook: Approved for ${externalReference}`);
+        console.log(`Billing Webhook: Triggering Convex mutation for ${externalReference}`);
         await convex.mutation(api.billing.handleBillingWebhook, {
           externalReference: externalReference,
           mpPaymentId: String(paymentId),
