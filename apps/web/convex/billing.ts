@@ -263,6 +263,7 @@ export const checkPaymentStatus = action({
       }
 
       const payment = await response.json();
+      console.log(`Payment ${args.paymentId} status: ${payment.status}`);
       if (payment.status === "approved" || payment.status === "authorized") {
         await ctx.runMutation(api.billing.handleBillingWebhook, {
           externalReference: payment.external_reference,
