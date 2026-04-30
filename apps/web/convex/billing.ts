@@ -14,7 +14,7 @@ export const createCheckoutUrl = action({
     testMode: v.optional(v.boolean()), // If true, use sandbox credentials
   },
   handler: async (ctx, args) => {
-    console.log("Billing Action: createCheckoutUrl v1.3", { plan: args.plan, method: args.method, testMode: args.testMode });
+    console.log("Billing Action: createCheckoutUrl v1.6", { plan: args.plan, method: args.method, testMode: args.testMode });
     
     // Use test token if testMode is active
     const accessToken = (args.testMode && process.env.MERCADO_PAGO_ACCESS_TOKEN_TEST)
