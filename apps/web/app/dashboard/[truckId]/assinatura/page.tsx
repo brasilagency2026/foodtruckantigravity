@@ -131,61 +131,79 @@ export default function AssinaturaPage() {
       <div className="grid md:grid-cols-2 gap-8">
         
         {/* Left Col: Plan Selection */}
-        <div className="space-y-6">
-          <div className="bg-[#16162a] p-6 rounded-xl border border-white/5 shadow-lg">
-            <h2 className="text-xl font-bold mb-4">1. Escolha seu Plano</h2>
+        <div className="space-y-8">
+          <div className="bg-[#16162a] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#FF6B35] text-black text-sm">1</span>
+              Escolha seu Plano
+            </h2>
             
-            <div className="space-y-4">
-              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === "monthly" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
+            <div className="space-y-5">
+              <label className={`group block p-5 rounded-xl border-2 cursor-pointer transition-all duration-300 ${selectedPlan === "monthly" ? "border-[#FF6B35] bg-[#FF6B35]/5 shadow-[0_0_20px_rgba(255,107,53,0.1)]" : "border-white/5 bg-white/5 hover:border-white/20"}`}>
                 <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <input type="radio" name="plan" checked={selectedPlan === "monthly"} onChange={() => setSelectedPlan("monthly")} className="w-5 h-5 accent-[#FF6B35]"/>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedPlan === "monthly" ? "border-[#FF6B35]" : "border-gray-600"}`}>
+                      {selectedPlan === "monthly" && <div className="w-3 h-3 rounded-full bg-[#FF6B35]"></div>}
+                    </div>
+                    <input type="radio" name="plan" checked={selectedPlan === "monthly"} onChange={() => setSelectedPlan("monthly")} className="hidden"/>
                     <span className="font-bold text-lg">Plano Mensal</span>
                   </div>
-                  <span className="text-xl font-bold">R$ {plans.monthly.price.toFixed(2).replace('.', ',')}</span>
+                  <span className="text-xl font-bold text-[#FF6B35]">R$ {plans.monthly.price.toFixed(2).replace('.', ',')}</span>
                 </div>
               </label>
 
-              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${selectedPlan === "annual" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
+              <label className={`group block p-5 rounded-xl border-2 cursor-pointer transition-all duration-300 ${selectedPlan === "annual" ? "border-[#FF6B35] bg-[#FF6B35]/5 shadow-[0_0_20px_rgba(255,107,53,0.1)]" : "border-white/5 bg-white/5 hover:border-white/20"}`}>
                 <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <input type="radio" name="plan" checked={selectedPlan === "annual"} onChange={() => setSelectedPlan("annual")} className="w-5 h-5 accent-[#FF6B35]"/>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedPlan === "annual" ? "border-[#FF6B35]" : "border-gray-600"}`}>
+                      {selectedPlan === "annual" && <div className="w-3 h-3 rounded-full bg-[#FF6B35]"></div>}
+                    </div>
+                    <input type="radio" name="plan" checked={selectedPlan === "annual"} onChange={() => setSelectedPlan("annual")} className="hidden"/>
                     <span className="font-bold text-lg">Plano Anual</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-xl font-bold">R$ {plans.annual.price.toFixed(2).replace('.', ',')}</span><br/>
-                    <span className="text-xs text-green-400">Equivale a R$ {(plans.annual.price / 12).toFixed(2).replace('.', ',')}/mês</span>
+                    <span className="text-xl font-bold text-[#FF6B35]">R$ {plans.annual.price.toFixed(2).replace('.', ',')}</span>
+                    <div className="text-[10px] text-green-400 font-medium mt-1">Economia de 16%</div>
                   </div>
                 </div>
               </label>
             </div>
           </div>
 
-          <div className="bg-[#16162a] p-6 rounded-xl border border-white/5 shadow-lg">
-            <h2 className="text-xl font-bold mb-4">2. Forma de Pagamento</h2>
+          <div className="bg-[#16162a] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#FF6B35] text-black text-sm">2</span>
+              Forma de Pagamento
+            </h2>
             
-            <div className="space-y-4">
+            <div className="space-y-5">
               {selectedPlan === "monthly" && (
-                <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${paymentMethod === "cc" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
-                  <div className="flex items-center gap-3">
-                    <input type="radio" name="method" checked={paymentMethod === "cc"} onChange={() => setPaymentMethod("cc")} className="w-5 h-5 accent-[#FF6B35]"/>
+                <label className={`group block p-5 rounded-xl border-2 cursor-pointer transition-all duration-300 ${paymentMethod === "cc" ? "border-[#FF6B35] bg-[#FF6B35]/5 shadow-[0_0_20px_rgba(255,107,53,0.1)]" : "border-white/5 bg-white/5 hover:border-white/20"}`}>
+                  <div className="flex items-start gap-4">
+                    <div className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${paymentMethod === "cc" ? "border-[#FF6B35]" : "border-gray-600"}`}>
+                      {paymentMethod === "cc" && <div className="w-3 h-3 rounded-full bg-[#FF6B35]"></div>}
+                    </div>
+                    <input type="radio" name="method" checked={paymentMethod === "cc"} onChange={() => setPaymentMethod("cc")} className="hidden"/>
                     <div>
-                      <span className="font-bold text-lg block">Cartão de Crédito</span>
-                      <span className="text-sm text-gray-400">Renovação automática todo mês. Sem preocupações.</span>
+                      <span className="font-bold text-lg block mb-1">Cartão de Crédito</span>
+                      <span className="text-sm text-gray-400 leading-relaxed">Renovação automática todo mês. Sem preocupações.</span>
                     </div>
                   </div>
                 </label>
               )}
 
-              <label className={`block p-4 rounded-lg border-2 cursor-pointer transition-colors ${paymentMethod === "pix" ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-white/10 hover:border-white/20"}`}>
-                <div className="flex items-center gap-3">
-                  <input type="radio" name="method" checked={paymentMethod === "pix"} onChange={() => setPaymentMethod("pix")} className="w-5 h-5 accent-[#FF6B35]"/>
+              <label className={`group block p-5 rounded-xl border-2 cursor-pointer transition-all duration-300 ${paymentMethod === "pix" ? "border-[#FF6B35] bg-[#FF6B35]/5 shadow-[0_0_20px_rgba(255,107,53,0.1)]" : "border-white/5 bg-white/5 hover:border-white/20"}`}>
+                <div className="flex items-start gap-4">
+                  <div className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${paymentMethod === "pix" ? "border-[#FF6B35]" : "border-gray-600"}`}>
+                    {paymentMethod === "pix" && <div className="w-3 h-3 rounded-full bg-[#FF6B35]"></div>}
+                  </div>
+                  <input type="radio" name="method" checked={paymentMethod === "pix"} onChange={() => setPaymentMethod("pix")} className="hidden"/>
                   <div>
-                    <span className="font-bold text-lg block">PIX</span>
-                    <span className="text-sm text-gray-400">
+                    <span className="font-bold text-lg block mb-1">PIX</span>
+                    <span className="text-sm text-gray-400 leading-relaxed">
                       {selectedPlan === "monthly" 
                         ? "Renovação manual. Enviaremos um lembrete todo mês para você gerar o PIX." 
-                        : "Pagamento único anual."}
+                        : "Pagamento único anual rápido e seguro."}
                     </span>
                   </div>
                 </div>
@@ -197,17 +215,17 @@ export default function AssinaturaPage() {
         {/* Right Col: Summary & Checkout */}
         <div className="space-y-6">
 
-          <div className="bg-[#16162a] p-6 rounded-xl border border-white/5 shadow-lg sticky top-6">
-            <h2 className="text-xl font-bold mb-4">Resumo do Pedido</h2>
+          <div className="bg-[#16162a] p-8 rounded-2xl border border-white/10 shadow-2xl sticky top-6 backdrop-blur-sm">
+            <h2 className="text-xl font-bold mb-6">Resumo do Pedido</h2>
             
-            <div className="flex justify-between text-gray-300 mb-2">
-              <span>{plans[selectedPlan].name}</span>
-              <span>R$ {plans[selectedPlan].price.toFixed(2).replace('.', ',')}</span>
+            <div className="flex justify-between text-gray-300 mb-4 pb-4 border-b border-white/5">
+              <span className="text-gray-400">{plans[selectedPlan].name === "Mensal" ? "Plano Mensal" : "Plano Anual"}</span>
+              <span className="font-bold">R$ {plans[selectedPlan].price.toFixed(2).replace('.', ',')}</span>
             </div>
 
-            <div className="my-6">
-              <label className="block text-sm text-gray-400 mb-2">Código do Parceiro (Voucher)</label>
-              <div className="flex gap-2">
+            <div className="my-8">
+              <label className="block text-sm text-gray-400 mb-3">Código do Parceiro (Voucher)</label>
+              <div className="flex gap-3">
                 <input 
                   type="text" 
                   value={voucherCode}
@@ -217,37 +235,36 @@ export default function AssinaturaPage() {
                     setDiscount(0);
                   }}
                   placeholder="Ex: CARLOS10"
-                  className="bg-[#0f0f1a] border border-white/20 rounded-lg px-4 py-2 w-full text-white uppercase"
+                  className="bg-[#0f0f1a] border border-white/10 rounded-xl px-5 py-3 w-full text-white uppercase focus:border-[#FF6B35] transition-all outline-none"
                 />
                 <button 
                   onClick={handleApplyVoucher}
-                  className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg font-bold transition-colors"
+                  className="bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-xl font-bold transition-all border border-white/5"
                 >
                   {voucherStatus === "validating" ? "..." : "Aplicar"}
                 </button>
               </div>
-              {voucherStatus === "valid" && <p className="text-green-400 text-sm mt-2">✅ Cupom aplicado! 10% de desconto.</p>}
-              {voucherStatus === "invalid" && <p className="text-red-400 text-sm mt-2">❌ Cupom inválido.</p>}
+              {voucherStatus === "valid" && <p className="text-green-400 text-sm mt-3 flex items-center gap-1">✨ Cupom aplicado com sucesso!</p>}
+              {voucherStatus === "invalid" && <p className="text-red-400 text-sm mt-3 flex items-center gap-1">❌ Cupom não encontrado.</p>}
             </div>
 
             {paymentMethod === "cc" && selectedPlan === "monthly" && (
-              <div className="mb-6 bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
-                <label className="block text-sm font-bold text-blue-300 mb-2 italic">
-                  Email da sua conta Mercado Pago:
+              <div className="mb-8 bg-blue-500/5 p-5 rounded-xl border border-blue-500/20">
+                <label className="block text-xs font-bold text-blue-300 mb-3 uppercase tracking-wider">
+                  Email da sua conta Mercado Pago
                 </label>
                 <input 
                   type="email" 
                   value={mpEmail}
                   onChange={(e) => setMpEmail(e.target.value)}
-                  placeholder="Seu email no Mercado Pago"
-                  className="bg-[#0f0f1a] border border-blue-500/30 rounded-lg px-4 py-2 w-full text-white"
+                  placeholder="seu-email@exemplo.com"
+                  className="bg-[#0f0f1a] border border-blue-500/20 rounded-xl px-5 py-3 w-full text-white focus:border-blue-500 transition-all outline-none"
                 />
-                <p className="text-[11px] text-gray-400 mt-3 leading-relaxed">
-                  * <strong>Atenção:</strong> Informe o email que você utiliza na sua conta <strong>Mercado Pago</strong>. 
-                  <br/>(Este email pode ser diferente do que você usou para se cadastrar no Food Pronto).
-                  <br/><br/>
-                  Se você não tem conta no Mercado Pago, use seu email principal para que o sistema possa criar seu acesso de assinante corretamente.
-                </p>
+                <div className="mt-4 p-3 bg-blue-500/10 rounded-lg">
+                  <p className="text-[10px] text-blue-200/80 leading-relaxed italic">
+                    <strong>💡 Dica:</strong> Use o mesmo email da sua conta Mercado Pago para evitar erros. Se não tiver conta, use seu email principal.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -258,14 +275,12 @@ export default function AssinaturaPage() {
               </div>
             )}
 
-            <div className="flex justify-between items-end mb-8 mt-4 pt-4 border-t border-white/10">
-              <span className="text-lg font-bold">Total a Pagar</span>
+            <div className="flex justify-between items-center mb-10 mt-6 pt-6 border-t border-white/10">
+              <span className="text-lg font-medium text-gray-400">Total a Pagar</span>
               <div className="text-right">
-                <span className="text-3xl font-bold text-[#FF6B35]">R$ {calculateTotal().toFixed(2).replace('.', ',')}</span>
-                <span className="block text-xs text-gray-400">
-                  {selectedPlan === "monthly" && paymentMethod === "cc" ? "Cobrado mensalmente" : ""}
-                  {selectedPlan === "monthly" && paymentMethod === "pix" ? "Válido por 30 dias" : ""}
-                  {selectedPlan === "annual" ? "Válido por 365 dias" : ""}
+                <span className="text-4xl font-black text-[#FF6B35]">R$ {calculateTotal().toFixed(2).replace('.', ',')}</span>
+                <span className="block text-[10px] text-gray-500 uppercase tracking-widest mt-1">
+                  {selectedPlan === "monthly" && paymentMethod === "cc" ? "Cobrança Automática" : "Pagamento Único"}
                 </span>
               </div>
             </div>
@@ -273,12 +288,17 @@ export default function AssinaturaPage() {
             <button 
               onClick={handleCheckout}
               disabled={isProcessing}
-              className="w-full bg-[#FF6B35] hover:bg-[#e05a2b] text-white font-bold py-4 rounded-xl text-lg transition-transform hover:scale-[1.02] shadow-lg shadow-[#FF6B35]/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#FF6B35] hover:bg-[#e05a2b] text-white font-bold py-5 rounded-2xl text-xl transition-all hover:shadow-[0_10px_30px_rgba(255,107,53,0.3)] active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
             >
-              {isProcessing ? "Gerando pagamento..." : "🔒 Pagar com Mercado Pago"}
+              {isProcessing ? "Processando..." : (
+                <>
+                  <span>🔒</span>
+                  Pagar com Mercado Pago
+                </>
+              )}
             </button>
-            <div className="text-center mt-4 text-xs text-gray-500">
-              Pagamento 100% seguro.
+            <div className="text-center mt-6 text-xs text-gray-500 flex items-center justify-center gap-1">
+              <span>🛡️</span> Pagamento 100% seguro via Mercado Pago.
             </div>
           </div>
         </div>
