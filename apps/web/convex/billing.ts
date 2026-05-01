@@ -55,7 +55,7 @@ export const createCheckoutUrl = action({
       const finalPayerEmail = payerEmail;
       
       const body = {
-        reason: "Assinatura Food Pronto",
+        reason: "Serviço Food Pronto",
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
@@ -70,7 +70,7 @@ export const createCheckoutUrl = action({
 
       console.log("MP Preapproval Request (v1.9):", JSON.stringify(body));
 
-      const response = await fetch("https://api.mercadopago.com/preapproval", {
+      const response = await fetch("https://api.mercadopago.com/v1/preapproval", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
