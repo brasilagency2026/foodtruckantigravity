@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function PricingClient() {
   const [annual, setAnnual] = useState(false);
-  const monthly = 10;
-  const annualMonthly = 8.33;
+  const monthly = 200;
+  const annualMonthly = 160;
   const price = annual ? annualMonthly : monthly;
 
   return (
@@ -292,7 +292,7 @@ export default function PricingClient() {
               Quero testar grátis por 30 dias →
             </Link>
             <p className="pr-final-note">
-              Depois apenas R$ 10/mês. Cancele quando quiser.
+              Depois apenas R$ 200/mês. Cancele quando quiser.
             </p>
           </div>
         </section>
@@ -382,7 +382,7 @@ const FAQ = [
   },
   {
     q: "Como funciona o primeiro mês grátis?",
-    a: "Você cadastra seu truck, cria o cardápio e começa a receber pedidos. São 30 dias completos sem cobrar nada, sem precisar de cartão de crédito. Depois, o plano é R$ 10/mês (ou R$ 8,33/mês no plano anual).",
+    a: "Você cadastra seu truck, cria o cardápio e começa a receber pedidos. São 30 dias completos sem cobrar nada, sem precisar de cartão de crédito. Depois, o plano é R$ 200/mês (ou R$ 160/mês no plano anual).",
   },
   {
     q: "Posso cancelar a qualquer momento?",
