@@ -133,9 +133,9 @@ export default function AssinaturaPage() {
         {/* Left Col: Plan Selection */}
         <div className="space-y-8">
           <div className="bg-[#16162a] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#FF6B35] text-black text-sm">1</span>
-              Escolha seu Plano
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#FF6B35] text-black text-sm font-black shrink-0">1</span>
+              <span>Escolha seu Plano</span>
             </h2>
             
             <div className="space-y-5">
@@ -171,9 +171,9 @@ export default function AssinaturaPage() {
           </div>
 
           <div className="bg-[#16162a] p-8 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-sm">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#FF6B35] text-black text-sm">2</span>
-              Forma de Pagamento
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#FF6B35] text-black text-sm font-black shrink-0">2</span>
+              <span>Forma de Pagamento</span>
             </h2>
             
             <div className="space-y-5">
@@ -186,7 +186,7 @@ export default function AssinaturaPage() {
                     <input type="radio" name="method" checked={paymentMethod === "cc"} onChange={() => setPaymentMethod("cc")} className="hidden"/>
                     <div>
                       <span className="font-bold text-lg block mb-1">Cartão de Crédito</span>
-                      <span className="text-sm text-gray-400 leading-relaxed">Renovação automática todo mês. Sem preocupações.</span>
+                      <span className="text-sm text-gray-400 leading-relaxed block">Renovação automática todo mês. Sem preocupações.</span>
                     </div>
                   </div>
                 </label>
@@ -200,7 +200,7 @@ export default function AssinaturaPage() {
                   <input type="radio" name="method" checked={paymentMethod === "pix"} onChange={() => setPaymentMethod("pix")} className="hidden"/>
                   <div>
                     <span className="font-bold text-lg block mb-1">PIX</span>
-                    <span className="text-sm text-gray-400 leading-relaxed">
+                    <span className="text-sm text-gray-400 leading-relaxed block">
                       {selectedPlan === "monthly" 
                         ? "Renovação manual. Enviaremos um lembrete todo mês para você gerar o PIX." 
                         : "Pagamento único anual rápido e seguro."}
@@ -279,7 +279,7 @@ export default function AssinaturaPage() {
               <span className="text-lg font-medium text-gray-400">Total a Pagar</span>
               <div className="text-right">
                 <span className="text-4xl font-black text-[#FF6B35]">R$ {calculateTotal().toFixed(2).replace('.', ',')}</span>
-                <span className="block text-[10px] text-gray-500 uppercase tracking-widest mt-1">
+                <span className="block text-[10px] text-gray-500 uppercase tracking-widest mt-2">
                   {selectedPlan === "monthly" && paymentMethod === "cc" ? "Cobrança Automática" : "Pagamento Único"}
                 </span>
               </div>
