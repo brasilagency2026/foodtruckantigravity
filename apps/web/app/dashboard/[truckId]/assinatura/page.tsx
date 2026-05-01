@@ -255,8 +255,11 @@ export default function AssinaturaPage() {
                   placeholder="Seu email no Mercado Pago"
                   className="bg-[#0f0f1a] border border-blue-500/30 rounded-lg px-4 py-2 w-full text-white"
                 />
-                <p className="text-[10px] text-gray-400 mt-2">
-                  * Importante: Use o mesmo email que você usa para entrar no Mercado Pago para evitar erros.
+                <p className="text-[11px] text-gray-400 mt-3 leading-relaxed">
+                  * <strong>Atenção:</strong> Informe o email que você utiliza na sua conta <strong>Mercado Pago</strong>. 
+                  <br/>(Este email pode ser diferente do que você usou para se cadastrar no Food Pronto).
+                  <br/><br/>
+                  Se você não tem conta no Mercado Pago, use seu email principal para que o sistema possa criar seu acesso de assinante corretamente.
                 </p>
               </div>
             )}
