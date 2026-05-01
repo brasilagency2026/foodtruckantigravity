@@ -70,7 +70,7 @@ export const createCheckoutUrl = action({
 
       console.log("MP Preapproval Request (v1.9):", JSON.stringify(body));
 
-      const response = await fetch("https://api.mercadopago.com/v1/preapproval", {
+      const response = await fetch("https://api.mercadopago.com/preapproval", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
