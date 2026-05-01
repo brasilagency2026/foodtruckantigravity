@@ -20,7 +20,6 @@ export default function AssinaturaPage() {
   const [voucherStatus, setVoucherStatus] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
   const [discount, setDiscount] = useState(0); // e.g., 10 for 10%
   const [mpEmail, setMpEmail] = useState(""); // Email for Mercado Pago account
-  const [testMode, setTestMode] = useState(false); // Mode Production par défaut
 
   // Automatic Verification on return
   useEffect(() => {
@@ -77,17 +76,24 @@ export default function AssinaturaPage() {
   });
 
   const handleCheckout = async () => {
+    // Validação obrigatória do email para Cartão de Crédito
+    if (paymentMethod === "cc" && selectedPlan === "monthly") {
+      if (!mpEmail || mpEmail.trim() === "" || !mpEmail.includes("@")) {
+        alert("⚠️ Por favor, informe um email válido da sua conta Mercado Pago para prosseguir com o pagamento por cartão.");
+        return;
+      }
+    }
+
     setIsProcessing(true);
     try {
-      // Call the Convex mutation to generate the MercadoPago preference or preapproval link.
       const checkoutUrl = await convex.action(api.billing.createCheckoutUrl, {
         truckId: truckId as any,
         plan: selectedPlan,
         method: paymentMethod,
         voucherCode: voucherStatus === "valid" ? voucherCode : undefined,
         totalAmount: calculateTotal(),
-        payerEmail: mpEmail || undefined, // Use the manually entered email
-        testMode: testMode, // Pass the test mode flag
+        payerEmail: mpEmail.trim() || undefined,
+        testMode: false,
       });
 
       if (checkoutUrl) {
@@ -251,7 +257,7 @@ export default function AssinaturaPage() {
             {paymentMethod === "cc" && selectedPlan === "monthly" && (
               <div className="mb-8 bg-blue-500/5 p-5 rounded-xl border border-blue-500/20">
                 <label className="block text-xs font-bold text-blue-300 mb-3 uppercase tracking-wider">
-                  Email da sua conta Mercado Pago
+                  Email da sua conta Mercado Pago <span className="text-red-400">* (Obrigatório)</span>
                 </label>
                 <input 
                   type="email" 
