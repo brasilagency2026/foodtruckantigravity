@@ -29,7 +29,7 @@ export default function AssinaturaPage() {
       convex.action(api.billing.checkPaymentStatus, {
         paymentId: paymentId,
         truckId: truckId as any,
-        testMode: true,
+        testMode: false,
       }).then(res => {
         console.log("Verification result:", res);
       }).catch(err => {
@@ -39,8 +39,8 @@ export default function AssinaturaPage() {
   }, [truckId, searchParams, convex]);
 
   const plans = {
-    monthly: { name: "Mensal", price: 10 },
-    annual: { name: "Anual", price: 100.00 } // Testing price
+    monthly: { name: "Mensal", price: 200 },
+    annual: { name: "Anual", price: 1920.00 }
   };
 
   const handleApplyVoucher = async () => {
@@ -169,7 +169,7 @@ export default function AssinaturaPage() {
                   </div>
                   <div className="text-right">
                     <span className="text-xl font-bold text-[#FF6B35]">R$ {plans.annual.price.toFixed(2).replace('.', ',')}</span>
-                    <div className="text-[10px] text-green-400 font-medium mt-1">Economia de 16%</div>
+                    <div className="text-[10px] text-green-400 font-medium mt-1">Economia de 20%</div>
                   </div>
                 </div>
               </label>
