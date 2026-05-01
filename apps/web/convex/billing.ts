@@ -55,11 +55,11 @@ export const createCheckoutUrl = action({
       const finalPayerEmail = payerEmail;
       
       const body = {
-        reason: "Assinatura Food Pronto (Teste Prod)",
+        reason: "Assinatura Food Pronto",
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
-          transaction_amount: 1,
+          transaction_amount: Number(args.totalAmount.toFixed(2)),
           currency_id: "BRL",
         },
         payer_email: payerEmail,
