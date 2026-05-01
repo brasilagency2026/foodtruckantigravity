@@ -55,7 +55,7 @@ export const createCheckoutUrl = action({
       const finalPayerEmail = payerEmail;
       
       const body = {
-        reason: "Serviço Food Pronto",
+        reason: "Assinatura Food Pronto",
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
