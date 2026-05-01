@@ -16,7 +16,6 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        // Cloudflare R2 public bucket
         protocol: "https",
         hostname: "pub-*.r2.dev",
       },

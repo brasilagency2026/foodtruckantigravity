@@ -5,12 +5,13 @@ import { useRef, useEffect, useCallback } from "react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice, formatOrderStatus } from "shared/types";
+import { NativeBridge } from "../../lib/NativeBridge";
 
 function playNewOrderSound() {
+  // Always try web sound as fallback
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     const now = ctx.currentTime;
-    // Three ascending beeps
     [0, 0.15, 0.3].forEach((delay, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -25,6 +26,10 @@ function playNewOrderSound() {
     });
     setTimeout(() => ctx.close(), 1000);
   } catch {}
+
+  // Trigger Native Features
+  NativeBridge.vibrateNotification('success');
+  NativeBridge.scheduleNotification("Novo Pedido! 🍔", "Há um novo pedido pendente na cozinha.");
 }
 
 export default function CozinhaPage() {
@@ -174,9 +179,10 @@ export default function CozinhaPage() {
                   {order.status === "preparando" && (
                     <button
                       className="btn btn-ready"
-                      onClick={() =>
-                        updateStatus({ orderId: order._id, status: "pronto" })
-                      }
+                      onClick={() => {
+                        NativeBridge.vibrate('medium');
+                        updateStatus({ orderId: order._id, status: "pronto" });
+                      }}
                     >
                       🔔 Pronto!
                     </button>
