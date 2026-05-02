@@ -7,10 +7,7 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://www.foodpronto.com.br',
     cleartext: true,
-    allowNavigation: [
-      'www.foodpronto.com.br',
-      'foodpronto.com.br'
-    ]
+    allowNavigation: ['*']
   }
 };
 
