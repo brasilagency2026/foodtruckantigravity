@@ -6,7 +6,7 @@ App mobile (Android + iOS) + painel web para food trucks com cardápio digital, 
 
 | | Tecnologia |
 |---|---|
-| Mobile | React Native + Expo |
+| Mobile | Capacitor (Next.js Hybrid) |
 | Web (admin + homepage) | Next.js → Vercel |
 | Backend + DB | Convex (tempo real) |
 | Autenticação | Clerk |
@@ -20,8 +20,8 @@ App mobile (Android + iOS) + painel web para food trucks com cardápio digital, 
 ```
 food-truck-alert/
 ├── apps/
-│   ├── mobile/          # Expo — cliente e cozinha
-│   └── web/             # Next.js — homepage + admin
+│   ├── web/             # Next.js (homepage + admin) + Capacitor (Android/iOS)
+│   └── mobile/          # (Legacy) Projeto Expo anterior
 ├── packages/
 │   └── shared/
 │       ├── convex/      # schema + queries + mutations

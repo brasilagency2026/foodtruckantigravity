@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice, formatOrderStatus } from "shared/types";
@@ -42,6 +42,16 @@ export default function CozinhaPage() {
   );
 
   const prevOrderCount = useRef<number | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+
+  const handleEnableAlerts = async () => {
+    const granted = await NativeBridge.requestPermissions();
+    setHasPermission(granted);
+    if (granted) {
+      NativeBridge.vibrate('light');
+      NativeBridge.scheduleNotification("Alertas Ativados! ✅", "Você receberá avisos sonoros e vibrações.");
+    }
+  };
 
   useEffect(() => {
     if (!orders) return;
@@ -85,7 +95,18 @@ export default function CozinhaPage() {
     <main className="cozinha">
       <header className="cozinha-header">
         <h1>🍔 Painel da Cozinha</h1>
-        <span className="badge">{orders.length} pedidos ativos</span>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {hasPermission !== true && (
+            <button 
+              onClick={handleEnableAlerts}
+              className="btn"
+              style={{ background: '#FF6B35', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)' }}
+            >
+              🔔 Ativar Alertas (Sons/Vibração)
+            </button>
+          )}
+          <span className="badge">{orders.length} pedidos ativos</span>
+        </div>
       </header>
 
       <div className="orders-grid">

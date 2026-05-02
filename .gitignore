@@ -10,10 +10,8 @@ dist/
 build/
 *.tsbuildinfo
 
-# Expo / React Native
+# Expo / React Native (obsolete)
 .expo/
-ios/
-android/
 *.jks
 *.p8
 *.p12

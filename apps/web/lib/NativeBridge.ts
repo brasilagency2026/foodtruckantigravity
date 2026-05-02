@@ -44,18 +44,27 @@ export const NativeBridge = {
   },
 
   /**
+   * Request all necessary permissions for haptics and notifications
+   */
+  requestPermissions: async () => {
+    if (!Capacitor.isNativePlatform()) return true;
+
+    try {
+      const perm = await LocalNotifications.requestPermissions();
+      return perm.display === 'granted';
+    } catch (e) {
+      console.error('Permission request failed', e);
+      return false;
+    }
+  },
+
+  /**
    * Schedule a local notification (Android/iOS)
    */
   scheduleNotification: async (title: string, body: string, id: number = 1) => {
     if (!Capacitor.isNativePlatform()) return;
 
     try {
-      // Check permissions first
-      const perm = await LocalNotifications.checkPermissions();
-      if (perm.display !== 'granted') {
-        await LocalNotifications.requestPermissions();
-      }
-
       await LocalNotifications.schedule({
         notifications: [
           {
@@ -63,7 +72,7 @@ export const NativeBridge = {
             body,
             id,
             schedule: { at: new Date(Date.now() + 100) }, // almost instant
-            sound: 'alert.wav', // You can add custom sounds to android/app/src/main/res/raw
+            sound: 'alert.wav',
             actionTypeId: '',
             extra: null
           }
