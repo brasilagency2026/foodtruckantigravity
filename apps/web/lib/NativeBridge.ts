@@ -61,12 +61,24 @@ export const NativeBridge = {
     if (!Capacitor.isNativePlatform()) return;
 
     try {
+      // For Android 8.0+, we MUST create a channel with the custom sound
+      await LocalNotifications.createChannel({
+        id: soundName, // We use the sound name as channel ID for simplicity
+        name: soundName === 'kitchen_alert' ? 'Alertas de Cozinha' : 'Alertas de Retirada',
+        description: 'Canal para notificações com som personalizado',
+        importance: 5, // Max importance
+        visibility: 1,
+        sound: soundName,
+        vibration: true,
+      });
+
       await LocalNotifications.schedule({
         notifications: [
           {
             title,
             body,
             id,
+            channelId: soundName,
             schedule: { at: new Date(Date.now() + 100) },
             sound: soundName,
             actionTypeId: '',
