@@ -57,7 +57,7 @@ export const NativeBridge = {
   /**
    * Schedule a local notification (Android/iOS)
    */
-  scheduleNotification: async (title: string, body: string, soundName: string = 'alert.wav', id: number = 1) => {
+  scheduleNotification: async (title: string, body: string, soundName: string = 'alert', id: number = 1) => {
     if (!Capacitor.isNativePlatform()) return;
 
     try {

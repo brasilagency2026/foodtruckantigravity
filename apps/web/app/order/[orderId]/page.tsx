@@ -91,7 +91,7 @@ export default function OrderPage({
     if (prevStatus.current !== null && prevStatus.current !== "pronto" && order.status === "pronto") {
       playReadySound();
       NativeBridge.vibrateNotification();
-      NativeBridge.scheduleNotification("Seu pedido está pronto! ✅", "Retire-o agora no balcão.", "client_ready.wav");
+      NativeBridge.scheduleNotification("Seu pedido está pronto! ✅", "Retire-o agora no balcão.", "client_ready");
     }
     prevStatus.current = order.status;
   }, [order?.status]);
