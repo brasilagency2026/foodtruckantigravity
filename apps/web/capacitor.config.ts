@@ -7,7 +7,14 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://www.foodpronto.com.br',
     cleartext: true,
-    allowNavigation: ['*']
+    androidScheme: 'https',
+    allowNavigation: [
+      'www.foodpronto.com.br',
+      'foodpronto.com.br',
+      '*.foodpronto.com.br',
+      '*.convex.cloud',
+      '*.clerk.accounts.dev'
+    ]
   }
 };
 
