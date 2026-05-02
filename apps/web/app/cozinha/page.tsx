@@ -29,7 +29,7 @@ function playNewOrderSound() {
 
   // Trigger Native Features
   NativeBridge.vibrateNotification();
-  NativeBridge.scheduleNotification("Novo Pedido! 🍔", "Há um novo pedido pendente na cozinha.");
+  NativeBridge.scheduleNotification("Novo Pedido! 🍔", "Há um novo pedido pendente na cozinha.", "kitchen_alert.wav");
 }
 
 export default function CozinhaPage() {
@@ -202,6 +202,7 @@ export default function CozinhaPage() {
                       className="btn btn-ready"
                       onClick={() => {
                         NativeBridge.vibrate('medium');
+                        NativeBridge.scheduleNotification("Pedido Pronto! ✅", "O cliente foi notificado.", "client_ready.wav");
                         updateStatus({ orderId: order._id, status: "pronto" });
                       }}
                     >

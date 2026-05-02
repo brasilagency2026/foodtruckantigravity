@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
+import { NativeBridge } from "../../../lib/NativeBridge";
+import { useState } from "react";
 
 function playReadySound() {
   try {
@@ -82,11 +84,14 @@ export default function OrderPage({
   }, [order, searchParams, linkPayment, handlePayment]);
 
   const prevStatus = useRef<string | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!order) return;
     if (prevStatus.current !== null && prevStatus.current !== "pronto" && order.status === "pronto") {
       playReadySound();
+      NativeBridge.vibrateNotification();
+      NativeBridge.scheduleNotification("Seu pedido está pronto! ✅", "Retire-o agora no balcão.", "client_ready.wav");
     }
     prevStatus.current = order.status;
   }, [order?.status]);
@@ -122,6 +127,18 @@ export default function OrderPage({
         <div style={s.header}>
           <h1 style={s.title}>Acompanhar pedido</h1>
           <p style={s.orderCode}>#{orderId.slice(-4).toUpperCase()}</p>
+          {hasPermission !== true && (
+            <button 
+              onClick={async () => {
+                const granted = await NativeBridge.requestPermissions();
+                setHasPermission(granted);
+                if (granted) NativeBridge.vibrate('light');
+              }}
+              style={{ marginTop: 12, background: 'rgba(255,107,53,0.1)', color: '#FF6B35', border: '1px solid #FF6B35', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: 13 }}
+            >
+              🔔 Ativar avisos de retirada
+            </button>
+          )}
         </div>
 
         {/* Status principal */}
