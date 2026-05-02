@@ -6,6 +6,7 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice, formatOrderStatus } from "shared/types";
 import { NativeBridge } from "../../lib/NativeBridge";
+import { Capacitor } from "@capacitor/core";
 
 function playNewOrderSound() {
   // Always try web sound as fallback
@@ -96,6 +97,9 @@ export default function CozinhaPage() {
       <header className="cozinha-header">
         <h1>🍔 Painel da Cozinha</h1>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <span style={{ fontSize: '12px', color: Capacitor.isNativePlatform() ? '#22C55E' : '#EF4444' }}>
+            {Capacitor.isNativePlatform() ? '● APP NATIVA' : '● MODO WEB'}
+          </span>
           {hasPermission !== true && (
             <button 
               onClick={handleEnableAlerts}
