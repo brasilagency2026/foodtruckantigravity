@@ -206,7 +206,6 @@ export default function CozinhaPage() {
                       className="btn btn-ready"
                       onClick={() => {
                         NativeBridge.vibrate('medium');
-                        NativeBridge.scheduleNotification("Pedido Pronto! ✅", "O cliente foi notificado.", "client_ready");
                         updateStatus({ orderId: order._id, status: "pronto" });
                       }}
                     >
