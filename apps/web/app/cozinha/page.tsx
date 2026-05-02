@@ -28,7 +28,7 @@ function playNewOrderSound() {
   } catch {}
 
   // Trigger Native Features
-  NativeBridge.vibrateNotification('success');
+  NativeBridge.vibrateNotification();
   NativeBridge.scheduleNotification("Novo Pedido! 🍔", "Há um novo pedido pendente na cozinha.");
 }
 

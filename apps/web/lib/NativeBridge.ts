@@ -26,20 +26,16 @@ export const NativeBridge = {
   },
 
   /**
-   * Triggers a notification vibration pattern (success, warning, error)
+   * Triggers a strong vibration (useful for urgent alerts)
    */
-  vibrateNotification: async (type: 'success' | 'warning' | 'error') => {
+  vibrateNotification: async () => {
     if (!Capacitor.isNativePlatform()) return;
     
     try {
-      const hapticType = 
-        type === 'success' ? NotificationType.Success :
-        type === 'warning' ? NotificationType.Warning :
-        NotificationType.Error;
-        
-      await Haptics.notification({ type: hapticType });
+      // Vibrate for 1 second (Android only supports duration)
+      await Haptics.vibrate({ duration: 1000 });
     } catch (e) {
-      console.error('Haptic notification failed', e);
+      console.error('Strong vibration failed', e);
     }
   },
 
