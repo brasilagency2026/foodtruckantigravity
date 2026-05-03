@@ -42,9 +42,14 @@ export default function MenuPage({
 
   const truckId = params.truckId as Id<"foodTrucks">;
   const truck = useQuery(api.foodTrucks.getTruckById, { truckId });
-  // Fetch flat list and group on the client to avoid any server-side
-  // objects with non-ASCII keys (Convex rejects those as field names).
   const items = useQuery(api.menu.getAllMenuItemsByTruck, { truckId }) as any[] | undefined;
+
+  // Redirect to SEO URL if available (skip if native)
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform() && truck?.state && truck?.city && truck?.slug) {
+      window.location.replace(`/t/${truck.state}/${truck.city}/${truck.slug}${window.location.search}`);
+    }
+  }, [truck]);
 
   const { menuGrouped, labelMap } = useMemo(() => {
     function sanitizeKey(s: string) {
