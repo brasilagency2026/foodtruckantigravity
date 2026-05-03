@@ -28,12 +28,12 @@ export default function CheckoutPage() {
   const truck = useQuery(api.foodTrucks.getTruckById, truckId ? { truckId: truckId as Id<"foodTrucks"> } : "skip");
 
   const manual = searchParams.get("manual") === "true";
-  const initialName = searchParams.get("clientName") ?? "";
+  const initialName = searchParams.get("clientName") ?? (manual ? "Cliente Balcão" : "");
   const initialPhone = searchParams.get("clientPhone") ?? "";
   const [name, setName] = useState(initialName);
   const [phone, setPhone] = useState(initialPhone);
   const [paymentType, setPaymentType] = useState<"online" | "dinheiro">(manual ? "dinheiro" : "online");
-  const [paymentReceived, setPaymentReceived] = useState(false);
+  const [paymentReceived, setPaymentReceived] = useState(manual); // Default to true if manual (assuming owner received money)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +43,8 @@ export default function CheckoutPage() {
   const markManual = useMutation(api.orders.markOrderManual);
 
   async function handlePay() {
-    if (!name.trim()) {
+    const finalName = name.trim() || (manual ? "Cliente Balcão" : "");
+    if (!finalName) {
       setError("Preencha seu nome.");
       return;
     }
@@ -55,7 +56,7 @@ export default function CheckoutPage() {
       const createPayload = {
         truckId: truckId as Id<"foodTrucks">,
         clientId: "guest",
-        clientName: name,
+        clientName: finalName,
         clientPhone: phone || "",
         items,
         totalPrice: total,
