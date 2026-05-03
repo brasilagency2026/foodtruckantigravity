@@ -27,7 +27,15 @@ export default function DashboardPage({
   const mpStatus = searchParams.get("mp"); // "success" or "error"
 
   const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
-  const qrUrl = getQRCodeImageUrl(params.truckId, BASE_URL, 300);
+  const seoParams = truck?.slug && truck?.state && truck?.city 
+    ? { state: truck.state, city: truck.city, slug: truck.slug } 
+    : undefined;
+
+  const niceUrl = seoParams 
+    ? `${BASE_URL}/t/${seoParams.state}/${seoParams.city}/${seoParams.slug}`
+    : `${BASE_URL}/t/${params.truckId}`;
+
+  const qrUrl = getQRCodeImageUrl(params.truckId, BASE_URL, 300, seoParams);
 
   const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     try {
@@ -178,7 +186,7 @@ export default function DashboardPage({
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button
               style={s.qrBtn}
-              onClick={() => downloadQRCode(params.truckId, truck.name, BASE_URL)}
+              onClick={() => downloadQRCode(params.truckId, truck.name, BASE_URL, seoParams)}
             >
               ⬇️ Baixar PNG
             </button>
@@ -189,7 +197,7 @@ export default function DashboardPage({
                 borderColor: copied ? "#22C55E" : "rgba(255,255,255,0.1)",
               }}
               onClick={() => {
-                navigator.clipboard.writeText(`${BASE_URL}/t/${params.truckId}`);
+                navigator.clipboard.writeText(niceUrl);
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
               }}
@@ -208,7 +216,7 @@ export default function DashboardPage({
           { href: `/dashboard/${params.truckId}/menu`, icon: "📋", label: "Gerenciar cardápio" },
           { href: `/cozinha`, icon: "👨‍🍳", label: "Painel da cozinha" },
           { href: `/dashboard/${params.truckId}/settings`, icon: "⚙️", label: "Configurações" },
-          { href: `/t/${params.truckId}?manual=true`, icon: "📝", label: "Criar pedido manual" },
+          { href: `${niceUrl}?manual=true`, icon: "📝", label: "Criar pedido manual" },
         ].map((link) => (
           <a key={link.label} href={link.href} style={s.quickLink}>
             <span style={s.quickLinkIcon}>{link.icon}</span>
