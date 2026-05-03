@@ -215,9 +215,9 @@ export default function GerenciarCardapioPage({
         {/* Header */}
         <div className="cm-header">
           <div className="cm-header-left">
-            <button className="cm-back" onClick={() => router.push(`/dashboard/${params.truckId}`)}>
+            <a className="cm-back" href={`/dashboard/${params.truckId}`}>
               ← Voltar
-            </button>
+            </a>
             <div>
               <h1 className="cm-title">Gerenciar cardápio</h1>
               {truck && <p className="cm-truck">{truck.name}</p>}
@@ -601,7 +601,7 @@ const CSS = `
   /* HEADER */
   .cm-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
   .cm-header-left { display: flex; align-items: flex-start; gap: 16px; }
-  .cm-back { background: none; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); padding: 8px 14px; font-size: 13px; cursor: pointer; font-family: var(--body); transition: color 0.2s; white-space: nowrap; margin-top: 4px; }
+  .cm-back { display: inline-block; text-decoration: none; background: none; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); padding: 8px 14px; font-size: 13px; cursor: pointer; font-family: var(--body); transition: color 0.2s; white-space: nowrap; margin-top: 4px; }
   .cm-back:hover { color: var(--text); }
   .cm-title { font-family: var(--display); font-size: 26px; font-weight: 800; margin-bottom: 4px; }
   .cm-truck { color: var(--orange); font-size: 13px; font-weight: 600; }

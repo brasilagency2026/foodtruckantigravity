@@ -97,6 +97,7 @@ export default function DashboardPage({
       {/* Header */}
       <div style={s.header}>
         <div>
+          <a href="/" style={s.backBtn}>← Voltar ao Início</a>
           <h1 style={s.truckName}>{truck.name}</h1>
           <p style={s.cuisine}>{truck.cuisine}</p>
         </div>
@@ -280,6 +281,16 @@ const s: Record<string, React.CSSProperties> = {
     justifyContent: "space-between",
     alignItems: "flex-start",
     marginBottom: 28,
+  },
+  backBtn: {
+    display: "inline-block",
+    color: "#FF6B35",
+    fontSize: 13,
+    fontWeight: 600,
+    textDecoration: "none",
+    marginBottom: 12,
+    transition: "opacity 0.2s",
+    fontFamily: "inherit",
   },
   truckName: {
     color: "#FFF",

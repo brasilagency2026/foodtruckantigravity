@@ -107,6 +107,14 @@ export default function AssinaturaPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 text-white bg-[#0f0f1a] min-h-screen">
+      <div className="mb-6">
+        <a 
+          href={`/dashboard/${truckId}`} 
+          className="inline-flex items-center gap-2 text-[#FF6B35] text-sm font-semibold hover:opacity-80 transition-opacity"
+        >
+          ← Voltar ao Dashboard
+        </a>
+      </div>
       <h1 className="text-3xl font-bold text-[#FF6B35] mb-2 font-syne">Meu Plano de Assinatura</h1>
       <p className="text-gray-400 mb-8">Gerencie seu acesso à plateforme Food Pronto.</p>
 

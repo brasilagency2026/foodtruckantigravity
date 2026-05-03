@@ -94,6 +94,11 @@ export default function CozinhaPage() {
 
   return (
     <main className="cozinha">
+      <div style={{ padding: '8px 24px 0' }}>
+        <a href={truckId ? `/dashboard/${truckId}` : '/'} style={{ color: '#FF6B35', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold' }}>
+          ← Voltar ao Dashboard
+        </a>
+      </div>
       <header className="cozinha-header">
         <h1>🍔 Painel da Cozinha</h1>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>

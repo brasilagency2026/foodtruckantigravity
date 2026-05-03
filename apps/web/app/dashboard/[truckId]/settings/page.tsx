@@ -122,7 +122,7 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
   return (
     <div style={s.page}>
       <div style={s.header}>
-        <button onClick={() => router.back()} style={s.backBtn}>← Voltar</button>
+        <a href={`/dashboard/${params.truckId}`} style={s.backBtn}>← Voltar</a>
         <h1 style={s.title}>Configurações</h1>
       </div>
 
@@ -284,8 +284,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   header: { marginBottom: 28 },
   backBtn: {
-    background: "none", border: "none", color: "#FF6B35",
-    fontSize: 14, cursor: "pointer", padding: 0, marginBottom: 12, fontFamily: "inherit",
+    display: "inline-block", color: "#FF6B35", textDecoration: "none",
+    fontSize: 14, fontWeight: 600, marginBottom: 12, fontFamily: "inherit",
   },
   title: { color: "#FFF", fontSize: 24, fontWeight: 800, margin: 0 },
   error: {
