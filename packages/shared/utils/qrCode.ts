@@ -9,7 +9,7 @@
 export function getQRCodeImageUrl(truckId: string, baseUrl: string, size = 300): string {
   const menuUrl = `${baseUrl}/t/${truckId}`;
   const encoded = encodeURIComponent(menuUrl);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}&bgcolor=0D0D0D&color=FF6B35&margin=20`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}&bgcolor=FFFFFF&color=000000&margin=20`;
 }
 
 /**
