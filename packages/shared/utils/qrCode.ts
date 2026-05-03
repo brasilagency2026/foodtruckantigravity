@@ -6,8 +6,10 @@
 /**
  * Génère l'URL du QR Code via l'API Google Charts (gratuit, sans dépendance)
  */
-export function getQRCodeImageUrl(truckId: string, baseUrl: string, size = 300): string {
-  const menuUrl = `${baseUrl}/t/${truckId}`;
+export function getQRCodeImageUrl(truckId: string, baseUrl: string, size = 300, seo?: { state: string; city: string; slug: string }): string {
+  const menuUrl = seo 
+    ? `${baseUrl}/t/${seo.state}/${seo.city}/${seo.slug}`
+    : `${baseUrl}/t/${truckId}`;
   const encoded = encodeURIComponent(menuUrl);
   return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}&bgcolor=FFFFFF&color=000000&margin=20`;
 }
@@ -15,8 +17,8 @@ export function getQRCodeImageUrl(truckId: string, baseUrl: string, size = 300):
 /**
  * Télécharge le QR Code en PNG haute résolution (pour impression)
  */
-export async function downloadQRCode(truckId: string, truckName: string, baseUrl: string) {
-  const url = getQRCodeImageUrl(truckId, baseUrl, 1000);
+export async function downloadQRCode(truckId: string, truckName: string, baseUrl: string, seo?: { state: string; city: string; slug: string }) {
+  const url = getQRCodeImageUrl(truckId, baseUrl, 1000, seo);
   const response = await fetch(url);
   const blob = await response.blob();
   const link = document.createElement("a");
