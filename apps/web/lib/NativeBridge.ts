@@ -1,5 +1,6 @@
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { Geolocation } from '@capacitor/geolocation';
 import { Capacitor } from '@capacitor/core';
 
 /**
@@ -7,6 +8,35 @@ import { Capacitor } from '@capacitor/core';
  * It safely falls back to web alternatives if not running in a native app.
  */
 export const NativeBridge = {
+  /**
+   * Get current user position (Native GPS)
+   */
+  getCurrentPosition: async () => {
+    if (!Capacitor.isNativePlatform()) {
+      // Fallback to browser
+      return new Promise<{ lat: number, lng: number }>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          (err) => reject(err)
+        );
+      });
+    }
+
+    try {
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 10000
+      });
+      return {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+    } catch (e) {
+      console.error('Native geolocation failed', e);
+      throw e;
+    }
+  },
+
   /**
    * Triggers a vibration effect
    */
@@ -46,8 +76,9 @@ export const NativeBridge = {
     if (!Capacitor.isNativePlatform()) return true;
 
     try {
-      const perm = await LocalNotifications.requestPermissions();
-      return perm.display === 'granted';
+      const notifStatus = await LocalNotifications.requestPermissions();
+      const geoStatus = await Geolocation.requestPermissions();
+      return notifStatus.display === 'granted' && geoStatus.location === 'granted';
     } catch (e) {
       console.error('Permission request failed', e);
       return false;

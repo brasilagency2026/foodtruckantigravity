@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { Id } from "../convex/_generated/dataModel";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { NativeBridge } from "../lib/NativeBridge";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -23,7 +25,7 @@ type OS = "ios" | "android" | "other";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const RADIUS_KM = 10;
+const RADIUS_KM = 100; // Increased for better test visibility
 const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
 
@@ -103,18 +105,21 @@ export default function HomePage() {
 
   useEffect(() => {
     setOs(detectOS());
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => {
-          setLocationError(true);
-          // Fallback: São Paulo centro
-          setUserLocation({ lat: -23.5505, lng: -46.6333 });
-        }
-      );
-    } else {
-      setUserLocation({ lat: -23.5505, lng: -46.6333 });
+    
+    async function getLocation() {
+      try {
+        const pos = await NativeBridge.getCurrentPosition();
+        setUserLocation(pos);
+        setLocationError(false);
+      } catch (err) {
+        console.error("Location failed", err);
+        setLocationError(true);
+        // Fallback: São Paulo centro
+        setUserLocation({ lat: -23.5505, lng: -46.6333 });
+      }
     }
+
+    getLocation();
   }, []);
 
   // ── Load Google Maps ─────────────────────────────────────────────────────────
@@ -340,6 +345,19 @@ export default function HomePage() {
                 ? `Raio de ${RADIUS_KM} km a partir da sua localização`
                 : "Obtendo sua localização..."}
             </p>
+            {locationError && (
+              <button 
+                onClick={async () => {
+                  await NativeBridge.requestPermissions();
+                  const pos = await NativeBridge.getCurrentPosition();
+                  setUserLocation(pos);
+                  setLocationError(false);
+                }}
+                style={{ marginTop: 8, background: '#FF6B35', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: 13 }}
+              >
+                📍 Tentar localizar novamente
+              </button>
+            )}
           </div>
           <div className="truck-count">
             <span className="count-num">{filtered.length}</span>
