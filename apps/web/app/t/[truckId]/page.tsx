@@ -7,6 +7,8 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
 import { SmartLanding } from "./SmartLanding";
+import { Capacitor } from "@capacitor/core";
+import { useEffect } from "react";
 
 interface CartItem {
   menuItemId: string;
@@ -24,6 +26,14 @@ export default function MenuPage({
   params: { truckId: string };
 }) {
   const [showMenu, setShowMenu] = useState(false);
+  
+  // Skip landing if native
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      setShowMenu(true);
+    }
+  }, []);
+
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
