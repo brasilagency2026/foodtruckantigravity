@@ -22,6 +22,7 @@ export default function DashboardPage({
 
   const [locating, setLocating] = useState(false);
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const searchParams = useSearchParams();
   const mpStatus = searchParams.get("mp"); // "success" or "error"
 
@@ -182,10 +183,18 @@ export default function DashboardPage({
               ⬇️ Baixar PNG
             </button>
             <button
-              style={s.qrBtnSecondary}
-              onClick={() => navigator.clipboard.writeText(`${BASE_URL}/t/${params.truckId}`)}
+              style={{
+                ...s.qrBtnSecondary,
+                color: copied ? "#22C55E" : "rgba(255,255,255,0.5)",
+                borderColor: copied ? "#22C55E" : "rgba(255,255,255,0.1)",
+              }}
+              onClick={() => {
+                navigator.clipboard.writeText(`${BASE_URL}/t/${params.truckId}`);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
             >
-              🔗 Copiar link
+              {copied ? "✅ Copiado!" : "🔗 Copiar link"}
             </button>
           </div>
         </div>
