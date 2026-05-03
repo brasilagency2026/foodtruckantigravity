@@ -27,8 +27,6 @@ export default function DashboardPage({
 
   const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const qrUrl = getQRCodeImageUrl(params.truckId, BASE_URL, 300);
-  const [locating, setLocating] = useState(false);
-  const [locationStatus, setLocationStatus] = useState<string | null>(null);
 
   const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     try {
