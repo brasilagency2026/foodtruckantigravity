@@ -209,41 +209,6 @@ export default function DashboardPage({
         ))}
       </div>
 
-      {/* Manual Order Modal */}
-      {showManualModal && (
-        <ManualOrderModal
-          truckId={truckId}
-          items={allMenuItems}
-          onClose={() => setShowManualModal(false)}
-          onCreate={async (payload: any) => {
-            try {
-              // Remove client-only flags before calling createOrder to avoid server validator errors
-              const payloadToSend = { ...payload };
-              delete payloadToSend.manual;
-              delete payloadToSend.paymentReceived;
-
-              const orderId = await createOrder(payloadToSend);
-
-              // Mark order as manual via a separate mutation
-              if (payload.manual) {
-                try {
-                  await markManual({ orderId, manual: true });
-                } catch (e) {
-                  console.error("Erro marcando pedido como manual:", e);
-                }
-              }
-
-              if (payload.paymentMethod === "dinheiro" && payload.paymentReceived) {
-                await confirmCash({ orderId });
-              }
-            } catch (err) {
-              console.error("Erro criando pedido manual:", err);
-            }
-            setShowManualModal(false);
-          }}
-        />
-      )}
-
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
       `}</style>
