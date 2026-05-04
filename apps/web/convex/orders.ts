@@ -189,7 +189,7 @@ export const updateOrderStatus = mutation({
     });
 
     if (status === "pronto") {
-      await ctx.scheduler.runAction(api.notifications.sendPushNotification, {
+      await ctx.scheduler.runAfter(0, api.notifications.sendPushNotification, {
         orderId,
         title: "Seu pedido está pronto! ✅",
         body: "Retire-o agora no balcão do food truck. 🍔",
