@@ -86,6 +86,22 @@ export const sendPushNotification = action({
                 token: t.token,
                 notification: { title, body },
                 data: { orderId },
+                android: {
+                  priority: "high",
+                  notification: {
+                    sound: "default",
+                    clickAction: "TOP_STORY_ACTIVITY",
+                    notificationPriority: "PRIORITY_MAX",
+                  },
+                },
+                apns: {
+                  payload: {
+                    aps: {
+                      sound: "default",
+                      contentAvailable: true,
+                    },
+                  },
+                },
               },
             }),
           });
