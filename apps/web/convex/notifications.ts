@@ -42,28 +42,38 @@ export const sendPushNotification = action({
     const tokens = await ctx.runQuery(api.notifications.getTokensForOrder, { orderId });
     if (tokens.length === 0) return;
 
-    // 2. Send via FCM (Placeholder logic - requires Firebase setup)
-    // In a real scenario, you'd use a service account to get an OAuth2 token
-    // and then call https://fcm.googleapis.com/v1/projects/${projectId}/messages:send
-    console.log(`[PUSH] Sending to ${tokens.length} devices: ${title} - ${body}`);
+    // 2. Send via FCM (Legacy API for simpler implementation)
+    const serverKey = process.env.FIREBASE_LEGACY_SERVER_KEY;
+    if (!serverKey) {
+      console.error("FIREBASE_LEGACY_SERVER_KEY is not set in Convex environment variables.");
+      return;
+    }
+
+    console.log(`[PUSH] Sending to ${tokens.length} devices: ${title}`);
     
-    // Example of what the fetch would look like:
-    /*
-    for (const t of tokens) {
-      await fetch(`https://fcm.googleapis.com/fcm/send`, {
+    const results = await Promise.all(tokens.map(t => 
+      fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `key=${process.env.FIREBASE_LEGACY_SERVER_KEY}`,
+          "Authorization": `key=${serverKey}`,
         },
         body: JSON.stringify({
           to: t.token,
-          notification: { title, body, sound: "default" },
-          data: { orderId },
+          notification: {
+            title,
+            body,
+            sound: "default",
+          },
+          data: {
+            orderId,
+            click_action: "FLUTTER_NOTIFICATION_CLICK", // Standard for some plugins
+          },
         }),
-      });
-    }
-    */
+      }).then(r => r.json())
+    ));
+
+    console.log("[PUSH] Results:", JSON.stringify(results));
   },
 });
 
