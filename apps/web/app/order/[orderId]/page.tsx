@@ -94,7 +94,19 @@ export default function OrderPage({
       NativeBridge.scheduleNotification("Seu pedido está pronto! ✅", "Retire-o agora no balcão.", "client_ready");
     }
     prevStatus.current = order.status;
-  }, [order?.status]);
+
+    // Save active order in localStorage for later retrieval
+    if (orderId && order.status !== "entregue" && order.status !== "cancelado") {
+      try {
+        const activeOrders = JSON.parse(localStorage.getItem("active_orders") || "[]");
+        if (!activeOrders.includes(orderId)) {
+          localStorage.setItem("active_orders", JSON.stringify([...activeOrders, orderId]));
+        }
+      } catch (e) {
+        console.error("Error saving to localStorage", e);
+      }
+    }
+  }, [order?.status, orderId]);
 
   if (order === undefined) {
     return (
@@ -218,6 +230,21 @@ export default function OrderPage({
               {order.paymentMethod === "pix" ? "Pix" : order.paymentMethod === "cartao_credito" ? "Crédito" : order.paymentMethod === "dinheiro" ? "Dinheiro" : "Débito"}
             </span>
           </div>
+        </div>
+
+        {/* Navigation buttons */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 24, marginBottom: 12 }}>
+          {order.truckId && (
+            <a 
+              href={`/t/${order.truckId}`} 
+              style={{ ...s.checkoutBtn, background: '#22C55E', boxShadow: '0 8px 24px rgba(34,197,94,0.2)' }}
+            >
+              ➕ Fazer outro pedido
+            </a>
+          )}
+          <a href="/" style={{ ...s.checkoutBtn, background: '#333', boxShadow: 'none' }}>
+            🏠 Voltar ao início
+          </a>
         </div>
 
         <p style={s.realtimeNote}>

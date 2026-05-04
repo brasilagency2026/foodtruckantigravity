@@ -13,6 +13,14 @@ export const getOrderById = query({
   },
 });
 
+export const getOrdersByIds = query({
+  args: { orderIds: v.array(v.id("orders")) },
+  handler: async (ctx, { orderIds }) => {
+    const orders = await Promise.all(orderIds.map(id => ctx.db.get(id)));
+    return orders.filter(Boolean);
+  },
+});
+
 // Cozinha vê TODOS os pedidos ativos ao vivo
 // Só mostra pedidos com pagamento confirmado (ou dinheiro)
 export const getActiveOrdersForTruck = query({

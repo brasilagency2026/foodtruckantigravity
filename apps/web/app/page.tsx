@@ -69,6 +69,18 @@ function detectOS(): OS {
 
 export default function HomePage() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [activeOrderIds, setActiveOrderIds] = useState<Id<"orders">[]>([]);
+
+  useEffect(() => {
+    try {
+      const ids = JSON.parse(localStorage.getItem("active_orders") || "[]");
+      if (Array.isArray(ids)) setActiveOrderIds(ids);
+    } catch (e) {}
+  }, []);
+
+  const activeOrdersRaw = useQuery(api.orders.getOrdersByIds, { orderIds: activeOrderIds });
+  const activeOrders = (activeOrdersRaw ?? []).filter(o => o.status !== "entregue" && o.status !== "cancelado");
+
   const [locationError, setLocationError] = useState(false);
   const [selectedCuisine, setSelectedCuisine] = useState("Todos");
   const [selectedTruck, setSelectedTruck] = useState<Truck | null>(null);
@@ -246,6 +258,20 @@ export default function HomePage() {
   return (
     <>
       <style>{CSS}</style>
+
+      {activeOrders.length > 0 && (
+        <div className="active-orders-banner">
+          {activeOrders.map((o: any) => (
+            <a key={o._id} href={`/order/${o._id}`} className="active-order-link">
+              <div className="active-order-left">
+                <span className="pulse-dot" />
+                <span>Pedido #{o.orderNumber?.toString().padStart(3, '0') || o._id.slice(-4).toUpperCase()} em andamento</span>
+              </div>
+              <strong>Ver status →</strong>
+            </a>
+          ))}
+        </div>
+      )}
 
       {/* ── HERO ── */}
       <section className="hero">
@@ -637,6 +663,16 @@ const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Nunito:wght@400;500;600;700&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .active-orders-banner { background: #000; border-bottom: 1px solid rgba(255,107,53,0.3); padding: 14px 24px; position: sticky; top: 0; z-index: 1000; }
+  .active-order-link { display: flex; justify-content: space-between; align-items: center; color: #FF6B35; text-decoration: none; font-size: 14px; font-weight: 600; }
+  .active-order-left { display: flex; align-items: center; gap: 10px; }
+  .pulse-dot { width: 8px; height: 8px; background: #FF6B35; border-radius: 50%; animation: pulse-banner 1.5s infinite; }
+  @keyframes pulse-banner {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+  }
 
   :root {
     --bg: #080810;

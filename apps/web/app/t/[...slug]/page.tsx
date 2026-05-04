@@ -62,6 +62,19 @@ function MenuPageContent({
   const [showDetails, setShowDetails] = useState(false);
   const [showHours, setShowHours] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeOrderIds, setActiveOrderIds] = useState<Id<"orders">[]>([]);
+
+  useEffect(() => {
+    try {
+      const ids = JSON.parse(localStorage.getItem("active_orders") || "[]");
+      if (Array.isArray(ids)) setActiveOrderIds(ids);
+    } catch (e) {}
+  }, []);
+
+  const activeOrdersRaw = useQuery(api.orders.getOrdersByIds, { orderIds: activeOrderIds });
+  const activeOrders = useMemo(() => {
+    return (activeOrdersRaw ?? []).filter(o => o.status !== "entregue" && o.status !== "cancelado");
+  }, [activeOrdersRaw]);
 
   // Fetch truck either by ID or by Slug
   const truckById = useQuery(api.foodTrucks.getTruckById, truckId ? { truckId } : "skip");
@@ -169,6 +182,19 @@ function MenuPageContent({
 
   return (
     <div style={s.page}>
+      {activeOrders.length > 0 && (
+        <div style={s.activeOrdersBanner}>
+          {activeOrders.map((o: any) => (
+            <a key={o._id} href={`/order/${o._id}`} style={s.activeOrderLink}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={s.pulseDot} />
+                Pedido #{o.orderNumber?.toString().padStart(3, '0') || o._id.slice(-4).toUpperCase()} em andamento
+              </span>
+              <span style={{ fontWeight: 700 }}>Ver status →</span>
+            </a>
+          ))}
+        </div>
+      )}
       <div style={s.header}>
         {truck.coverPhotoUrl && (
           <img src={truck.coverPhotoUrl} alt={truck.name} style={s.cover} />
@@ -344,6 +370,11 @@ function MenuPageContent({
       )}
 
       <style>{`
+        @keyframes pulse {
+          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); }
+          70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }
+          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+        }
         @keyframes slideUp {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
@@ -447,6 +478,9 @@ function Modal({ onClose, title, children }: { onClose: () => void; title: strin
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: "100vh", background: "#0D0D0D", fontFamily: "'DM Sans', system-ui, sans-serif", paddingBottom: 120 },
+  activeOrdersBanner: { background: "#1A1A1A", padding: "12px 20px", borderBottom: "1px solid rgba(255,107,53,0.3)" },
+  activeOrderLink: { display: "flex", justifyContent: "space-between", alignItems: "center", color: "#FF6B35", textDecoration: "none", fontSize: 13, fontWeight: 600 },
+  pulseDot: { width: 8, height: 8, background: "#FF6B35", borderRadius: "50%", animation: "pulse 1.5s infinite" },
   header: { position: "relative", height: 220, overflow: "hidden" },
   cover: { width: "100%", height: "100%", objectFit: "cover" },
   headerOverlay: { position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent, rgba(13,13,13,0.97))" },
