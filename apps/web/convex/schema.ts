@@ -107,6 +107,7 @@ export default defineSchema({
     manual: v.optional(v.boolean()),
     mercadoPagoPaymentId: v.optional(v.string()),
     estimatedTime: v.optional(v.number()),
+    orderNumber: v.optional(v.number()),
   })
     .index("by_truck", ["truckId"])
     .index("by_client", ["clientId"])

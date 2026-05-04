@@ -132,6 +132,18 @@ export const createOrder = mutation({
       manual,
     } = args as any;
 
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const lastOrder = await ctx.db
+      .query("orders")
+      .withIndex("by_truck", (q) => q.eq("truckId", truckId))
+      .filter((q) => q.gte(q.field("_creationTime"), startOfDay.getTime()))
+      .order("desc")
+      .first();
+
+    const nextNumber = (lastOrder?.orderNumber ?? 0) + 1;
+
     const orderId = await ctx.db.insert("orders", {
       truckId,
       clientId,
@@ -143,6 +155,7 @@ export const createOrder = mutation({
       manual,
       status: "recebido",
       paymentStatus: "pendente",
+      orderNumber: nextNumber,
     });
 
     return orderId;

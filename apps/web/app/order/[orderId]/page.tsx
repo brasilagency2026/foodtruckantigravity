@@ -126,7 +126,7 @@ export default function OrderPage({
         {/* Header */}
         <div style={s.header}>
           <h1 style={s.title}>Acompanhar pedido</h1>
-          <p style={s.orderCode}>#{orderId.slice(-4).toUpperCase()}</p>
+          <p style={s.orderCode}>#{order.orderNumber ? order.orderNumber.toString().padStart(3, '0') : orderId.slice(-4).toUpperCase()}</p>
           {hasPermission !== true && (
             <button 
               onClick={async () => {

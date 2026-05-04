@@ -128,7 +128,7 @@ export default function CozinhaPage() {
           orders.map((order: any) => (
             <div key={order._id} className={`order-card status-${order.status}`}>
               <div className="order-header">
-                <strong>#{order._id.slice(-4).toUpperCase()}</strong>
+                <strong>#{order.orderNumber ? order.orderNumber.toString().padStart(3, '0') : order._id.slice(-4).toUpperCase()}</strong>
                 <span className="order-time">
                   {new Date(order._creationTime).toLocaleTimeString("pt-BR", {
                     hour: "2-digit",
