@@ -187,6 +187,14 @@ export const updateOrderStatus = mutation({
       status,
       ...(estimatedTime ? { estimatedTime } : {}),
     });
+
+    if (status === "pronto") {
+      await ctx.scheduler.runAction(api.notifications.sendPushNotification, {
+        orderId,
+        title: "Seu pedido está pronto! ✅",
+        body: "Retire-o agora no balcão do food truck. 🍔",
+      });
+    }
   },
 });
 

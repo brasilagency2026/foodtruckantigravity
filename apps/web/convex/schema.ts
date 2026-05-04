@@ -114,6 +114,16 @@ export default defineSchema({
     .index("by_truck_status", ["truckId", "status"])
     .index("by_payment", ["mercadoPagoPaymentId"]),
 
+  pushTokens: defineTable({
+    token: v.string(),
+    clientId: v.optional(v.string()), // To reach a user
+    orderId: v.optional(v.id("orders")), // To reach a specific order
+    platform: v.union(v.literal("ios"), v.literal("android"), v.literal("web")),
+  })
+    .index("by_token", ["token"])
+    .index("by_client", ["clientId"])
+    .index("by_order", ["orderId"]),
+
   reviews: defineTable({
     truckId: v.id("foodTrucks"),
     clientId: v.string(),

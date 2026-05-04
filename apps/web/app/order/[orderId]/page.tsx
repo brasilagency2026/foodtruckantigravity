@@ -8,6 +8,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { formatPrice } from "shared/types";
 import { NativeBridge } from "../../../lib/NativeBridge";
 import { useState } from "react";
+import { Capacitor } from "@capacitor/core";
 
 function playReadySound() {
   try {
@@ -57,6 +58,20 @@ export default function OrderPage({
   const searchParams = useSearchParams();
   const linkPayment = useMutation(api.orders.linkPaymentId);
   const handlePayment = useMutation(api.payments.handleWebhook);
+  const registerPush = useMutation(api.notifications.registerPushToken);
+
+  // Initialize Push Notifications
+  useEffect(() => {
+    if (Capacitor.isNativePlatform() && orderId) {
+      NativeBridge.initPush((token) => {
+        registerPush({
+          token,
+          orderId,
+          platform: Capacitor.getPlatform() as any,
+        });
+      });
+    }
+  }, [orderId, registerPush]);
 
   // Fallback: Se o Mercado Pago redirecionar de volta com status=approved, confirmar o pagamento
   useEffect(() => {

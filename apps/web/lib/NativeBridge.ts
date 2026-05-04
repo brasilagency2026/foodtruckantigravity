@@ -1,6 +1,7 @@
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Geolocation } from '@capacitor/geolocation';
+import { PushNotifications } from '@capacitor/push-notifications';
 import { Capacitor } from '@capacitor/core';
 
 /**
@@ -78,10 +79,53 @@ export const NativeBridge = {
     try {
       const notifStatus = await LocalNotifications.requestPermissions();
       const geoStatus = await Geolocation.requestPermissions();
+      
+      // Also request Push if possible
+      try {
+        await PushNotifications.requestPermissions();
+      } catch {}
+
       return notifStatus.display === 'granted' && geoStatus.location === 'granted';
     } catch (e) {
       console.error('Permission request failed', e);
       return false;
+    }
+  },
+
+  /**
+   * Initialize Push Notifications and return the token via callback
+   */
+  initPush: async (onToken: (token: string) => void) => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    try {
+      let permStatus = await PushNotifications.checkPermissions();
+      if (permStatus.receive === 'prompt') {
+        permStatus = await PushNotifications.requestPermissions();
+      }
+      
+      if (permStatus.receive !== 'granted') return;
+
+      await PushNotifications.register();
+
+      await PushNotifications.addListener('registration', (token) => {
+        onToken(token.value);
+      });
+
+      await PushNotifications.addListener('registrationError', (err) => {
+        console.error('Push registration error', err);
+      });
+
+      // Handle notification clicks while app is in background/closed
+      await PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+        console.log('Push action performed', notification);
+        const data = notification.notification.data;
+        if (data.orderId) {
+          window.location.href = `/order/${data.orderId}`;
+        }
+      });
+    } catch (e) {
+      console.error('Push init failed', e);
     }
   },
 
@@ -96,7 +140,7 @@ export const NativeBridge = {
       await LocalNotifications.createChannel({
         id: soundName, // We use the sound name as channel ID for simplicity
         name: soundName === 'kitchen_alert' ? 'Alertas de Cozinha' : 'Alertas de Retirada',
-        description: 'Canal para notificações com som personalizado',
+        description: 'Canal para notificações com som personnalisé',
         importance: 5, // Max importance
         visibility: 1,
         sound: soundName,
