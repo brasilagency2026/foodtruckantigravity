@@ -123,7 +123,7 @@ export const NativeBridge = {
         description: 'Alertas importantes sobre seus pedidos',
         importance: 5,
         visibility: 1,
-        sound: 'default',
+        sound: 'client_ready',
         vibration: true,
       });
 

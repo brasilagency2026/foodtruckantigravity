@@ -89,16 +89,17 @@ export const sendPushNotification = action({
                 android: {
                   priority: "high",
                   notification: {
-                    sound: "default",
+                    sound: "client_ready",
                     clickAction: "TOP_STORY_ACTIVITY",
                     notification_priority: "PRIORITY_MAX",
                     channel_id: "default",
+                    visibility: "public",
                   },
                 },
                 apns: {
                   payload: {
                     aps: {
-                      sound: "default",
+                      sound: "client_ready.caf",
                       contentAvailable: true,
                     },
                   },
