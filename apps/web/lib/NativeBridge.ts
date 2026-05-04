@@ -106,8 +106,6 @@ export const NativeBridge = {
       
       if (permStatus.receive !== 'granted') return;
 
-      await PushNotifications.register();
-
       await PushNotifications.addListener('registration', (token) => {
         onToken(token.value);
       });
@@ -115,6 +113,8 @@ export const NativeBridge = {
       await PushNotifications.addListener('registrationError', (err) => {
         console.error('Push registration error', err);
       });
+
+      await PushNotifications.register();
 
       // Handle notification clicks while app is in background/closed
       await PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {

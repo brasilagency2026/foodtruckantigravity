@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "297160610099",
+    "project_id": "foodpronto-4a8e4",
+    "storage_bucket": "foodpronto-4a8e4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297160610099:android:452353f89c4ca5044e6e46",
+        "android_client_info": {
+          "package_name": "com.foodtruckalert"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvyg6iFUgyCUlEWaJ6RsDTFFHdRhs5LYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -119,10 +119,20 @@ export default defineSchema({
     clientId: v.optional(v.string()), // To reach a user
     orderId: v.optional(v.id("orders")), // To reach a specific order
     platform: v.union(v.literal("ios"), v.literal("android"), v.literal("web")),
+    updatedAt: v.optional(v.number()),
   })
     .index("by_token", ["token"])
     .index("by_client", ["clientId"])
     .index("by_order", ["orderId"]),
+
+  notificationLogs: defineTable({
+    orderId: v.id("orders"),
+    title: v.string(),
+    tokensCount: v.number(),
+    results: v.any(),
+    sentAt: v.number(),
+    error: v.optional(v.string()),
+  }),
 
   reviews: defineTable({
     truckId: v.id("foodTrucks"),

@@ -1,4 +1,4 @@
-package com.foodpronto.app;
+package com.foodtruckalert;
 
 import com.getcapacitor.BridgeActivity;
 

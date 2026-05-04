@@ -19,11 +19,15 @@ export const registerPushToken = mutation({
       await ctx.db.patch(existing._id, {
         clientId: args.clientId ?? existing.clientId,
         orderId: args.orderId ?? existing.orderId,
+        updatedAt: Date.now(),
       });
       return existing._id;
     }
 
-    return await ctx.db.insert("pushTokens", args);
+    return await ctx.db.insert("pushTokens", {
+      ...args,
+      updatedAt: Date.now(),
+    });
   },
 });
 
@@ -94,6 +98,28 @@ export const sendPushNotification = action({
     }));
 
     console.log("[PUSH] Results:", JSON.stringify(results));
+
+    // 4. Log results
+    await ctx.runMutation(api.notifications.logNotification, {
+      orderId,
+      title,
+      tokensCount: tokens.length,
+      results,
+      sentAt: Date.now(),
+    });
+  },
+});
+
+export const logNotification = mutation({
+  args: {
+    orderId: v.id("orders"),
+    title: v.string(),
+    tokensCount: v.number(),
+    results: v.any(),
+    sentAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert("notificationLogs", args);
   },
 });
 
