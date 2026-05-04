@@ -132,6 +132,7 @@ export default defineSchema({
     results: v.any(),
     sentAt: v.number(),
     error: v.optional(v.string()),
+    status: v.optional(v.string()),
   }),
 
   reviews: defineTable({

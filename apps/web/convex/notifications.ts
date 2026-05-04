@@ -42,71 +42,85 @@ export const sendPushNotification = action({
     body: v.string(),
   },
   handler: async (ctx, { orderId, title, body }) => {
-    // 1. Get tokens for this order
-    const tokens = await ctx.runQuery(api.notifications.getTokensForOrder, { orderId });
-    if (tokens.length === 0) return;
-
-    // 2. Send via FCM V1
-    const serviceAccountStr = process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (!serviceAccountStr) {
-      console.error("FIREBASE_SERVICE_ACCOUNT is not set in Convex environment variables.");
-      return;
-    }
-
-    let serviceAccount;
-    try {
-      serviceAccount = JSON.parse(serviceAccountStr);
-    } catch (e) {
-      console.error("Failed to parse FIREBASE_SERVICE_ACCOUNT JSON");
-      return;
-    }
-
-    console.log(`[PUSH] Sending V1 to ${tokens.length} devices: ${title}`);
-    
-    // 3. Get OAuth2 Token
-    let accessToken;
-    try {
-      accessToken = await getAccessToken(serviceAccount);
-    } catch (e) {
-      console.error("Failed to get FCM access token", e);
-      return;
-    }
-
-    const projectId = serviceAccount.project_id;
-    const results = await Promise.all(tokens.map(async (t) => {
-      try {
-        const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            message: {
-              token: t.token,
-              notification: { title, body },
-              data: { orderId },
-              android: { priority: "high" },
-              apns: { payload: { aps: { sound: "default" } } },
-            },
-          }),
-        });
-        return await response.json();
-      } catch (e) {
-        return { success: false, error: String(e) };
-      }
-    }));
-
-    console.log("[PUSH] Results:", JSON.stringify(results));
-
-    // 4. Log results
-    await ctx.runMutation(api.notifications.logNotification, {
+    // 1. Initial Log
+    const logId = await ctx.runMutation(api.notifications.logNotification, {
       orderId,
       title,
-      tokensCount: tokens.length,
-      results,
+      tokensCount: 0,
+      results: null,
       sentAt: Date.now(),
+      status: "starting"
     });
+
+    // 2. Get tokens for this order
+    const tokens = await ctx.runQuery(api.notifications.getTokensForOrder, { orderId });
+    await ctx.runMutation(api.notifications.updateLog, { 
+      logId, 
+      tokensCount: tokens.length,
+      status: tokens.length > 0 ? "tokens_found" : "no_tokens"
+    });
+    
+    if (tokens.length === 0) return;
+
+    try {
+      // 3. Send via FCM V1
+      const serviceAccountStr = process.env.FIREBASE_SERVICE_ACCOUNT;
+      if (!serviceAccountStr) {
+        throw new Error("FIREBASE_SERVICE_ACCOUNT is missing");
+      }
+
+      const serviceAccount = JSON.parse(serviceAccountStr);
+      const accessToken = await getAccessToken(serviceAccount);
+      const projectId = serviceAccount.project_id;
+
+      const results = await Promise.all(tokens.map(async (t) => {
+        try {
+          const response = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+              message: {
+                token: t.token,
+                notification: { title, body },
+                data: { orderId },
+              },
+            }),
+          });
+          return await response.json();
+        } catch (e) {
+          return { error: String(e) };
+        }
+      }));
+
+      await ctx.runMutation(api.notifications.updateLog, { 
+        logId, 
+        results,
+        status: "completed"
+      });
+    } catch (e) {
+      console.error("[PUSH ERROR]", e);
+      await ctx.runMutation(api.notifications.updateLog, { 
+        logId, 
+        error: String(e),
+        status: "failed"
+      });
+    }
+  },
+});
+
+export const updateLog = mutation({
+  args: {
+    logId: v.id("notificationLogs"),
+    tokensCount: v.optional(v.number()),
+    results: v.optional(v.any()),
+    error: v.optional(v.string()),
+    status: v.optional(v.string()),
+  },
+  handler: async (ctx, { logId, ...updates }) => {
+    await ctx.db.patch(logId, updates);
   },
 });
 
@@ -117,9 +131,10 @@ export const logNotification = mutation({
     tokensCount: v.number(),
     results: v.any(),
     sentAt: v.number(),
+    status: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("notificationLogs", args);
+    return await ctx.db.insert("notificationLogs", args);
   },
 });
 
