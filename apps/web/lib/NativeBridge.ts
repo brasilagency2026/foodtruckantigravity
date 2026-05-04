@@ -116,6 +116,17 @@ export const NativeBridge = {
 
       await PushNotifications.register();
 
+      // Ensure a high-importance channel exists for Android banners
+      await LocalNotifications.createChannel({
+        id: 'default',
+        name: 'Alertas de Pedidos',
+        description: 'Alertas importantes sobre seus pedidos',
+        importance: 5,
+        visibility: 1,
+        sound: 'default',
+        vibration: true,
+      });
+
       // Handle notification clicks while app is in background/closed
       await PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
         console.log('Push action performed', notification);

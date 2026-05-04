@@ -92,6 +92,7 @@ export const sendPushNotification = action({
                     sound: "default",
                     clickAction: "TOP_STORY_ACTIVITY",
                     notificationPriority: "PRIORITY_MAX",
+                    channelId: "default",
                   },
                 },
                 apns: {
