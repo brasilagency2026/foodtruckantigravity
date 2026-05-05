@@ -185,7 +185,6 @@ export const NativeBridge = {
             channelId: soundName,
             schedule: { at: new Date(Date.now() + 100) },
             sound: soundName,
-            actionTypeId: '',
             extra: orderId ? { orderId } : null
           }
         ]
