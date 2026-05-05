@@ -452,13 +452,13 @@ export default function HomePage() {
                 <div className="map-spinner" />
                 <span>Detectando localização...</span>
               </div>
-            ) : filtered.length === 0 ? (
+            ) : filtered.filter(t => t.isOpen).length === 0 ? (
               <div className="list-empty">
                 <span className="empty-icon">🔍</span>
-                <p>Nenhum truck encontrado nessa categoria no raio de {RADIUS_KM} km.</p>
+                <p>Nenhum truck aberto encontrado nessa categoria no raio de {RADIUS_KM} km.</p>
               </div>
             ) : (
-              filtered.map((truck) => (
+              filtered.filter(t => t.isOpen).map((truck) => (
                 <TruckCard
                   key={truck._id}
                   truck={truck}

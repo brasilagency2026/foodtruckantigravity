@@ -119,7 +119,9 @@ export const NativeBridge = {
       await LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
         const data = notification.notification.extra;
         if (data && data.orderId) {
-          window.location.href = `/order/${data.orderId}`;
+          setTimeout(() => {
+            window.location.href = `/order/${data.orderId}`;
+          }, 300);
         }
       });
     } catch (e) {
