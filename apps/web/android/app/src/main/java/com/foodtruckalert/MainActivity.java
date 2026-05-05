@@ -2,6 +2,7 @@ package com.foodtruckalert;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
@@ -11,10 +12,55 @@ import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
 
+    private String pendingDeepLink = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         createNotificationChannel();
+        handleDeepLink(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleDeepLink(intent);
+    }
+
+    private void handleDeepLink(Intent intent) {
+        if (intent == null || intent.getData() == null) return;
+
+        Uri data = intent.getData();
+        String scheme = data.getScheme();
+
+        if ("foodtruckalert".equals(scheme)) {
+            // Extract path: foodtruckalert://menu/{truckId} → /t/{truckId}
+            String host = data.getHost(); // "menu"
+            String path = data.getPath(); // "/{truckId}"
+
+            if ("menu".equals(host) && path != null && path.length() > 1) {
+                String truckId = path.substring(1); // Remove leading "/"
+                String webUrl = "https://www.foodpronto.com.br/t/" + truckId;
+
+                // Navigate the WebView to the truck menu
+                if (getBridge() != null && getBridge().getWebView() != null) {
+                    getBridge().getWebView().loadUrl(webUrl);
+                } else {
+                    // Bridge not ready yet, save for later
+                    pendingDeepLink = webUrl;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // If we have a pending deep link and the bridge is now ready
+        if (pendingDeepLink != null && getBridge() != null && getBridge().getWebView() != null) {
+            getBridge().getWebView().loadUrl(pendingDeepLink);
+            pendingDeepLink = null;
+        }
     }
 
     private void createNotificationChannel() {

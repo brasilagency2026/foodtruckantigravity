@@ -6,6 +6,7 @@ import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { NativeBridge } from "../lib/NativeBridge";
+import { Capacitor } from "@capacitor/core";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -86,6 +87,7 @@ export default function HomePage() {
   const [selectedTruck, setSelectedTruck] = useState<Truck | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [os, setOs] = useState<OS>("other");
+  const isNative = Capacitor.isNativePlatform();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Map<string, google.maps.Marker>>(new Map());
@@ -309,7 +311,7 @@ export default function HomePage() {
             Descubra food trucks próximos, peça pelo celular e receba um alerta sonoro quando sua comida estiver pronta.
           </p>
           <div className="hero-cta">
-            {os === "ios" && (
+            {!isNative && os === "ios" && (
               <a href={APP_STORE_URL} className="btn-store">
                 <AppleIcon />
                 <div>
@@ -318,7 +320,7 @@ export default function HomePage() {
                 </div>
               </a>
             )}
-            {os === "android" && (
+            {!isNative && os === "android" && (
               <a href={PLAY_STORE_URL} className="btn-store">
                 <PlayIcon />
                 <div>
@@ -327,7 +329,7 @@ export default function HomePage() {
                 </div>
               </a>
             )}
-            {os === "other" && (
+            {!isNative && os === "other" && (
               <>
                 <a href={APP_STORE_URL} className="btn-store">
                   <AppleIcon />
@@ -475,22 +477,24 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <div className="store-buttons">
-              <a href={APP_STORE_URL} className="btn-store-dark">
-                <AppleIcon />
-                <div>
-                  <span className="store-sub">Baixar na</span>
-                  <span className="store-main">App Store</span>
-                </div>
-              </a>
-              <a href={PLAY_STORE_URL} className="btn-store-dark">
-                <PlayIcon />
-                <div>
-                  <span className="store-sub">Disponível no</span>
-                  <span className="store-main">Google Play</span>
-                </div>
-              </a>
-            </div>
+            {!isNative && (
+              <div className="store-buttons">
+                <a href={APP_STORE_URL} className="btn-store-dark">
+                  <AppleIcon />
+                  <div>
+                    <span className="store-sub">Baixar na</span>
+                    <span className="store-main">App Store</span>
+                  </div>
+                </a>
+                <a href={PLAY_STORE_URL} className="btn-store-dark">
+                  <PlayIcon />
+                  <div>
+                    <span className="store-sub">Disponível no</span>
+                    <span className="store-main">Google Play</span>
+                  </div>
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Fake phone mockup */}
