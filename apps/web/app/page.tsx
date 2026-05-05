@@ -351,10 +351,12 @@ export default function HomePage() {
               Ver no mapa ↓
             </a>
           </div>
-          <div className="hero-alert-hint">
-            <span className="hint-icon">🔔</span>
-            <span>App exclusivo: vibração + alerta sonoro quando seu pedido estiver pronto</span>
-          </div>
+          {!isNative && (
+            <div className="hero-alert-hint">
+              <span className="hint-icon">🔔</span>
+              <span>App exclusivo: vibração + alerta sonoro quando seu pedido estiver pronto</span>
+            </div>
+          )}
         </div>
         <div className="hero-scroll-hint">
           <div className="scroll-line" />
@@ -451,33 +453,33 @@ export default function HomePage() {
       </section>
 
       {/* ── APP DOWNLOAD SECTION ── */}
-      <section className="app-section">
-        <div className="app-inner">
-          <div className="app-text">
-            <div className="app-eyebrow">Melhor no app</div>
-            <h2 className="app-title">
-              Nunca perca<br />seu pedido pronto
-            </h2>
-            <p className="app-body">
-              No navegador você acompanha o pedido — mas só o app avisa com <strong>alerta sonoro e vibração</strong> quando a sua comida está pronta no balcão.
-            </p>
-            <div className="app-perks">
-              {[
-                { icon: "🔔", title: "Alerta sonoro", desc: "Som inconfundível quando pronto" },
-                { icon: "📳", title: "Vibração no celular", desc: "Mesmo com o som no mudo" },
-                { icon: "🗺️", title: "Mapa ao vivo", desc: "Trucks abertos agora, perto de você" },
-                { icon: "⚡", title: "Pedido em segundos", desc: "Cardápio pelo QR Code" },
-              ].map((p) => (
-                <div key={p.title} className="perk-row">
-                  <span className="perk-icon">{p.icon}</span>
-                  <div>
-                    <div className="perk-title">{p.title}</div>
-                    <div className="perk-desc">{p.desc}</div>
+      {!isNative && (
+        <section className="app-section">
+          <div className="app-inner">
+            <div className="app-text">
+              <div className="app-eyebrow">Melhor no app</div>
+              <h2 className="app-title">
+                Nunca perca<br />seu pedido pronto
+              </h2>
+              <p className="app-body">
+                No navegador você acompanha o pedido — mas só o app avisa com <strong>alerta sonoro e vibração</strong> quando a sua comida está pronta no balcão.
+              </p>
+              <div className="app-perks">
+                {[
+                  { icon: "🔔", title: "Alerta sonoro", desc: "Som inconfundível quando pronto" },
+                  { icon: "📳", title: "Vibração no celular", desc: "Mesmo com o som no mudo" },
+                  { icon: "🗺️", title: "Mapa ao vivo", desc: "Trucks abertos agora, perto de você" },
+                  { icon: "⚡", title: "Pedido em segundos", desc: "Cardápio pelo QR Code" },
+                ].map((p) => (
+                  <div key={p.title} className="perk-row">
+                    <span className="perk-icon">{p.icon}</span>
+                    <div>
+                      <div className="perk-title">{p.title}</div>
+                      <div className="perk-desc">{p.desc}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            {!isNative && (
+                ))}
+              </div>
               <div className="store-buttons">
                 <a href={APP_STORE_URL} className="btn-store-dark">
                   <AppleIcon />
@@ -494,53 +496,54 @@ export default function HomePage() {
                   </div>
                 </a>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Fake phone mockup */}
-          <div className="phone-mockup">
-            <div className="phone-frame">
-              <div className="phone-notch" />
-              <div className="phone-screen">
-                <div className="phone-status-bar">
-                  <span>9:41</span>
-                  <span>●●●</span>
-                </div>
-                <div className="phone-alert">
-                  <div className="alert-icon">🔔</div>
-                  <div className="alert-content">
-                    <div className="alert-app">Food Pronto</div>
-                    <div className="alert-title">Seu pedido está pronto!</div>
-                    <div className="alert-body">Busque no balcão do truck 🍔</div>
+            {/* Fake phone mockup */}
+            <div className="phone-mockup">
+              <div className="phone-frame">
+                <div className="phone-notch" />
+                <div className="phone-screen">
+                  <div className="phone-status-bar">
+                    <span>9:41</span>
+                    <span>●●●</span>
                   </div>
-                </div>
-                <div className="phone-order-card">
-                  <div className="order-header-phone">
-                    <span className="order-id">#A3F2</span>
-                    <span className="order-ready">✓ Pronto!</span>
+                  <div className="phone-alert">
+                    <div className="alert-icon">🔔</div>
+                    <div className="alert-content">
+                      <div className="alert-app">Food Pronto</div>
+                      <div className="alert-title">Seu pedido está pronto!</div>
+                      <div className="alert-body">Busque no balcão do truck 🍔</div>
+                    </div>
                   </div>
-                  <div className="order-items-phone">
-                    <div>2× Smash Burger</div>
-                    <div>1× Batata Frita</div>
+                  <div className="phone-order-card">
+                    <div className="order-header-phone">
+                      <span className="order-id">#A3F2</span>
+                      <span className="order-ready">✓ Pronto!</span>
+                    </div>
+                    <div className="order-items-phone">
+                      <div>2× Smash Burger</div>
+                      <div>1× Batata Frita</div>
+                    </div>
+                    <div className="order-progress">
+                      {["Recebido", "Preparando", "Pronto"].map((s, i) => (
+                        <div key={s} className={`progress-step ${i <= 2 ? "done" : ""}`}>
+                          <div className="step-dot" />
+                          <span>{s}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="order-progress">
-                    {["Recebido", "Preparando", "Pronto"].map((s, i) => (
-                      <div key={s} className={`progress-step ${i <= 2 ? "done" : ""}`}>
-                        <div className="step-dot" />
-                        <span>{s}</span>
-                      </div>
-                    ))}
+                  <div className="phone-vibrate-hint">
+                    <span>📳</span> Vibração ativada
                   </div>
-                </div>
-                <div className="phone-vibrate-hint">
-                  <span>📳</span> Vibração ativada
                 </div>
               </div>
+              <div className="phone-glow" />
             </div>
-            <div className="phone-glow" />
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
 
       {/* ── OWNER CTA + PRICING TEASER ── */}
       <section className="owner-section">
