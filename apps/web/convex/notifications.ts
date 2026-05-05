@@ -92,7 +92,7 @@ export const sendPushNotification = action({
                     sound: "client_ready",
                     clickAction: "TOP_STORY_ACTIVITY",
                     notification_priority: "PRIORITY_MAX",
-                    channel_id: "default",
+                    channel_id: "pedidos_alert",
                     visibility: "public",
                   },
                 },

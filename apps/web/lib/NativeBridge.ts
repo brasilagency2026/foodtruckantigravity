@@ -118,7 +118,7 @@ export const NativeBridge = {
 
       // Ensure a high-importance channel exists for Android banners
       await LocalNotifications.createChannel({
-        id: 'default',
+        id: 'pedidos_alert',
         name: 'Alertas de Pedidos',
         description: 'Alertas importantes sobre seus pedidos',
         importance: 5,
