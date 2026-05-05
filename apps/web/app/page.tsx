@@ -26,7 +26,7 @@ type OS = "ios" | "android" | "other";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const RADIUS_KM = 100; // Increased for better test visibility
+const RADIUS_KM = 20; // Default search radius in km
 const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
 
@@ -227,7 +227,22 @@ export default function HomePage() {
 
       markersRef.current.set(truck._id, marker);
     });
-  }, [filtered, mapLoaded]);
+
+    // Auto-center map on user and closest truck
+    if (userLocation && filtered.length > 0) {
+      const bounds = new google.maps.LatLngBounds();
+      bounds.extend({ lat: userLocation.lat, lng: userLocation.lng });
+      bounds.extend({ lat: filtered[0].latitude, lng: filtered[0].longitude });
+      map.fitBounds(bounds, { top: 60, bottom: 60, left: 40, right: 40 });
+      
+      // Prevent zooming in too close if the user and truck are extremely close
+      google.maps.event.addListenerOnce(map, "idle", () => {
+        if (map.getZoom()! > 15) {
+          map.setZoom(15);
+        }
+      });
+    }
+  }, [filtered, mapLoaded, userLocation]);
 
   function buildInfoWindow(truck: Truck): string {
     const dist = truck.distance ? `${truck.distance.toFixed(1)} km` : "";
