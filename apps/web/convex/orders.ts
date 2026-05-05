@@ -14,6 +14,42 @@ export const getOrderById = query({
   },
 });
 
+// Conta quantos pedidos estão na frente do pedido atual
+export const getQueuePosition = query({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, { orderId }) => {
+    const order = await ctx.db.get(orderId);
+    if (!order) return null;
+
+    // Só conta a fila se o pedido ainda está em espera ou preparação
+    if (order.status !== "recebido" && order.status !== "preparando") {
+      return 0;
+    }
+
+    // Buscar pedidos "recebido" e "preparando" do mesmo truck
+    const recebidos = await ctx.db
+      .query("orders")
+      .withIndex("by_truck_status", (q) =>
+        q.eq("truckId", order.truckId).eq("status", "recebido")
+      )
+      .collect();
+
+    const preparando = await ctx.db
+      .query("orders")
+      .withIndex("by_truck_status", (q) =>
+        q.eq("truckId", order.truckId).eq("status", "preparando")
+      )
+      .collect();
+
+    // Contar apenas os pedidos criados ANTES deste
+    const ahead = [...recebidos, ...preparando].filter(
+      (o) => o._creationTime < order._creationTime
+    );
+
+    return ahead.length;
+  },
+});
+
 export const getOrdersByIds = query({
   args: { orderIds: v.array(v.id("orders")) },
   handler: async (ctx, { orderIds }) => {

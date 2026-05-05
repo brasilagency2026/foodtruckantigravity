@@ -55,6 +55,7 @@ export default function OrderPage({
 }) {
   const orderId = params.orderId as Id<"orders">;
   const order = useQuery(api.orders.getOrderById, { orderId });
+  const queuePosition = useQuery(api.orders.getQueuePosition, { orderId });
   const searchParams = useSearchParams();
   const linkPayment = useMutation(api.orders.linkPaymentId);
   const handlePayment = useMutation(api.payments.handleWebhook);
@@ -163,6 +164,37 @@ export default function OrderPage({
             <p style={s.eta}>⏱ Estimativa: {order.estimatedTime} min</p>
           )}
         </div>
+
+        {/* Fila de espera - Queue position */}
+        {queuePosition !== null && queuePosition !== undefined && (order.status === 'recebido' || order.status === 'preparando') && (
+          <div style={s.queueCard}>
+            {queuePosition === 0 ? (
+              <>
+                <span style={{ fontSize: 32 }}>🎯</span>
+                <div>
+                  <p style={s.queueTitle}>Você é o próximo!</p>
+                  <p style={s.queueText}>Seu pedido está sendo preparado agora.</p>
+                </div>
+              </>
+            ) : queuePosition === 1 ? (
+              <>
+                <span style={{ fontSize: 32 }}>⏳</span>
+                <div>
+                  <p style={s.queueTitle}>1 pedido antes do seu</p>
+                  <p style={s.queueText}>Quase lá! Você é o próximo da fila.</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <span style={{ fontSize: 32 }}>📋</span>
+                <div>
+                  <p style={s.queueTitle}>{queuePosition} pedidos antes do seu</p>
+                  <p style={s.queueText}>Aguarde, estamos trabalhando nos pedidos anteriores.</p>
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Cancellation alert */}
         {order.status === "cancelado" && (
@@ -470,5 +502,28 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 13,
     textAlign: "center" as const,
     marginTop: 20,
+  },
+  queueCard: {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08))",
+    border: "2px solid rgba(59,130,246,0.2)",
+    borderRadius: 16,
+    padding: "18px 16px",
+    marginBottom: 16,
+  },
+  queueTitle: {
+    color: "#93C5FD",
+    fontSize: 16,
+    fontWeight: 700,
+    margin: "0 0 4px",
+    fontFamily: "'Syne', system-ui",
+  },
+  queueText: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 13,
+    lineHeight: 1.4,
+    margin: 0,
   },
 };
