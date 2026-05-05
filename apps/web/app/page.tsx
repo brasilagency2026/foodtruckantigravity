@@ -310,27 +310,9 @@ export default function HomePage() {
           <p className="hero-subtitle">
             Descubra food trucks próximos, peça pelo celular e receba um alerta sonoro quando sua comida estiver pronta.
           </p>
-          <div className="hero-cta">
-            {!isNative && os === "ios" && (
-              <a href={APP_STORE_URL} className="btn-store">
-                <AppleIcon />
-                <div>
-                  <span className="store-sub">Baixar na</span>
-                  <span className="store-main">App Store</span>
-                </div>
-              </a>
-            )}
-            {!isNative && os === "android" && (
-              <a href={PLAY_STORE_URL} className="btn-store">
-                <PlayIcon />
-                <div>
-                  <span className="store-sub">Disponível no</span>
-                  <span className="store-main">Google Play</span>
-                </div>
-              </a>
-            )}
-            {!isNative && os === "other" && (
-              <>
+          {!isNative && (
+            <div className="hero-cta">
+              {os === "ios" && (
                 <a href={APP_STORE_URL} className="btn-store">
                   <AppleIcon />
                   <div>
@@ -338,6 +320,8 @@ export default function HomePage() {
                     <span className="store-main">App Store</span>
                   </div>
                 </a>
+              )}
+              {os === "android" && (
                 <a href={PLAY_STORE_URL} className="btn-store">
                   <PlayIcon />
                   <div>
@@ -345,21 +329,33 @@ export default function HomePage() {
                     <span className="store-main">Google Play</span>
                   </div>
                 </a>
-              </>
-            )}
-            <a href="#mapa" className="btn-outline">
-              Ver no mapa ↓
-            </a>
-          </div>
+              )}
+              {os === "other" && (
+                <>
+                  <a href={APP_STORE_URL} className="btn-store">
+                    <AppleIcon />
+                    <div>
+                      <span className="store-sub">Baixar na</span>
+                      <span className="store-main">App Store</span>
+                    </div>
+                  </a>
+                  <a href={PLAY_STORE_URL} className="btn-store">
+                    <PlayIcon />
+                    <div>
+                      <span className="store-sub">Disponível no</span>
+                      <span className="store-main">Google Play</span>
+                    </div>
+                  </a>
+                </>
+              )}
+            </div>
+          )}
           {!isNative && (
             <div className="hero-alert-hint">
               <span className="hint-icon">🔔</span>
               <span>App exclusivo: vibração + alerta sonoro quando seu pedido estiver pronto</span>
             </div>
           )}
-        </div>
-        <div className="hero-scroll-hint">
-          <div className="scroll-line" />
         </div>
       </section>
 
@@ -375,19 +371,6 @@ export default function HomePage() {
                 ? `Raio de ${RADIUS_KM} km a partir da sua localização`
                 : "Obtendo sua localização..."}
             </p>
-            {locationError && (
-              <button 
-                onClick={async () => {
-                  await NativeBridge.requestPermissions();
-                  const pos = await NativeBridge.getCurrentPosition();
-                  setUserLocation(pos);
-                  setLocationError(false);
-                }}
-                style={{ marginTop: 8, background: '#FF6B35', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: 13 }}
-              >
-                📍 Tentar localizar novamente
-              </button>
-            )}
           </div>
           <div className="truck-count">
             <span className="count-num">{filtered.length}</span>
@@ -798,16 +781,6 @@ const CSS = `
     animation: fadeUp 0.6s 0.4s ease both;
   }
   .hint-icon { font-size: 16px; }
-  .hero-scroll-hint {
-    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-  }
-  .scroll-line {
-    width: 1px; height: 60px;
-    background: linear-gradient(to bottom, var(--orange), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-  @keyframes scrollPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
