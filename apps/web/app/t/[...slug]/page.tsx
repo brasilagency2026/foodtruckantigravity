@@ -200,6 +200,11 @@ function MenuPageContent({
           <img src={truck.coverPhotoUrl} alt={truck.name} style={s.cover} />
         )}
         <div style={s.headerOverlay} />
+        
+        <a href="/" style={s.backToMapBtn}>
+          ← Voltar ao mapa
+        </a>
+
         <div style={s.headerContent}>
           <span style={s.openBadge}>
             {truck.isOpen ? "🟢 Aberto agora" : "🔴 Fechado"}
@@ -478,6 +483,24 @@ function Modal({ onClose, title, children }: { onClose: () => void; title: strin
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: "100vh", background: "#0D0D0D", fontFamily: "'DM Sans', system-ui, sans-serif", paddingBottom: 120 },
+  backToMapBtn: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    zIndex: 10,
+    background: "rgba(0,0,0,0.6)",
+    backdropFilter: "blur(4px)",
+    padding: "8px 14px",
+    borderRadius: 20,
+    color: "#fff",
+    textDecoration: "none",
+    fontSize: 14,
+    fontWeight: 600,
+    border: "1px solid rgba(255,255,255,0.15)",
+    display: "flex",
+    alignItems: "center",
+    gap: 6
+  },
   activeOrdersBanner: { background: "#1A1A1A", padding: "12px 20px", borderBottom: "1px solid rgba(255,107,53,0.3)" },
   activeOrderLink: { display: "flex", justifyContent: "space-between", alignItems: "center", color: "#FF6B35", textDecoration: "none", fontSize: 13, fontWeight: 600 },
   pulseDot: { width: 8, height: 8, background: "#FF6B35", borderRadius: "50%", animation: "pulse 1.5s infinite" },
