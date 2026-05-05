@@ -161,6 +161,7 @@ export default function HomePage() {
       zoom: 13,
       disableDefaultUI: true,
       zoomControl: true,
+      gestureHandling: "greedy",
       styles: DARK_MAP_STYLE,
     });
 
@@ -236,9 +237,14 @@ export default function HomePage() {
           ${status}
           ${dist ? `<span style="font-size:12px;color:#888">${dist}</span>` : ""}
         </div>
-        <a href="/t/${truck._id}" style="display:block;background:#FF6B35;color:#fff;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">
-          Pedir agora
-        </a>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+          <a href="/t/${truck._id}" style="display:block;background:#FF6B35;color:#fff;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">
+            🍽️ Pedir agora
+          </a>
+          <a href="https://maps.google.com/?q=${truck.latitude},${truck.longitude}" target="_blank" style="display:block;background:#f1f1f1;color:#333;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid #ddd;">
+            🗺️ Abrir no Google Maps
+          </a>
+        </div>
       </div>
     `;
   }
