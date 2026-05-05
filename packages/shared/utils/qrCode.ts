@@ -21,10 +21,45 @@ export async function downloadQRCode(truckId: string, truckName: string, baseUrl
   const url = getQRCodeImageUrl(truckId, baseUrl, 1000, seo);
   const response = await fetch(url);
   const blob = await response.blob();
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `qrcode-${truckName.toLowerCase().replace(/\s+/g, "-")}.png`;
-  link.click();
+  const objectUrl = URL.createObjectURL(blob);
+
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const width = img.width;
+    const paddingBottom = 160;
+    const height = img.height + paddingBottom;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    // Fond blanc
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, width, height);
+
+    // Dessiner le QR Code
+    ctx.drawImage(img, 0, 0, width, img.height);
+
+    // Dessiner le texte "Foodpronto"
+    ctx.fillStyle = "#FF6B35"; // Couleur orange Food Pronto (ou noir "#000000")
+    ctx.font = "bold 90px 'Arial', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Foodpronto", width / 2, img.height + (paddingBottom / 2));
+
+    // Lancer le téléchargement
+    const dataUrl = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = `qrcode-${truckName.toLowerCase().replace(/\s+/g, "-")}.png`;
+    link.click();
+
+    URL.revokeObjectURL(objectUrl);
+  };
+  img.src = objectUrl;
 }
 
 /**
