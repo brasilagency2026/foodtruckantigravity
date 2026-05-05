@@ -1035,8 +1035,8 @@ const CSS = `
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     .nav { padding: 16px 20px; }
-    .hero { padding: 100px 20px 60px; min-height: auto; }
-    .map-section { padding: 60px 20px; }
+    .hero { padding: 80px 20px 40px; min-height: auto; }
+    .map-section { padding: 40px 20px; }
     .map-layout { grid-template-columns: 1fr; height: auto; }
     .map-container { height: 60vh; min-height: 450px; }
     .truck-list { height: auto; max-height: 400px; overflow-y: auto; }
@@ -1051,5 +1051,7 @@ const CSS = `
     .btn-store { width: 100%; }
     .store-buttons { flex-direction: column; }
     .btn-store-dark { width: 100%; }
+    .hero-title { font-size: 40px; line-height: 1.1; margin-bottom: 16px; }
+    .hero-subtitle { font-size: 15px; margin-bottom: 24px; }
   }
 `;
