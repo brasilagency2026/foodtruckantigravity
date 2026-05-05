@@ -1,12 +1,11 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice, formatOrderStatus } from "shared/types";
 import { NativeBridge } from "../../lib/NativeBridge";
-import { Capacitor } from "@capacitor/core";
 
 function playNewOrderSound() {
   // Always try web sound as fallback
@@ -43,16 +42,6 @@ export default function CozinhaPage() {
   );
 
   const prevOrderCount = useRef<number | null>(null);
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-
-  const handleEnableAlerts = async () => {
-    const granted = await NativeBridge.requestPermissions();
-    setHasPermission(granted);
-    if (granted) {
-      NativeBridge.vibrate('light');
-      NativeBridge.scheduleNotification("Alertas Ativados! ✅", "Você receberá avisos sonoros e vibrações.");
-    }
-  };
 
   useEffect(() => {
     if (!orders) return;
@@ -102,18 +91,6 @@ export default function CozinhaPage() {
       <header className="cozinha-header">
         <h1>🍔 Painel da Cozinha</h1>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', color: Capacitor.isNativePlatform() ? '#22C55E' : '#EF4444' }}>
-            {Capacitor.isNativePlatform() ? '● APP NATIVA' : '● MODO WEB'}
-          </span>
-          {hasPermission !== true && (
-            <button 
-              onClick={handleEnableAlerts}
-              className="btn"
-              style={{ background: '#FF6B35', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)' }}
-            >
-              🔔 Ativar Alertas (Sons/Vibração)
-            </button>
-          )}
           <span className="badge">{orders.length} pedidos ativos</span>
         </div>
       </header>
