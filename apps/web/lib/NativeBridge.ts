@@ -105,6 +105,29 @@ export const NativeBridge = {
     if (!Capacitor.isNativePlatform()) return;
 
     try {
+      // 1. Initialize Local Notifications First (always works independently of Push)
+      await LocalNotifications.createChannel({
+        id: 'pedidos_alert',
+        name: 'Alertas de Pedidos',
+        description: 'Alertas importantes sobre seus pedidos',
+        importance: 5,
+        visibility: 1,
+        sound: 'client_ready',
+        vibration: true,
+      });
+
+      await LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
+        const data = notification.notification.extra;
+        if (data && data.orderId) {
+          window.location.href = `/order/${data.orderId}`;
+        }
+      });
+    } catch (e) {
+      console.error('LocalNotification init failed', e);
+    }
+
+    try {
+      // 2. Initialize Push Notifications
       let permStatus = await PushNotifications.checkPermissions();
       if (permStatus.receive === 'prompt') {
         permStatus = await PushNotifications.requestPermissions();
@@ -122,29 +145,10 @@ export const NativeBridge = {
 
       await PushNotifications.register();
 
-      // Ensure a high-importance channel exists for Android banners
-      await LocalNotifications.createChannel({
-        id: 'pedidos_alert',
-        name: 'Alertas de Pedidos',
-        description: 'Alertas importantes sobre seus pedidos',
-        importance: 5,
-        visibility: 1,
-        sound: 'client_ready',
-        vibration: true,
-      });
-
       // Handle notification clicks while app is in background/closed
       await PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
         console.log('Push action performed', notification);
         const data = notification.notification.data;
-        if (data.orderId) {
-          window.location.href = `/order/${data.orderId}`;
-        }
-      });
-
-      // Handle Local Notification clicks
-      await LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
-        const data = notification.notification.extra;
         if (data && data.orderId) {
           window.location.href = `/order/${data.orderId}`;
         }
