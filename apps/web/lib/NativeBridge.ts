@@ -24,6 +24,12 @@ export const NativeBridge = {
     }
 
     try {
+      // First, request permissions on native devices (required for Capacitor 6+)
+      const perm = await Geolocation.requestPermissions();
+      if (perm.location !== 'granted') {
+        throw new Error('Location permission denied');
+      }
+
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
         timeout: 10000

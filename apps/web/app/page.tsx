@@ -1027,8 +1027,8 @@ const CSS = `
     .hero { padding: 100px 20px 60px; }
     .map-section { padding: 60px 20px; }
     .map-layout { grid-template-columns: 1fr; height: auto; }
-    .map-container { height: 360px; }
-    .truck-list { height: 360px; }
+    .map-container { height: 60vh; min-height: 450px; }
+    .truck-list { height: auto; max-height: 400px; overflow-y: auto; }
     .app-section { padding: 60px 20px; }
     .app-inner { grid-template-columns: 1fr; gap: 40px; }
     .phone-mockup { display: none; }
