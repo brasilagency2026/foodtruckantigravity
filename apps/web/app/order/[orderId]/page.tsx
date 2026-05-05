@@ -344,9 +344,10 @@ const s: Record<string, React.CSSProperties> = {
     margin: 0,
   },
   orderCode: {
-    color: "rgba(255,255,255,0.4)",
-    fontSize: 14,
-    margin: "6px 0 0",
+    color: "#EAB308", // Yellow
+    fontSize: 36,
+    fontWeight: 800,
+    margin: "8px 0 0",
     fontFamily: "monospace",
   },
   statusCard: {
