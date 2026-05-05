@@ -10,7 +10,7 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
-    NativeBridge.initPushNotifications((token) => {
+    NativeBridge.initPush((token) => {
       console.log("Device push token:", token);
     });
   }, []);
