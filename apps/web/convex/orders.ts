@@ -41,9 +41,17 @@ export const getQueuePosition = query({
       )
       .collect();
 
-    // Contar apenas os pedidos criados ANTES deste
+    // Filtrar: même logique que la cuisine
+    // - Seulement les commandes payées, manuelles ou en espèces
+    // - Seulement les commandes des dernières 12h (pas les vieux abandonnés)
+    const twelveHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
+
     const ahead = [...recebidos, ...preparando].filter(
-      (o) => o._creationTime < order._creationTime
+      (o) =>
+        o._id !== orderId &&
+        o._creationTime < order._creationTime &&
+        o._creationTime > twelveHoursAgo &&
+        (o.manual === true || o.paymentStatus === "aprovado" || o.paymentMethod === "dinheiro")
     );
 
     return ahead.length;
