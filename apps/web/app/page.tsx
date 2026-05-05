@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
@@ -101,19 +101,24 @@ export default function HomePage() {
   ) as Truck[] | undefined;
 
   // Compute distances
-  const trucksWithDistance: Truck[] = (trucks ?? []).map((t) => ({
-    ...t,
-    distance: userLocation
-      ? haversine(userLocation.lat, userLocation.lng, t.latitude, t.longitude)
-      : undefined,
-  })).sort((a, b) => (a.distance ?? 99) - (b.distance ?? 99));
+  const trucksWithDistance: Truck[] = useMemo(() => {
+    return (trucks ?? []).map((t) => ({
+      ...t,
+      distance: userLocation
+        ? haversine(userLocation.lat, userLocation.lng, t.latitude, t.longitude)
+        : undefined,
+    })).sort((a, b) => (a.distance ?? 99) - (b.distance ?? 99));
+  }, [trucks, userLocation]);
 
-  const cuisines = ["Todos", ...Array.from(new Set(trucksWithDistance.map((t) => t.cuisine)))];
+  const cuisines = useMemo(() => {
+    return ["Todos", ...Array.from(new Set(trucksWithDistance.map((t) => t.cuisine)))];
+  }, [trucksWithDistance]);
 
-  const filtered =
-    selectedCuisine === "Todos"
+  const filtered = useMemo(() => {
+    return selectedCuisine === "Todos"
       ? trucksWithDistance
       : trucksWithDistance.filter((t) => t.cuisine === selectedCuisine);
+  }, [selectedCuisine, trucksWithDistance]);
 
   // ── Geolocation ─────────────────────────────────────────────────────────────
 
