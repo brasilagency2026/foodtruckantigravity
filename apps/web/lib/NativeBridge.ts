@@ -141,6 +141,14 @@ export const NativeBridge = {
           window.location.href = `/order/${data.orderId}`;
         }
       });
+
+      // Handle Local Notification clicks
+      await LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
+        const data = notification.notification.extra;
+        if (data && data.orderId) {
+          window.location.href = `/order/${data.orderId}`;
+        }
+      });
     } catch (e) {
       console.error('Push init failed', e);
     }
@@ -149,7 +157,7 @@ export const NativeBridge = {
   /**
    * Schedule a local notification (Android/iOS)
    */
-  scheduleNotification: async (title: string, body: string, soundName: string = 'alert', id: number = 1) => {
+  scheduleNotification: async (title: string, body: string, soundName: string = 'alert', id: number = 1, orderId?: string) => {
     if (!Capacitor.isNativePlatform()) return;
 
     try {
@@ -174,7 +182,7 @@ export const NativeBridge = {
             schedule: { at: new Date(Date.now() + 100) },
             sound: soundName,
             actionTypeId: '',
-            extra: null
+            extra: orderId ? { orderId } : null
           }
         ]
       });
