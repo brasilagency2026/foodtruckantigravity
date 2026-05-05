@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 type OS = "ios" | "android" | "other";
-type AppState = "checking" | "not-installed";
 
 interface SmartLandingProps {
   truckId: string;
@@ -30,10 +29,11 @@ export function SmartLanding({
   onContinueWeb,
 }: SmartLandingProps) {
   const [os, setOs] = useState<OS>("other");
-  const [appState, setAppState] = useState<AppState>("checking");
   const [visible, setVisible] = useState(false);
 
+  const WEB_URL = `https://www.foodpronto.com.br/t/${truckId}`;
   const APP_SCHEME = `foodtruckalert://menu/${truckId}`;
+  const INTENT_URL = `intent://menu/${truckId}#Intent;scheme=foodtruckalert;package=com.foodtruckalert;S.browser_fallback_url=${encodeURIComponent(WEB_URL)};end`;
   const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
   const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
 
@@ -47,23 +47,19 @@ export function SmartLanding({
       return;
     }
 
-    // Tenta abrir o app via deep link
-    const start = Date.now();
-    window.location.href = APP_SCHEME;
-
-    // Se o app abrir, a aba ficará em background e este timeout não vai disparar
-    // Se não abrir (app não instalado), mostramos a landing após 1.5s
-    const timeout = setTimeout(() => {
-      const elapsed = Date.now() - start;
-      if (elapsed < 2000) {
-        // App não abriu → mostrar opções
-        setAppState("not-installed");
-        setVisible(true);
-      }
-    }, 1500);
-
-    return () => clearTimeout(timeout);
+    // Mostrar a landing page diretamente (sem tentar o deep link automaticamente)
+    setVisible(true);
   }, []);
+
+  const handleOpenApp = () => {
+    if (os === "android") {
+      // Intent URL: abre o app se instalado, senão volta pro site
+      window.location.href = INTENT_URL;
+    } else if (os === "ios") {
+      // Tenta abrir via scheme
+      window.location.href = APP_SCHEME;
+    }
+  };
 
   if (!visible) {
     return (
@@ -119,7 +115,14 @@ export function SmartLanding({
             ))}
           </div>
 
-          {/* Botão store */}
+          {/* Botão abrir o app (se já instalado) */}
+          {(os === "android" || os === "ios") && (
+            <button onClick={handleOpenApp} style={styles.openAppBtn}>
+              🚀 Abrir o aplicativo Food Pronto
+            </button>
+          )}
+
+          {/* Botão store (download) */}
           {os === "ios" && (
             <a href={APP_STORE_URL} style={styles.storeBtn}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
@@ -130,8 +133,8 @@ export function SmartLanding({
           )}
 
           {os === "android" && (
-            <a href={PLAY_STORE_URL} style={styles.storeBtn}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+            <a href={PLAY_STORE_URL} style={styles.storeBtnSecondary}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)">
                 <path d="M3.18 23.76c.3.17.64.22.99.14l12.82-7.38-2.79-2.79-11.02 10.03zM.35 1.09C.13 1.43 0 1.88 0 2.44v19.12c0 .56.13 1.01.35 1.35l.07.07 10.7-10.7v-.25L.42 1.02.35 1.09zM20.96 10.8l-2.72-1.57-3.06 3.06 3.06 3.06 2.74-1.58c.78-.45.78-1.52-.02-1.97zM4.17.24l12.82 7.38-2.79 2.79L3.18.24C3.53.16 3.87.07 4.17.24z"/>
               </svg>
               Baixar no Google Play
@@ -311,9 +314,44 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     fontSize: 16,
     textDecoration: "none",
-    boxSizing: "border-box",
+    boxSizing: "border-box" as const,
     boxShadow: "0 8px 24px rgba(255,107,53,0.35)",
     transition: "transform 0.1s, box-shadow 0.1s",
+  },
+  openAppBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    width: "100%",
+    padding: "16px 24px",
+    background: "linear-gradient(135deg, #FF6B35, #FF8F5E)",
+    color: "#FFFFFF",
+    border: "none",
+    borderRadius: 14,
+    fontWeight: 700,
+    fontSize: 16,
+    cursor: "pointer",
+    boxSizing: "border-box" as const,
+    boxShadow: "0 8px 24px rgba(255,107,53,0.35)",
+    fontFamily: "inherit",
+    marginBottom: 12,
+  },
+  storeBtnSecondary: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    width: "100%",
+    padding: "12px 24px",
+    background: "rgba(255,255,255,0.06)",
+    color: "rgba(255,255,255,0.7)",
+    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: 14,
+    fontWeight: 500,
+    fontSize: 14,
+    textDecoration: "none",
+    boxSizing: "border-box" as const,
   },
   divider: {
     display: "flex",
