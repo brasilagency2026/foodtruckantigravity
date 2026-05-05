@@ -82,6 +82,16 @@ export default function HomePage() {
   const activeOrdersRaw = useQuery(api.orders.getOrdersByIds, { orderIds: activeOrderIds });
   const activeOrders = (activeOrdersRaw ?? []).filter(o => o.status !== "entregue" && o.status !== "cancelado");
 
+  // Auto-redirect se tiver pedido ativo e não veio do botão "Voltar"
+  useEffect(() => {
+    if (activeOrders.length > 0) {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("ref") !== "order") {
+        window.location.href = `/order/${activeOrders[0]._id}`;
+      }
+    }
+  }, [activeOrders]);
+
   const [locationError, setLocationError] = useState(false);
   const [selectedCuisine, setSelectedCuisine] = useState("Todos");
   const [selectedTruck, setSelectedTruck] = useState<Truck | null>(null);

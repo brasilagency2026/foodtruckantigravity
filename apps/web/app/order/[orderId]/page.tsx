@@ -138,7 +138,7 @@ export default function OrderPage({
       <div style={s.page}>
         <div style={s.empty}>
           <p style={{ color: "#fff", fontSize: 18 }}>Pedido não encontrado</p>
-          <a href="/" style={s.backLink}>← Voltar</a>
+          <a href="/?ref=order" style={s.backLink}>← Voltar</a>
         </div>
       </div>
     );
@@ -276,7 +276,7 @@ export default function OrderPage({
               ➕ Fazer outro pedido
             </a>
           )}
-          <a href="/" style={{ ...s.checkoutBtn, background: '#333', boxShadow: 'none' }}>
+          <a href="/?ref=order" style={{ ...s.checkoutBtn, background: '#333', boxShadow: 'none' }}>
             🏠 Voltar ao início
           </a>
         </div>
