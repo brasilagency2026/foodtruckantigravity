@@ -19,6 +19,7 @@ function isPublicRoute(req: any) {
       pathname.startsWith('/api/upload') ||
       pathname.startsWith('/contato') ||
       pathname.startsWith('/termos') ||
+      pathname.startsWith('/politica-de-privacidade') ||
       pathname.startsWith('/trabalhe-conosco')
     )
   } catch (e) {
