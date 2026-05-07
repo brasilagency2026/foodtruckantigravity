@@ -79,15 +79,36 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
   };
 
   const handlePhotoUpload = async (file: File) => {
+    if (!file.type.startsWith("image/")) return;
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.url) setCoverPhotoUrl(data.url);
+      const ext = file.name.split(".").pop();
+      const key = `trucks/${truckId}/cover-${Date.now()}.${ext}`;
+      
+      // 1. Get signed URL
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, contentType: file.type }),
+      });
+      
+      if (!res.ok) throw new Error("Falha ao obter URL de upload");
+      
+      const { uploadUrl, publicUrl } = await res.json();
+      
+      // 2. Upload to R2/S3
+      const uploadRes = await fetch(uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type }
+      });
+      
+      if (!uploadRes.ok) throw new Error("Falha no upload para o storage");
+
+      setCoverPhotoUrl(publicUrl);
     } catch (e) {
       console.error("Upload error:", e);
+      setError("Erro ao carregar imagem. Tente novamente.");
     } finally {
       setUploading(false);
     }
