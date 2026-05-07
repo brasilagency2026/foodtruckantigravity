@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.foodtruckalert',
+  appId: 'br.com.foodpronto',
   appName: 'Food Pronto',
   webDir: 'out',
   server: {

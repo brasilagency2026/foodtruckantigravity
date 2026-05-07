@@ -7,6 +7,44 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:297160610099:android:ee2d5522153e51404e6e46",
+        "android_client_info": {
+          "package_name": "br.com.foodpronto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvyg6iFUgyCUlEWaJ6RsDTFFHdRhs5LYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297160610099:android:f864847676d8f36d4e6e46",
+        "android_client_info": {
+          "package_name": "com.foodpronto.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvyg6iFUgyCUlEWaJ6RsDTFFHdRhs5LYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:297160610099:android:452353f89c4ca5044e6e46",
         "android_client_info": {
           "package_name": "com.foodtruckalert"

@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.foodtruckalert"
+    namespace "br.com.foodpronto"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.foodtruckalert"
+        applicationId "br.com.foodpronto"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
