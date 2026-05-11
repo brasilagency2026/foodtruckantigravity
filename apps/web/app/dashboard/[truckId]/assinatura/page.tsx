@@ -173,11 +173,11 @@ export default function AssinaturaPage() {
                       {selectedPlan === "annual" && <div className="w-3 h-3 rounded-full bg-[#FF6B35]"></div>}
                     </div>
                     <input type="radio" name="plan" checked={selectedPlan === "annual"} onChange={() => setSelectedPlan("annual")} className="hidden"/>
-                    <span className="font-bold text-lg">Plano Anual</span>
+                    <span className="font-bold text-lg">Plano Anual (Pagamento Único)</span>
                   </div>
                   <div className="text-right">
                     <span className="text-xl font-bold text-[#FF6B35]">R$ {plans.annual.price.toFixed(2).replace('.', ',')}</span>
-                    <div className="text-[10px] text-green-400 font-medium mt-1">Economia de 20%</div>
+                    <div className="text-[10px] text-green-400 font-medium mt-1">Apenas R$ 160,00/mês</div>
                   </div>
                 </div>
               </label>

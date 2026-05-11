@@ -66,12 +66,14 @@ export default function PricingClient() {
                 <div className="pr-plan-name">Plano Food Truck</div>
                 <div className="pr-price-row">
                   <span className="pr-currency">R$</span>
-                  <span className="pr-price-num">{price.toLocaleString("pt-BR")}</span>
-                  <span className="pr-per">/mês</span>
+                  <span className="pr-price-num">
+                    {annual ? (annualMonthly * 12).toLocaleString("pt-BR") : monthly.toLocaleString("pt-BR")}
+                  </span>
+                  <span className="pr-per">{annual ? "/ano" : "/mês"}</span>
                 </div>
                 {annual && (
-                  <div className="pr-annual-note">
-                    Cobrado anualmente — R$ {(annualMonthly * 12).toLocaleString("pt-BR")}/ano
+                  <div className="pr-annual-note" style={{ color: 'var(--orange)', fontWeight: 'bold', fontSize: '14px' }}>
+                    Apenas R$ {annualMonthly.toLocaleString("pt-BR")}/mês (Cobrado anualmente)
                   </div>
                 )}
               </div>
