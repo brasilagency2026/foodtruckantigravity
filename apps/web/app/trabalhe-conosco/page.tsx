@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import WebOnlyRoute from "../../components/WebOnlyRoute";
 
 // Pricing constants
 // Normal monthly: R$200 | With voucher: R$180 | Commission: R$90/mo
@@ -10,7 +11,7 @@ const MONTHLY_COMM   = 90;   // 50% of 180
 const ANNUAL_CLIENT  = 1728; // after 10% voucher
 const ANNUAL_COMM    = 864;  // 50% of 1728
 
-export default function TrabalheConoscoPage() {
+function TrabalheConoscoPageContent() {
   const [clients, setClients] = useState(10);
   const [annual, setAnnual]   = useState(false);
 
@@ -420,6 +421,13 @@ const CSS = `
     .tc-how { padding: 60px 20px; }
     .tc-faq { padding: 60px 20px; }
     .tc-final { padding: 70px 20px; }
-    .tc-footer { padding: 32px 20px; }
   }
 `;
+
+export default function TrabalheConoscoPage() {
+  return (
+    <WebOnlyRoute>
+      <TrabalheConoscoPageContent />
+    </WebOnlyRoute>
+  );
+}
