@@ -26,7 +26,7 @@ type OS = "ios" | "android" | "other";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const RADIUS_KM = 20; // Default search radius in km
+const RADIUS_KM = 20000; // Extended radius to show all trucks globally
 const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
 
