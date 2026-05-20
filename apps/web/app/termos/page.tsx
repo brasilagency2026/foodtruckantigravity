@@ -1,4 +1,15 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
+
 export default function TermosPage() {
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
+
   const today = new Date();
   const updated = today.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
 
@@ -8,7 +19,7 @@ export default function TermosPage() {
 
       <nav className="t-nav">
         <a href="/" className="t-logo">🍔 Food Pronto</a>
-        <a href="/sign-up" className="t-nav-cta">Cadastrar meu truck</a>
+        {!isNative && <a href="/sign-up" className="t-nav-cta">Cadastrar meu truck</a>}
       </nav>
 
       <main className="t-main">
@@ -184,10 +195,10 @@ export default function TermosPage() {
       <footer className="t-footer">
         <a href="/" className="t-footer-logo">🍔 Food Pronto</a>
         <div className="t-footer-links">
-          <a href="/precos">Preços</a>
+          {!isNative && <a href="/precos">Preços</a>}
           <a href="/termos">Termos</a>
           <a href="/contato">Contato</a>
-          <a href="/trabalhe-conosco">Trabalhe conosco</a>
+          {!isNative && <a href="/trabalhe-conosco">Trabalhe conosco</a>}
         </div>
         <p className="t-footer-copy">© {new Date().getFullYear()} Food Pronto · CNPJ 64.465.357/0001-28 · Guarujá – SP</p>
       </footer>
