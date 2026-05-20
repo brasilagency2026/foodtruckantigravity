@@ -6,6 +6,7 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatPrice, formatOrderStatus } from "shared/types";
 import { NativeBridge } from "../../lib/NativeBridge";
+import WebOnlyRoute from "../../components/WebOnlyRoute";
 
 function playNewOrderSound() {
   // Always try web sound as fallback
@@ -32,7 +33,7 @@ function playNewOrderSound() {
   NativeBridge.scheduleNotification("Novo Pedido! 🍔", "Há um novo pedido pendente na cozinha.", "kitchen_alert");
 }
 
-export default function CozinhaPage() {
+function CozinhaPageContent() {
   const myTrucks = useQuery(api.foodTrucks.getMyTrucks);
   const truckId = myTrucks?.[0]?._id as Id<"foodTrucks"> | undefined;
 
@@ -223,5 +224,13 @@ export default function CozinhaPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function CozinhaPage() {
+  return (
+    <WebOnlyRoute>
+      <CozinhaPageContent />
+    </WebOnlyRoute>
   );
 }

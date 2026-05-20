@@ -322,16 +322,18 @@ export default function HomePage() {
             <span className="logo-icon">🍔</span>
             <span className="logo-text">Food Pronto</span>
           </div>
-          <div className="nav-actions">
-            <SignedOut>
-              <a href="/sign-in" className="btn-ghost">Entrar</a>
-              <a href="/sign-up" className="btn-primary-sm">Cadastrar meu truck</a>
-            </SignedOut>
-            <SignedIn>
-              <a href="/onboarding" className="btn-primary-sm">Acessar Painel</a>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
-          </div>
+          {!isNative && (
+            <div className="nav-actions">
+              <SignedOut>
+                <a href="/sign-in" className="btn-ghost">Entrar</a>
+                <a href="/sign-up" className="btn-primary-sm">Cadastrar meu truck</a>
+              </SignedOut>
+              <SignedIn>
+                <a href="/onboarding" className="btn-primary-sm">Acessar Painel</a>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
+          )}
 
         </nav>
         <div className="hero-content">
@@ -565,37 +567,39 @@ export default function HomePage() {
 
 
       {/* ── OWNER CTA + PRICING TEASER ── */}
-      <section className="owner-section">
-        <div className="owner-inner">
-          <span className="owner-emoji">🚚</span>
-          <h2 className="owner-title">Você tem um food truck?</h2>
-          <p className="owner-body">
-            Cadastre-se, crie seu cardápio digital e comece a receber pedidos hoje mesmo.
-            Sem maquininha, sem painel LED — tudo pelo celular.
-          </p>
-          <div className="pricing-teaser">
-            <div className="pricing-teaser-left">
-              <div className="pricing-free-badge">
-                <span className="pricing-free-n">30</span>
-                <span className="pricing-free-l">dias grátis</span>
+      {!isNative && (
+        <section className="owner-section">
+          <div className="owner-inner">
+            <span className="owner-emoji">🚚</span>
+            <h2 className="owner-title">Você tem um food truck?</h2>
+            <p className="owner-body">
+              Cadastre-se, crie seu cardápio digital e comece a receber pedidos hoje mesmo.
+              Sem maquininha, sem painel LED — tudo pelo celular.
+            </p>
+            <div className="pricing-teaser">
+              <div className="pricing-teaser-left">
+                <div className="pricing-free-badge">
+                  <span className="pricing-free-n">30</span>
+                  <span className="pricing-free-l">dias grátis</span>
+                </div>
+                <div>
+                  <div className="pricing-price">R$ 200<span className="pricing-mo">/mês</span></div>
+                  <div className="pricing-note">Sem contrato. Cancele quando quiser.</div>
+                </div>
               </div>
-              <div>
-                <div className="pricing-price">R$ 200<span className="pricing-mo">/mês</span></div>
-                <div className="pricing-note">Sem contrato. Cancele quando quiser.</div>
+              <div className="pricing-highlights">
+                {["✓  Sem maquininha de cartão","✓  Sem painel LED de senha","✓  Pix, crédito e débito via Mercado Pago","✓  Cliente recebe alerta no celular"].map((t) => (
+                  <div key={t} className="pricing-hl">{t}</div>
+                ))}
               </div>
             </div>
-            <div className="pricing-highlights">
-              {["✓  Sem maquininha de cartão","✓  Sem painel LED de senha","✓  Pix, crédito e débito via Mercado Pago","✓  Cliente recebe alerta no celular"].map((t) => (
-                <div key={t} className="pricing-hl">{t}</div>
-              ))}
+            <div className="owner-btns">
+              <a href="/onboarding" className="btn-owner">Começar 30 dias grátis →</a>
+              <a href="/precos" className="btn-owner-ghost">Ver todos os detalhes</a>
             </div>
           </div>
-          <div className="owner-btns">
-            <a href="/onboarding" className="btn-owner">Começar 30 dias grátis →</a>
-            <a href="/precos" className="btn-owner-ghost">Ver todos os detalhes</a>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── FOOTER ── */}
       <footer className="footer">
@@ -604,7 +608,7 @@ export default function HomePage() {
             <span>🍔</span> Food Pronto
           </div>
           <div className="footer-links">
-            <a href="/precos">Preços</a>
+            {!isNative && <a href="/precos">Preços</a>}
             <a href="/termos">Termos</a>
             <a href="/politica-de-privacidade">Privacidade</a>
             <a href="/contato">Contato</a>

@@ -10,6 +10,7 @@ import { StepLocation } from "./StepLocation";
 import { StepPhoto } from "./StepPhoto";
 import { StepHours } from "./StepHours";
 import { StepPayment } from "./StepPayment";
+import WebOnlyRoute from "../../components/WebOnlyRoute";
 
 export type OnboardingData = {
   name: string; description: string; cuisine: string; phone: string;
@@ -30,7 +31,7 @@ const STEPS = [
   { label: "Pagamento", icon: "💳" },
 ];
 
-export default function OnboardingPage() {
+function OnboardingPageContent() {
   const router = useRouter();
   const { isSignedIn, isLoaded: clerkLoaded } = useAuth();
   const { isAuthenticated, isLoading: convexLoading } = useConvexAuth();
@@ -151,6 +152,14 @@ export default function OnboardingPage() {
       </div>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@400;500;600;700&display=swap');*{box-sizing:border-box;}`}</style>
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <WebOnlyRoute>
+      <OnboardingPageContent />
+    </WebOnlyRoute>
   );
 }
 

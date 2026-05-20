@@ -1,8 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Capacitor } from "@capacitor/core";
 
 export default function ContatoPage() {
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
+
   return (
     <>
       <style>{CSS}</style>
@@ -13,16 +21,18 @@ export default function ContatoPage() {
           <span className="logo-icon">🍔</span>
           <span className="logo-text">Food Pronto</span>
         </a>
-        <div className="nav-actions">
-          <SignedOut>
-            <a href="/sign-in" className="btn-ghost">Entrar</a>
-            <a href="/sign-up" className="btn-primary-sm">Cadastrar meu truck</a>
-          </SignedOut>
-          <SignedIn>
-            <a href="/onboarding" className="btn-primary-sm">Acessar Painel</a>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
-        </div>
+        {!isNative && (
+          <div className="nav-actions">
+            <SignedOut>
+              <a href="/sign-in" className="btn-ghost">Entrar</a>
+              <a href="/sign-up" className="btn-primary-sm">Cadastrar meu truck</a>
+            </SignedOut>
+            <SignedIn>
+              <a href="/onboarding" className="btn-primary-sm">Acessar Painel</a>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+          </div>
+        )}
       </nav>
 
       {/* ── CONTENT ── */}
@@ -81,7 +91,7 @@ export default function ContatoPage() {
             <span>🍔</span> Food Pronto
           </div>
           <div className="footer-links">
-            <a href="/precos">Preços</a>
+            {!isNative && <a href="/precos">Preços</a>}
             <a href="/termos">Termos</a>
             <a href="/politica-de-privacidade">Privacidade</a>
             <a href="/contato">Contato</a>

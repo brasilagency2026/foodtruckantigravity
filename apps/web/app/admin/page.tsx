@@ -4,8 +4,9 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
+import WebOnlyRoute from "../../components/WebOnlyRoute";
 
-export default function AdminPage() {
+function AdminPageContent() {
   const { isLoaded, isSignedIn, user } = useUser();
   const trucks = useQuery(api.admin.getAllFoodTrucks);
   const updateStatus = useMutation(api.admin.updateFoodTruckStatus);
@@ -600,3 +601,11 @@ const CSS = `
     color: #fff;
   }
 `;
+
+export default function AdminPage() {
+  return (
+    <WebOnlyRoute>
+      <AdminPageContent />
+    </WebOnlyRoute>
+  );
+}

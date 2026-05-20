@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PricingClient from "./PricingClient";
+import WebOnlyRoute from "../../components/WebOnlyRoute";
 
 export const metadata: Metadata = {
   title: "Planos e Preços — Food Pronto",
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function PrecosPage() {
-  return <PricingClient />;
+  return (
+    <WebOnlyRoute>
+      <PricingClient />
+    </WebOnlyRoute>
+  );
 }
