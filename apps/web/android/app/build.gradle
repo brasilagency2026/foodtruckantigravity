@@ -4,7 +4,7 @@ android {
     namespace "br.com.foodpronto"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "br.com.foodpronto"
+        applicationId "com.foodpronto.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
