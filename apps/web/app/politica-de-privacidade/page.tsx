@@ -36,19 +36,12 @@ export default function PrivacyPolicyPage() {
               <span className="w-8 h-8 rounded-lg bg-[#FF6B35]/20 flex items-center justify-center text-[#FF6B35] text-sm">01</span>
               Informações que Coletamos
             </h2>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-1 gap-6">
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold text-[#FF6B35] mb-3">Localização (GPS)</h3>
                 <p className="text-sm">
                   Solicitamos acesso à sua localização para mostrar os food trucks mais próximos. 
-                  Estes dados são processados apenas enquanto o app está em uso et não são armazenados permanentemente ou vendidos.
-                </p>
-              </div>
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold text-[#FF6B35] mb-3">Dados de Conta</h3>
-                <p className="text-sm">
-                  Coletamos seu nome, e-mail e foto de perfil para autenticação segura,
-                  gestão de pedidos e comunicação sobre o status das suas compras.
+                  Estes dados são processados apenas enquanto o app está em uso e não são armazenados permanentemente ou vendidos.
                 </p>
               </div>
             </div>
