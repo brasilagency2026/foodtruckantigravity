@@ -86,7 +86,7 @@ export default function TermosPage() {
                   <li>Falhas técnicas, bugs ou interrupções no funcionamento da aplicação;</li>
                   <li>Perdas de dados, transações ou informações decorrentes de erros do sistema;</li>
                   <li>Indisponibilidade temporária ou definitiva da plataforma;</li>
-                  <li>Problemas de integração com serviços de terceiros (Mercado Pago, Clerk, Convex, etc.);</li>
+                  <li>Problemas de integração com serviços de terceiros (Mercado Pago, Convex, etc.);</li>
                   <li>Danos diretos ou indiretos causados pelo uso ou impossibilidade de uso do sistema.</li>
                 </ul>
               </div>
@@ -163,8 +163,8 @@ export default function TermosPage() {
             <h2>7. Serviços de Terceiros</h2>
             <p>
               O Food Pronto utiliza serviços de terceiros para seu funcionamento, incluindo mas não se limitando a:
-              <strong> Mercado Pago</strong> (pagamentos), <strong>Clerk</strong> (autenticação),
-              <strong> Convex</strong> (banco de dados em tempo real) e serviços de hospedagem em nuvem.
+              <strong>Mercado Pago</strong> (pagamentos),
+              <strong>Convex</strong> (banco de dados em tempo real) e serviços de hospedagem em nuvem.
               A empresa comercializadora não se responsabiliza por falhas, mudanças de política ou
               descontinuação desses serviços por parte de seus respectivos fornecedores.
             </p>

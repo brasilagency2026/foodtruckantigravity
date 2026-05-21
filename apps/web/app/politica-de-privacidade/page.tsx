@@ -47,8 +47,8 @@ export default function PrivacyPolicyPage() {
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold text-[#FF6B35] mb-3">Dados de Conta</h3>
                 <p className="text-sm">
-                  Coletamos seu nome, e-mail et foto de perfil (via Clerk) para autenticação segura, 
-                  gestão de pedidos et comunicação sobre o status das suas compras.
+                  Coletamos seu nome, e-mail e foto de perfil para autenticação segura,
+                  gestão de pedidos e comunicação sobre o status das suas compras.
                 </p>
               </div>
             </div>
@@ -78,11 +78,7 @@ export default function PrivacyPolicyPage() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-2.5 shadow-[0_0_8px_rgba(255,107,53,0.8)]"></div>
-                <span><strong>Clerk:</strong> Gestão de identidade et autenticação segura.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-2.5 shadow-[0_0_8px_rgba(255,107,53,0.8)]"></div>
-                <span><strong>Convex:</strong> Armazenamento de dados do aplicativo et pedidos.</span>
+                <span><strong>Convex:</strong> Armazenamento de dados do aplicativo e pedidos.</span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-2.5 shadow-[0_0_8px_rgba(255,107,53,0.8)]"></div>
