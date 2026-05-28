@@ -350,15 +350,7 @@ export default function HomePage() {
           </p>
           {!isNative && (
             <div className="hero-cta">
-              {os === "ios" && (
-                <a href={APP_STORE_URL} className="btn-store">
-                  <AppleIcon />
-                  <div>
-                    <span className="store-sub">Baixar na</span>
-                    <span className="store-main">App Store</span>
-                  </div>
-                </a>
-              )}
+
               {os === "android" && (
                 <a href={PLAY_STORE_URL} className="btn-store">
                   <PlayIcon />
@@ -370,13 +362,7 @@ export default function HomePage() {
               )}
               {os === "other" && (
                 <>
-                  <a href={APP_STORE_URL} className="btn-store">
-                    <AppleIcon />
-                    <div>
-                      <span className="store-sub">Baixar na</span>
-                      <span className="store-main">App Store</span>
-                    </div>
-                  </a>
+
                   <a href={PLAY_STORE_URL} className="btn-store">
                     <PlayIcon />
                     <div>
@@ -502,13 +488,7 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="store-buttons">
-                <a href={APP_STORE_URL} className="btn-store-dark">
-                  <AppleIcon />
-                  <div>
-                    <span className="store-sub">Baixar na</span>
-                    <span className="store-main">App Store</span>
-                  </div>
-                </a>
+
                 <a href={PLAY_STORE_URL} className="btn-store-dark">
                   <PlayIcon />
                   <div>
