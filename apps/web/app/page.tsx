@@ -28,7 +28,7 @@ type OS = "ios" | "android" | "other";
 
 const RADIUS_KM = 20000; // Extended radius to show all trucks globally
 const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodpronto.app";
 
 const CUISINE_ICONS: Record<string, string> = {
   "Todos": "🍽️",

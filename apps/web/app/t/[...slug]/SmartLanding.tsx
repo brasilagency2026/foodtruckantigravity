@@ -35,7 +35,7 @@ export function SmartLanding({
   const APP_SCHEME = `foodtruckalert://menu/${truckId}`;
   const INTENT_URL = `intent://menu/${truckId}#Intent;scheme=foodtruckalert;package=com.foodtruckalert;end`;
   const APP_STORE_URL = "https://apps.apple.com/app/food-pronto/id000000000";
-  const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodtruckalert";
+  const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.foodpronto.app";
 
   useEffect(() => {
     const detectedOs = detectOS();
