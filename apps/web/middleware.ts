@@ -20,6 +20,7 @@ function isPublicRoute(req: any) {
       pathname.startsWith('/contato') ||
       pathname.startsWith('/termos') ||
       pathname.startsWith('/politica-de-privacidade') ||
+      pathname.startsWith('/marketing') ||
       pathname.startsWith('/trabalhe-conosco')
     )
   } catch (e) {
