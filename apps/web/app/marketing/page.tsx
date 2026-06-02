@@ -433,7 +433,7 @@ export default function MarketingLandingPage() {
           <span className="logo-icon">🍔</span>
           <span>FOOD<em>PRONTO</em></span>
         </div>
-        <a href="#cadastro" className="nav-cta">🚀 Teste Grátis 30 Dias</a>
+        <a href="https://foodpronto.com.br" className="nav-cta">🚀 Teste Grátis 30 Dias</a>
       </nav>
 
       {/* HERO */}
@@ -449,8 +449,8 @@ export default function MarketingLandingPage() {
           Cardápio digital, pedidos online, pagamentos pelo Mercado Pago e alerta sonoro no celular do cliente quando o pedido estiver pronto. Tudo sem maquininha!
         </p>
         <div className="hero-btns">
-          <a href="#cadastro" className="btn-primary">🎉 Começar Grátis</a>
-          <a href="https://www.youtube.com/@foodpronto" target="_blank" rel="noreferrer" className="btn-secondary">▶ Ver no YouTube</a>
+          <a href="https://foodpronto.com.br" className="btn-primary">🎉 Começar Grátis</a>
+          <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="btn-secondary">▶ Ver no YouTube</a>
         </div>
         <div className="hero-stats">
           <div className="hero-stat"><div className="num">30min</div><div className="lbl">Para começar a vender</div></div>
@@ -695,7 +695,7 @@ export default function MarketingLandingPage() {
               <li>Alerta sonoro para clientes</li>
               <li>Sem cartão de crédito necessário</li>
             </ul>
-            <a href="#" className="price-btn gold-btn">Começar Grátis Agora</a>
+            <a href="https://foodpronto.com.br" className="price-btn gold-btn">Começar Grátis Agora</a>
           </div>
           <div className="price-card monthly">
             <div className="price-badge">⭐ Mais Popular</div>
@@ -709,7 +709,7 @@ export default function MarketingLandingPage() {
               <li>Link direto do seu foodtruck</li>
               <li>Painel de cozinha completo</li>
             </ul>
-            <a href="#" className="price-btn white-btn">Assinar Mensal</a>
+            <a href="https://foodpronto.com.br" className="price-btn white-btn">Assinar Mensal</a>
           </div>
           <div className="price-card annual">
             <div className="price-badge green-badge">🤑 20% de desconto</div>
@@ -723,7 +723,7 @@ export default function MarketingLandingPage() {
               <li>Suporte VIP</li>
               <li>Melhor custo-benefício</li>
             </ul>
-            <a href="#" className="price-btn green-btn">Assinar Anual</a>
+            <a href="https://foodpronto.com.br" className="price-btn green-btn">Assinar Anual</a>
           </div>
         </div>
       </section>
@@ -792,28 +792,28 @@ export default function MarketingLandingPage() {
             <span className="eco-tag truck">Foodtruck</span>
             <h3>FoodPronto — Foodtruck</h3>
             <p>A solução completa para foodtrucks: pedidos online, painel de cozinha, alertas sonoros e pagamento sem maquininha.</p>
-            <a href="https://www.youtube.com/@foodpronto" target="_blank" rel="noreferrer" className="eco-link">Conhecer ↗</a>
+            <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="eco-link">Conhecer ↗</a>
           </div>
           <div className="eco-card">
             <div className="eco-icon">🛵</div>
             <span className="eco-tag delivery">Delivery</span>
             <h3>FoodPronto Delivery</h3>
             <p>Gestão de delivery a domicílio com motoboys integrados pelo WhatsApp. Simples e eficiente para restaurantes com entrega.</p>
-            <a href="https://delivery.foodpronto.com.br" target="_blank" rel="noreferrer" className="eco-link">delivery.foodpronto.com.br ↗</a>
+            <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="eco-link">delivery.foodpronto.com.br ↗</a>
           </div>
           <div className="eco-card">
             <div className="eco-icon">🏖️</div>
             <span className="eco-tag beach">Quiosque Praia</span>
             <h3>Quiosque Praia</h3>
             <p>O cliente pede do seu guarda-sol pelo celular e um garçom de praia leva tudo até ele. Perfeito para quiosques litorâneos.</p>
-            <a href="https://pay.quiosquepraia.com" target="_blank" rel="noreferrer" className="eco-link">pay.quiosquepraia.com ↗</a>
+            <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="eco-link">pay.quiosquepraia.com ↗</a>
           </div>
           <div className="eco-card">
             <div className="eco-icon">📋</div>
             <span className="eco-tag menu">Menu Digital</span>
             <h3>Cardápio Digital</h3>
             <p>Crie e compartilhe um cardápio digital para qualquer restaurante. Inclui placa display com QR Code e NFC para acesso presencial.</p>
-            <a href="https://cardapio.foodpronto.com.br" target="_blank" rel="noreferrer" className="eco-link">cardapio.foodpronto.com.br ↗</a>
+            <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="eco-link">cardapio.foodpronto.com.br ↗</a>
           </div>
         </div>
       </section>
@@ -824,8 +824,8 @@ export default function MarketingLandingPage() {
         <h2 className="section-title text-white">Pronto para digitalizar<br />seu foodtruck?</h2>
         <p className="section-desc text-light" style={{ margin: '0 auto 40px' }}>30 dias grátis. Instalação em 30 minutos. Sem maquininha, sem complicação.</p>
         <div className="cta-btns">
-          <a href="#cadastro" className="btn-primary" style={{ fontSize: '1.05rem', padding: '18px 44px' }}>🎉 Cadastrar Grátis Agora</a>
-          <a href="https://www.youtube.com/@foodpronto" target="_blank" rel="noreferrer" className="yt-btn">
+          <a href="https://foodpronto.com.br" className="btn-primary" style={{ fontSize: '1.05rem', padding: '18px 44px' }}>🎉 Cadastrar Grátis Agora</a>
+          <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="yt-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.4s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.6 2 12 2 12 2s-4.6 0-7.3.3c-.6.1-1.9.1-3 1.3C.8 4.4.5 6.4.5 6.4S.2 8.7.2 11v2.1c0 2.3.3 4.6.3 4.6s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 22 12 22 12 22s4.6 0 7.3-.3c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.3.3-4.6V11c0-2.3-.3-4.6-.3-4.6zM9.7 15.5v-8l8.1 4-8.1 4z"/></svg>
             Assistir no YouTube
           </a>
@@ -836,10 +836,10 @@ export default function MarketingLandingPage() {
       <footer className="mkt-footer">
         <p>© {new Date().getFullYear()} FoodPronto Brasil — Todos os direitos reservados</p>
         <p style={{ marginTop: '8px' }}>
-          <a href="https://delivery.foodpronto.com.br">Delivery</a> •
-          <a href="https://pay.quiosquepraia.com">Quiosque Praia</a> •
-          <a href="https://cardapio.foodpronto.com.br">Cardápio Digital</a> •
-          <a href="https://www.youtube.com/@foodpronto">YouTube</a>
+          <a href="https://foodpronto.com.br">Delivery</a> •
+          <a href="https://foodpronto.com.br">Quiosque Praia</a> •
+          <a href="https://foodpronto.com.br">Cardápio Digital</a> •
+          <a href="https://foodpronto.com.br">YouTube</a>
         </p>
       </footer>
     </div>
