@@ -450,7 +450,7 @@ export default function MarketingLandingPage() {
         </p>
         <div className="hero-btns">
           <a href="https://foodpronto.com.br" className="btn-primary">🎉 Começar Grátis</a>
-          <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="btn-secondary">▶ Ver no YouTube</a>
+          <a href="https://www.youtube.com/@foodpronto" target="_blank" rel="noreferrer" className="btn-secondary">▶ Ver no YouTube</a>
         </div>
         <div className="hero-stats">
           <div className="hero-stat"><div className="num">30min</div><div className="lbl">Para começar a vender</div></div>
@@ -825,7 +825,7 @@ export default function MarketingLandingPage() {
         <p className="section-desc text-light" style={{ margin: '0 auto 40px' }}>30 dias grátis. Instalação em 30 minutos. Sem maquininha, sem complicação.</p>
         <div className="cta-btns">
           <a href="https://foodpronto.com.br" className="btn-primary" style={{ fontSize: '1.05rem', padding: '18px 44px' }}>🎉 Cadastrar Grátis Agora</a>
-          <a href="https://foodpronto.com.br" target="_blank" rel="noreferrer" className="yt-btn">
+          <a href="https://www.youtube.com/@foodpronto" target="_blank" rel="noreferrer" className="yt-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.4s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.6 2 12 2 12 2s-4.6 0-7.3.3c-.6.1-1.9.1-3 1.3C.8 4.4.5 6.4.5 6.4S.2 8.7.2 11v2.1c0 2.3.3 4.6.3 4.6s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 22 12 22 12 22s4.6 0 7.3-.3c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.3.3-4.6V11c0-2.3-.3-4.6-.3-4.6zM9.7 15.5v-8l8.1 4-8.1 4z"/></svg>
             Assistir no YouTube
           </a>
@@ -839,7 +839,7 @@ export default function MarketingLandingPage() {
           <a href="https://foodpronto.com.br">Delivery</a> •
           <a href="https://foodpronto.com.br">Quiosque Praia</a> •
           <a href="https://foodpronto.com.br">Cardápio Digital</a> •
-          <a href="https://foodpronto.com.br">YouTube</a>
+          <a href="https://www.youtube.com/@foodpronto">YouTube</a>
         </p>
       </footer>
     </div>
