@@ -6,7 +6,7 @@ import "./globals.css";
 import "./cozinha/cozinha.css";
 
 export const metadata: Metadata = {
-  title: "Food Pronto — Painel Admin",
+  title: "Food Pronto",
   description: "Gerencie seu food truck, cardápio e pedidos em tempo real",
 };
 
