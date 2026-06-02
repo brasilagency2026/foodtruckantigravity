@@ -4,6 +4,400 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Head from "next/head";
 
+const CSS_STYLES = `
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+  .marketing-landing {
+    --mkt-navy: #0d1e3a;
+    --mkt-navy2: #162848;
+    --mkt-gold: #f5c518;
+    --mkt-gold2: #e8a900;
+    --mkt-green: #1a7a2e;
+    --mkt-green2: #22a33d;
+    --mkt-white: #ffffff;
+    --mkt-gray: #f4f6fa;
+    --mkt-text: #1a1a2e;
+    --mkt-muted: #5a6070;
+    --mkt-radius: 16px;
+    --mkt-radius-sm: 10px;
+
+    font-family: "Nunito", sans-serif;
+    color: var(--mkt-text);
+    background: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .marketing-landing * {
+    box-sizing: border-box;
+  }
+
+  /* NAV */
+  .marketing-landing .mkt-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,30,58,0.97);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%;
+    height: 70px;
+    border-bottom: 2px solid var(--mkt-gold);
+  }
+  .marketing-landing .logo-nav { display: flex; align-items: center; gap: 12px; }
+  .marketing-landing .logo-icon { font-size: 32px; }
+  .marketing-landing .logo-nav span { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; color: var(--mkt-white); letter-spacing: 1px; }
+  .marketing-landing .logo-nav span em { color: var(--mkt-gold); font-style: normal; }
+  .marketing-landing .nav-cta {
+    background: var(--mkt-gold); color: var(--mkt-navy); font-weight: 800; font-size: 0.9rem;
+    border: none; border-radius: 50px; padding: 10px 24px; cursor: pointer;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .marketing-landing .nav-cta:hover { background: var(--mkt-gold2); }
+
+  /* HERO */
+  .marketing-landing .mkt-hero {
+    min-height: 100vh;
+    background: var(--mkt-navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 100px 5% 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .marketing-landing .mkt-hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, #1e3a6e 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .marketing-landing .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,197,24,0.15); border: 1.5px solid var(--mkt-gold);
+    color: var(--mkt-gold); font-size: 0.85rem; font-weight: 700;
+    border-radius: 50px; padding: 6px 18px; margin-bottom: 28px;
+    letter-spacing: 0.5px;
+    position: relative; z-index: 1;
+  }
+  .marketing-landing .hero-badge .badge-dot { width: 8px; height: 8px; background: var(--mkt-gold); border-radius: 50%; animation: mkt-pulse 1.5s infinite; }
+  @keyframes mkt-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+  
+  .marketing-landing .mkt-hero h1 {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    color: var(--mkt-white); line-height: 1;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    position: relative; z-index: 1;
+  }
+  .marketing-landing .mkt-hero h1 .accent { color: var(--mkt-gold); }
+  .marketing-landing .mkt-hero h1 .accent2 { color: #4ade80; }
+  .marketing-landing .mkt-hero .subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: rgba(255,255,255,0.8); max-width: 700px;
+    line-height: 1.6; margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  
+  .marketing-landing .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 56px; position: relative; z-index: 1; }
+  .marketing-landing .btn-primary {
+    background: var(--mkt-gold); color: var(--mkt-navy); font-weight: 800; font-size: 1rem;
+    border-radius: 50px; padding: 16px 36px; text-decoration: none;
+    transition: transform 0.15s, background 0.2s;
+    box-shadow: 0 4px 20px rgba(245,197,24,0.4);
+  }
+  .marketing-landing .btn-primary:hover { transform: translateY(-2px); background: var(--mkt-gold2); }
+  .marketing-landing .btn-secondary {
+    background: transparent; color: var(--mkt-white); font-weight: 700; font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.4); border-radius: 50px; padding: 16px 36px;
+    text-decoration: none; transition: border-color 0.2s, background 0.2s;
+  }
+  .marketing-landing .btn-secondary:hover { border-color: var(--mkt-white); background: rgba(255,255,255,0.08); }
+  
+  .marketing-landing .hero-stats {
+    display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
+    border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px;
+    position: relative; z-index: 1;
+  }
+  .marketing-landing .hero-stat { text-align: center; }
+  .marketing-landing .hero-stat .num { font-family: "Bebas Neue", sans-serif; font-size: 2.6rem; color: var(--mkt-gold); line-height: 1; }
+  .marketing-landing .hero-stat .lbl { font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  /* SECTION BASE */
+  .marketing-landing .mkt-section { padding: 80px 5%; }
+  .marketing-landing .section-tag {
+    display: inline-block; background: rgba(245,197,24,0.12); color: var(--mkt-gold2);
+    font-weight: 800; font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase;
+    border-radius: 50px; padding: 5px 16px; margin-bottom: 14px;
+  }
+  .marketing-landing .section-title {
+    font-family: "Bebas Neue", sans-serif; font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.1; margin-bottom: 16px; color: var(--mkt-navy);
+  }
+  .marketing-landing .section-desc { font-size: 1.05rem; color: var(--mkt-muted); max-width: 600px; line-height: 1.7; }
+  .marketing-landing .center { text-align: center; }
+  .marketing-landing .center .section-desc { margin: 0 auto; }
+  
+  .marketing-landing .text-white { color: var(--mkt-white); }
+  .marketing-landing .text-light { color: rgba(255,255,255,0.7); }
+
+  /* HOW IT WORKS */
+  .marketing-landing .steps-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px; margin-top: 50px;
+  }
+  .marketing-landing .step-card {
+    background: var(--mkt-gray); border-radius: var(--mkt-radius); padding: 32px 24px;
+    position: relative; border: 2px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .marketing-landing .step-card:hover { border-color: var(--mkt-gold); transform: translateY(-4px); }
+  .marketing-landing .step-num {
+    font-family: "Bebas Neue", sans-serif; font-size: 4rem; color: var(--mkt-gold);
+    opacity: 0.2; line-height: 1; margin-bottom: 8px;
+  }
+  .marketing-landing .step-icon { font-size: 2.2rem; margin-bottom: 14px; }
+  .marketing-landing .step-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; color: var(--mkt-navy); }
+  .marketing-landing .step-card p { font-size: 0.92rem; color: var(--mkt-muted); line-height: 1.6; }
+  .marketing-landing .step-time {
+    display: inline-block; background: var(--mkt-gold); color: var(--mkt-navy);
+    font-size: 0.72rem; font-weight: 800; padding: 3px 10px; border-radius: 50px;
+    margin-top: 12px;
+  }
+
+  /* FEATURES */
+  .marketing-landing .features-bg { background: var(--mkt-navy); color: var(--mkt-white); }
+  .marketing-landing .feat-tag { background: rgba(245,197,24,0.2); color: var(--mkt-gold); }
+  .marketing-landing .feat-desc { color: rgba(255,255,255,0.65); }
+  .marketing-landing .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; margin-top: 50px;
+  }
+  .marketing-landing .feat-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--mkt-radius); padding: 28px 24px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .marketing-landing .feat-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(245,197,24,0.5); }
+  .marketing-landing .feat-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(245,197,24,0.15); display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; margin-bottom: 18px;
+  }
+  .marketing-landing .feat-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; color: var(--mkt-white); }
+  .marketing-landing .feat-card p { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+  .marketing-landing .feat-badge {
+    display: inline-block; margin-top: 12px; font-size: 0.72rem; font-weight: 700;
+    padding: 4px 12px; border-radius: 50px;
+  }
+  .marketing-landing .feat-badge.gold { background: rgba(245,197,24,0.2); color: var(--mkt-gold); }
+  .marketing-landing .feat-badge.green { background: rgba(34,163,61,0.2); color: #4ade80; }
+
+  /* PAYMENT */
+  .marketing-landing .payment-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+    align-items: center; margin-top: 20px;
+  }
+  @media(max-width:768px) { .marketing-landing .payment-wrap { grid-template-columns:1fr; } }
+  .marketing-landing .payment-methods {
+    display: flex; flex-direction: column; gap: 14px; margin-top: 28px;
+  }
+  .marketing-landing .pay-item {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--mkt-gray); border-radius: var(--mkt-radius-sm); padding: 16px 20px;
+    border-left: 4px solid var(--mkt-gold);
+  }
+  .marketing-landing .pay-item .ico { font-size: 1.8rem; }
+  .marketing-landing .pay-item h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 2px; color: var(--mkt-navy); }
+  .marketing-landing .pay-item p { font-size: 0.82rem; color: var(--mkt-muted); margin: 0; }
+  .marketing-landing .no-machine {
+    background: linear-gradient(135deg, var(--mkt-navy), #1e3a6e);
+    border-radius: var(--mkt-radius); padding: 36px; color: var(--mkt-white); text-align: center;
+  }
+  .marketing-landing .no-machine .big { font-family: "Bebas Neue", sans-serif; font-size: 2.5rem; color: var(--mkt-gold); margin-bottom: 10px; }
+  .marketing-landing .no-machine p { font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.6; }
+  .marketing-landing .checkmark { font-size: 1.2rem; margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .marketing-landing .checkmark span { display: flex; align-items: center; gap: 10px; justify-content: center; font-size: 0.9rem; color: rgba(255,255,255,0.85); }
+  .marketing-landing .checkmark span::before { content: "✅"; }
+
+  /* ALERT SECTION */
+  .marketing-landing .alert-section { background: var(--mkt-gray); }
+  .marketing-landing .alert-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  @media(max-width:768px) { .marketing-landing .alert-wrap { grid-template-columns:1fr; } }
+  .marketing-landing .alert-check-list { margin-top:28px; display:flex; flex-direction:column; gap:12px; }
+  .marketing-landing .alert-check-item { display:flex; align-items:center; gap:12px; font-size:0.92rem; }
+  .marketing-landing .alert-check-item.muted { color: var(--mkt-muted); }
+  .marketing-landing .alert-check-item.highlight { color: var(--mkt-navy); font-weight: 700; }
+  .marketing-landing .alert-check-item .icon { font-size: 1.4rem; }
+  
+  .marketing-landing .alert-demo {
+    background: var(--mkt-navy); border-radius: var(--mkt-radius); padding: 40px;
+    color: var(--mkt-white); text-align: center; max-width: 500px; margin: 0 auto;
+    border: 2px solid var(--mkt-gold);
+  }
+  .marketing-landing .demo-title { font-size:0.85rem; color:rgba(255,255,255,0.6); margin-bottom:8px; }
+  .marketing-landing .phone-mock {
+    background: #1a1a1a; border-radius: 28px; padding: 20px;
+    margin: 24px auto; max-width: 260px;
+    border: 6px solid #333; position: relative;
+  }
+  .marketing-landing .phone-notch {
+    width: 100px; height: 24px; background: #1a1a1a; border-radius: 0 0 16px 16px;
+    margin: -20px auto 16px; position: relative; z-index: 1;
+  }
+  .marketing-landing .notif-card {
+    background: rgba(255,255,255,0.95); border-radius: 14px; padding: 14px 16px;
+    color: #1a1a1a; text-align: left;
+    opacity: 0; transform: scale(0.8);
+  }
+  .marketing-landing .bounceIn {
+    animation: mkt-bounceIn 0.5s forwards ease;
+  }
+  @keyframes mkt-bounceIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+  
+  .marketing-landing .notif-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .marketing-landing .notif-app { font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+  .marketing-landing .notif-time { font-size: 0.65rem; color: #999; margin-left: auto; }
+  .marketing-landing .notif-title { font-weight: 800; font-size: 0.85rem; color: #1a1a1a; }
+  .marketing-landing .notif-body { font-size: 0.78rem; color: #555; margin-top: 2px; }
+  
+  .marketing-landing .vibrate { animation: mkt-vibrate 0.3s linear 3; }
+  @keyframes mkt-vibrate { 0%,100%{transform:translate(0,0)} 25%{transform:translate(-4px,0)} 75%{transform:translate(4px,0)} }
+  
+  .marketing-landing .sim-btn {
+    background: var(--mkt-gold); color: var(--mkt-navy); border: none; border-radius: 50px;
+    padding: 12px 28px; font-weight: 800; font-size: 0.9rem; cursor: pointer; margin-top: 8px;
+    transition: transform 0.15s;
+  }
+  .marketing-landing .sim-btn:hover { transform: translateY(-2px); }
+
+  /* MANUAL ORDER */
+  .marketing-landing .manual-section { background: var(--mkt-white); }
+  .marketing-landing .manual-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  @media(max-width:768px) { .marketing-landing .manual-wrap { grid-template-columns: 1fr; } }
+  .marketing-landing .manual-card {
+    background: var(--mkt-navy); border-radius: var(--mkt-radius); padding: 36px;
+    color: var(--mkt-white); border: 2px solid var(--mkt-gold);
+  }
+  .marketing-landing .manual-card h3 { font-family: "Bebas Neue", sans-serif; font-size: 2rem; color: var(--mkt-gold); margin-bottom: 16px; }
+  .marketing-landing .manual-card p { font-size: 0.92rem; color: rgba(255,255,255,0.75); line-height: 1.65; }
+  .marketing-landing .scenario-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+  .marketing-landing .scenario-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: rgba(255,255,255,0.07); border-radius: var(--mkt-radius-sm); padding: 14px 16px;
+  }
+  .marketing-landing .scenario-item .s-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .marketing-landing .scenario-item p { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 0; }
+  .marketing-landing .scenario-item strong { color: var(--mkt-white); }
+
+  /* PRICING */
+  .marketing-landing .pricing-bg { background: var(--mkt-gray); }
+  .marketing-landing .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px; margin-top: 50px; max-width: 900px; margin-left: auto; margin-right: auto;
+  }
+  .marketing-landing .price-card {
+    border-radius: var(--mkt-radius); padding: 36px 28px; text-align: center;
+    border: 2px solid transparent; position: relative; transition: transform 0.2s;
+  }
+  .marketing-landing .price-card:hover { transform: translateY(-4px); }
+  .marketing-landing .price-card.free { background: var(--mkt-gray); border-color: #ddd; }
+  .marketing-landing .price-card.monthly { background: var(--mkt-navy); color: var(--mkt-white); border-color: var(--mkt-gold); }
+  .marketing-landing .price-card.annual { background: var(--mkt-navy); color: var(--mkt-white); border-color: var(--mkt-green2); }
+  .marketing-landing .price-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--mkt-gold); color: var(--mkt-navy); font-size: 0.7rem; font-weight: 800;
+    padding: 4px 18px; border-radius: 50px; white-space: nowrap;
+  }
+  .marketing-landing .price-badge.green-badge { background: var(--mkt-green2); color: var(--mkt-white); }
+  .marketing-landing .plan-name { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; margin-bottom: 8px; }
+  .marketing-landing .price-card.free .plan-name { color: var(--mkt-navy); }
+  .marketing-landing .price-amount { font-family: "Bebas Neue", sans-serif; font-size: 3.8rem; line-height: 1; color: var(--mkt-gold); margin: 12px 0 4px; }
+  .marketing-landing .price-card.free .price-amount { color: var(--mkt-green); }
+  .marketing-landing .price-period { font-size: 0.82rem; margin-bottom: 24px; }
+  .marketing-landing .price-card.free .price-period { color: var(--mkt-muted); }
+  .marketing-landing .price-card.monthly .price-period, .marketing-landing .price-card.annual .price-period { color: rgba(255,255,255,0.6); }
+  .marketing-landing .price-features { list-style: none; text-align: left; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; padding: 0; }
+  .marketing-landing .price-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.88rem; }
+  .marketing-landing .price-features li::before { content: "✓"; font-weight: 800; color: var(--mkt-gold); flex-shrink: 0; margin-top: 1px; }
+  .marketing-landing .price-card.free .price-features li { color: var(--mkt-muted); }
+  .marketing-landing .price-card.free .price-features li::before { color: var(--mkt-green); }
+  .marketing-landing .price-card.monthly .price-features li, .marketing-landing .price-card.annual .price-features li { color: rgba(255,255,255,0.8); }
+  .marketing-landing .price-btn {
+    display: block; width: 100%; padding: 14px; border-radius: 50px;
+    font-weight: 800; font-size: 0.95rem; text-decoration: none; text-align: center;
+    transition: opacity 0.2s;
+  }
+  .marketing-landing .price-btn:hover { opacity: 0.88; }
+  .marketing-landing .gold-btn { background: var(--mkt-gold); color: var(--mkt-navy); }
+  .marketing-landing .white-btn { background: var(--mkt-white); color: var(--mkt-navy); }
+  .marketing-landing .green-btn { background: var(--mkt-green2); color: var(--mkt-white); }
+
+  /* RESELLER */
+  .marketing-landing .reseller-section { background: linear-gradient(135deg, #0a1628, #1a3a6e); color: var(--mkt-white); }
+  .marketing-landing .reseller-tag { background: rgba(74,222,128,0.15); color: #4ade80; }
+  .marketing-landing .reseller-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-top: 40px; }
+  @media(max-width:768px) { .marketing-landing .reseller-grid { grid-template-columns: 1fr; } }
+  .marketing-landing .commission-big {
+    background: rgba(245,197,24,0.1); border: 2px solid var(--mkt-gold);
+    border-radius: var(--mkt-radius); padding: 36px; text-align: center;
+  }
+  .marketing-landing .commission-big .pct { font-family: "Bebas Neue", sans-serif; font-size: 6rem; color: var(--mkt-gold); line-height: 1; }
+  .marketing-landing .commission-big .label { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+  .marketing-landing .commission-big .comm-divider { border-top:1px solid rgba(255,255,255,0.1); margin:16px 0; }
+  .marketing-landing .commission-big .comm-ex-label { font-size:0.85rem; color:rgba(255,255,255,0.6); }
+  .marketing-landing .commission-big .comm-ex-val { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; color:#4ade80; margin:4px 0; }
+  .marketing-landing .commission-big .sub { font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 8px; }
+  .marketing-landing .reseller-perks { display: flex; flex-direction: column; gap: 16px; }
+  .marketing-landing .reseller-perk {
+    display: flex; align-items: flex-start; gap: 16px;
+    background: rgba(255,255,255,0.06); border-radius: var(--mkt-radius-sm); padding: 18px;
+  }
+  .marketing-landing .reseller-perk .perk-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .marketing-landing .reseller-perk h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; color: var(--mkt-white); }
+  .marketing-landing .reseller-perk p { font-size: 0.83rem; color: rgba(255,255,255,0.6); line-height: 1.5; margin: 0; }
+
+  /* ECOSYSTEM */
+  .marketing-landing .eco-section { background: var(--mkt-gray); }
+  .marketing-landing .eco-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 50px; }
+  .marketing-landing .eco-card {
+    background: var(--mkt-white); border-radius: var(--mkt-radius); padding: 28px 24px;
+    border: 2px solid #e8eaf0; transition: border-color 0.2s, transform 0.2s;
+  }
+  .marketing-landing .eco-card:hover { border-color: var(--mkt-navy); transform: translateY(-4px); }
+  .marketing-landing .eco-icon { font-size: 2.4rem; margin-bottom: 14px; }
+  .marketing-landing .eco-tag { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; margin-bottom: 10px; }
+  .marketing-landing .eco-tag.truck { background: rgba(245,197,24,0.15); color: var(--mkt-gold2); }
+  .marketing-landing .eco-tag.delivery { background: rgba(26,122,46,0.12); color: var(--mkt-green); }
+  .marketing-landing .eco-tag.beach { background: rgba(56,189,248,0.15); color: #0369a1; }
+  .marketing-landing .eco-tag.menu { background: rgba(167,139,250,0.15); color: #7c3aed; }
+  .marketing-landing .eco-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; color: var(--mkt-navy); }
+  .marketing-landing .eco-card p { font-size: 0.85rem; color: var(--mkt-muted); line-height: 1.6; margin-bottom: 14px; }
+  .marketing-landing .eco-link { font-size: 0.82rem; font-weight: 700; color: var(--mkt-navy); text-decoration: none; border-bottom: 2px solid var(--mkt-gold); padding-bottom: 2px; }
+  .marketing-landing .eco-link:hover { color: var(--mkt-gold2); }
+
+  /* CTA FINAL */
+  .marketing-landing .final-cta {
+    background: var(--mkt-navy); color: var(--mkt-white); text-align: center;
+    padding: 100px 5%;
+  }
+  .marketing-landing .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .marketing-landing .yt-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #ff0000; color: #fff; font-weight: 800; font-size: 0.95rem;
+    border-radius: 50px; padding: 16px 32px; text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .marketing-landing .yt-btn:hover { opacity: 0.88; }
+
+  /* FOOTER */
+  .marketing-landing .mkt-footer {
+    background: #060e1d; color: rgba(255,255,255,0.4);
+    text-align: center; padding: 28px 5%;
+    font-size: 0.82rem; border-top: 1px solid rgba(245,197,24,0.2);
+  }
+  .marketing-landing .mkt-footer a { color: var(--mkt-gold); text-decoration: none; }
+`;
+
 export default function MarketingLandingPage() {
   const [isVibrating, setIsVibrating] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
@@ -31,7 +425,7 @@ export default function MarketingLandingPage() {
 
   return (
     <div className="marketing-landing">
-      <style>{CSS}</style>
+      <style>{CSS_STYLES}</style>
 
       {/* NAV */}
       <nav className="mkt-nav">
@@ -451,398 +845,3 @@ export default function MarketingLandingPage() {
     </div>
   );
 }
-
-// Styles isolated under .marketing-landing
-const CSS = \`
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
-
-  .marketing-landing {
-    --mkt-navy: #0d1e3a;
-    --mkt-navy2: #162848;
-    --mkt-gold: #f5c518;
-    --mkt-gold2: #e8a900;
-    --mkt-green: #1a7a2e;
-    --mkt-green2: #22a33d;
-    --mkt-white: #ffffff;
-    --mkt-gray: #f4f6fa;
-    --mkt-text: #1a1a2e;
-    --mkt-muted: #5a6070;
-    --mkt-radius: 16px;
-    --mkt-radius-sm: 10px;
-
-    font-family: "Nunito", sans-serif;
-    color: var(--mkt-text);
-    background: #fff;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  .marketing-landing * {
-    box-sizing: border-box;
-  }
-
-  /* NAV */
-  .marketing-landing .mkt-nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(13,30,58,0.97);
-    backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 5%;
-    height: 70px;
-    border-bottom: 2px solid var(--mkt-gold);
-  }
-  .marketing-landing .logo-nav { display: flex; align-items: center; gap: 12px; }
-  .marketing-landing .logo-icon { font-size: 32px; }
-  .marketing-landing .logo-nav span { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; color: var(--mkt-white); letter-spacing: 1px; }
-  .marketing-landing .logo-nav span em { color: var(--mkt-gold); font-style: normal; }
-  .marketing-landing .nav-cta {
-    background: var(--mkt-gold); color: var(--mkt-navy); font-weight: 800; font-size: 0.9rem;
-    border: none; border-radius: 50px; padding: 10px 24px; cursor: pointer;
-    text-decoration: none; transition: background 0.2s;
-  }
-  .marketing-landing .nav-cta:hover { background: var(--mkt-gold2); }
-
-  /* HERO */
-  .marketing-landing .mkt-hero {
-    min-height: 100vh;
-    background: var(--mkt-navy);
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 100px 5% 60px;
-    position: relative;
-    overflow: hidden;
-  }
-  .marketing-landing .mkt-hero::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 50% 30%, #1e3a6e 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .marketing-landing .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(245,197,24,0.15); border: 1.5px solid var(--mkt-gold);
-    color: var(--mkt-gold); font-size: 0.85rem; font-weight: 700;
-    border-radius: 50px; padding: 6px 18px; margin-bottom: 28px;
-    letter-spacing: 0.5px;
-    position: relative; z-index: 1;
-  }
-  .marketing-landing .hero-badge .badge-dot { width: 8px; height: 8px; background: var(--mkt-gold); border-radius: 50%; animation: mkt-pulse 1.5s infinite; }
-  @keyframes mkt-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
-  
-  .marketing-landing .mkt-hero h1 {
-    font-family: "Bebas Neue", sans-serif;
-    font-size: clamp(3rem, 8vw, 6.5rem);
-    color: var(--mkt-white); line-height: 1;
-    margin-bottom: 10px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    position: relative; z-index: 1;
-  }
-  .marketing-landing .mkt-hero h1 .accent { color: var(--mkt-gold); }
-  .marketing-landing .mkt-hero h1 .accent2 { color: #4ade80; }
-  .marketing-landing .mkt-hero .subtitle {
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-    color: rgba(255,255,255,0.8); max-width: 700px;
-    line-height: 1.6; margin-bottom: 40px;
-    position: relative; z-index: 1;
-  }
-  
-  .marketing-landing .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 56px; position: relative; z-index: 1; }
-  .marketing-landing .btn-primary {
-    background: var(--mkt-gold); color: var(--mkt-navy); font-weight: 800; font-size: 1rem;
-    border-radius: 50px; padding: 16px 36px; text-decoration: none;
-    transition: transform 0.15s, background 0.2s;
-    box-shadow: 0 4px 20px rgba(245,197,24,0.4);
-  }
-  .marketing-landing .btn-primary:hover { transform: translateY(-2px); background: var(--mkt-gold2); }
-  .marketing-landing .btn-secondary {
-    background: transparent; color: var(--mkt-white); font-weight: 700; font-size: 1rem;
-    border: 2px solid rgba(255,255,255,0.4); border-radius: 50px; padding: 16px 36px;
-    text-decoration: none; transition: border-color 0.2s, background 0.2s;
-  }
-  .marketing-landing .btn-secondary:hover { border-color: var(--mkt-white); background: rgba(255,255,255,0.08); }
-  
-  .marketing-landing .hero-stats {
-    display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
-    border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px;
-    position: relative; z-index: 1;
-  }
-  .marketing-landing .hero-stat { text-align: center; }
-  .marketing-landing .hero-stat .num { font-family: "Bebas Neue", sans-serif; font-size: 2.6rem; color: var(--mkt-gold); line-height: 1; }
-  .marketing-landing .hero-stat .lbl { font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
-
-  /* SECTION BASE */
-  .marketing-landing .mkt-section { padding: 80px 5%; }
-  .marketing-landing .section-tag {
-    display: inline-block; background: rgba(245,197,24,0.12); color: var(--mkt-gold2);
-    font-weight: 800; font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase;
-    border-radius: 50px; padding: 5px 16px; margin-bottom: 14px;
-  }
-  .marketing-landing .section-title {
-    font-family: "Bebas Neue", sans-serif; font-size: clamp(2rem, 5vw, 3.2rem);
-    line-height: 1.1; margin-bottom: 16px; color: var(--mkt-navy);
-  }
-  .marketing-landing .section-desc { font-size: 1.05rem; color: var(--mkt-muted); max-width: 600px; line-height: 1.7; }
-  .marketing-landing .center { text-align: center; }
-  .marketing-landing .center .section-desc { margin: 0 auto; }
-  
-  .marketing-landing .text-white { color: var(--mkt-white); }
-  .marketing-landing .text-light { color: rgba(255,255,255,0.7); }
-
-  /* HOW IT WORKS */
-  .marketing-landing .steps-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 28px; margin-top: 50px;
-  }
-  .marketing-landing .step-card {
-    background: var(--mkt-gray); border-radius: var(--mkt-radius); padding: 32px 24px;
-    position: relative; border: 2px solid transparent;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .marketing-landing .step-card:hover { border-color: var(--mkt-gold); transform: translateY(-4px); }
-  .marketing-landing .step-num {
-    font-family: "Bebas Neue", sans-serif; font-size: 4rem; color: var(--mkt-gold);
-    opacity: 0.2; line-height: 1; margin-bottom: 8px;
-  }
-  .marketing-landing .step-icon { font-size: 2.2rem; margin-bottom: 14px; }
-  .marketing-landing .step-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; color: var(--mkt-navy); }
-  .marketing-landing .step-card p { font-size: 0.92rem; color: var(--mkt-muted); line-height: 1.6; }
-  .marketing-landing .step-time {
-    display: inline-block; background: var(--mkt-gold); color: var(--mkt-navy);
-    font-size: 0.72rem; font-weight: 800; padding: 3px 10px; border-radius: 50px;
-    margin-top: 12px;
-  }
-
-  /* FEATURES */
-  .marketing-landing .features-bg { background: var(--mkt-navy); color: var(--mkt-white); }
-  .marketing-landing .feat-tag { background: rgba(245,197,24,0.2); color: var(--mkt-gold); }
-  .marketing-landing .feat-desc { color: rgba(255,255,255,0.65); }
-  .marketing-landing .features-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px; margin-top: 50px;
-  }
-  .marketing-landing .feat-card {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--mkt-radius); padding: 28px 24px;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  .marketing-landing .feat-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(245,197,24,0.5); }
-  .marketing-landing .feat-icon {
-    width: 52px; height: 52px; border-radius: 14px;
-    background: rgba(245,197,24,0.15); display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; margin-bottom: 18px;
-  }
-  .marketing-landing .feat-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; color: var(--mkt-white); }
-  .marketing-landing .feat-card p { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
-  .marketing-landing .feat-badge {
-    display: inline-block; margin-top: 12px; font-size: 0.72rem; font-weight: 700;
-    padding: 4px 12px; border-radius: 50px;
-  }
-  .marketing-landing .feat-badge.gold { background: rgba(245,197,24,0.2); color: var(--mkt-gold); }
-  .marketing-landing .feat-badge.green { background: rgba(34,163,61,0.2); color: #4ade80; }
-
-  /* PAYMENT */
-  .marketing-landing .payment-wrap {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
-    align-items: center; margin-top: 20px;
-  }
-  @media(max-width:768px) { .marketing-landing .payment-wrap { grid-template-columns:1fr; } }
-  .marketing-landing .payment-methods {
-    display: flex; flex-direction: column; gap: 14px; margin-top: 28px;
-  }
-  .marketing-landing .pay-item {
-    display: flex; align-items: center; gap: 16px;
-    background: var(--mkt-gray); border-radius: var(--mkt-radius-sm); padding: 16px 20px;
-    border-left: 4px solid var(--mkt-gold);
-  }
-  .marketing-landing .pay-item .ico { font-size: 1.8rem; }
-  .marketing-landing .pay-item h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 2px; color: var(--mkt-navy); }
-  .marketing-landing .pay-item p { font-size: 0.82rem; color: var(--mkt-muted); margin: 0; }
-  .marketing-landing .no-machine {
-    background: linear-gradient(135deg, var(--mkt-navy), #1e3a6e);
-    border-radius: var(--mkt-radius); padding: 36px; color: var(--mkt-white); text-align: center;
-  }
-  .marketing-landing .no-machine .big { font-family: "Bebas Neue", sans-serif; font-size: 2.5rem; color: var(--mkt-gold); margin-bottom: 10px; }
-  .marketing-landing .no-machine p { font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.6; }
-  .marketing-landing .checkmark { font-size: 1.2rem; margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
-  .marketing-landing .checkmark span { display: flex; align-items: center; gap: 10px; justify-content: center; font-size: 0.9rem; color: rgba(255,255,255,0.85); }
-  .marketing-landing .checkmark span::before { content: "✅"; }
-
-  /* ALERT SECTION */
-  .marketing-landing .alert-section { background: var(--mkt-gray); }
-  .marketing-landing .alert-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-  @media(max-width:768px) { .marketing-landing .alert-wrap { grid-template-columns:1fr; } }
-  .marketing-landing .alert-check-list { margin-top:28px; display:flex; flex-direction:column; gap:12px; }
-  .marketing-landing .alert-check-item { display:flex; align-items:center; gap:12px; font-size:0.92rem; }
-  .marketing-landing .alert-check-item.muted { color: var(--mkt-muted); }
-  .marketing-landing .alert-check-item.highlight { color: var(--mkt-navy); font-weight: 700; }
-  .marketing-landing .alert-check-item .icon { font-size: 1.4rem; }
-  
-  .marketing-landing .alert-demo {
-    background: var(--mkt-navy); border-radius: var(--mkt-radius); padding: 40px;
-    color: var(--mkt-white); text-align: center; max-width: 500px; margin: 0 auto;
-    border: 2px solid var(--mkt-gold);
-  }
-  .marketing-landing .demo-title { font-size:0.85rem; color:rgba(255,255,255,0.6); margin-bottom:8px; }
-  .marketing-landing .phone-mock {
-    background: #1a1a1a; border-radius: 28px; padding: 20px;
-    margin: 24px auto; max-width: 260px;
-    border: 6px solid #333; position: relative;
-  }
-  .marketing-landing .phone-notch {
-    width: 100px; height: 24px; background: #1a1a1a; border-radius: 0 0 16px 16px;
-    margin: -20px auto 16px; position: relative; z-index: 1;
-  }
-  .marketing-landing .notif-card {
-    background: rgba(255,255,255,0.95); border-radius: 14px; padding: 14px 16px;
-    color: #1a1a1a; text-align: left;
-    opacity: 0; transform: scale(0.8);
-  }
-  .marketing-landing .bounceIn {
-    animation: mkt-bounceIn 0.5s forwards ease;
-  }
-  @keyframes mkt-bounceIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
-  
-  .marketing-landing .notif-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .marketing-landing .notif-app { font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-  .marketing-landing .notif-time { font-size: 0.65rem; color: #999; margin-left: auto; }
-  .marketing-landing .notif-title { font-weight: 800; font-size: 0.85rem; color: #1a1a1a; }
-  .marketing-landing .notif-body { font-size: 0.78rem; color: #555; margin-top: 2px; }
-  
-  .marketing-landing .vibrate { animation: mkt-vibrate 0.3s linear 3; }
-  @keyframes mkt-vibrate { 0%,100%{transform:translate(0,0)} 25%{transform:translate(-4px,0)} 75%{transform:translate(4px,0)} }
-  
-  .marketing-landing .sim-btn {
-    background: var(--mkt-gold); color: var(--mkt-navy); border: none; border-radius: 50px;
-    padding: 12px 28px; font-weight: 800; font-size: 0.9rem; cursor: pointer; margin-top: 8px;
-    transition: transform 0.15s;
-  }
-  .marketing-landing .sim-btn:hover { transform: translateY(-2px); }
-
-  /* MANUAL ORDER */
-  .marketing-landing .manual-section { background: var(--mkt-white); }
-  .marketing-landing .manual-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-  @media(max-width:768px) { .marketing-landing .manual-wrap { grid-template-columns: 1fr; } }
-  .marketing-landing .manual-card {
-    background: var(--mkt-navy); border-radius: var(--mkt-radius); padding: 36px;
-    color: var(--mkt-white); border: 2px solid var(--mkt-gold);
-  }
-  .marketing-landing .manual-card h3 { font-family: "Bebas Neue", sans-serif; font-size: 2rem; color: var(--mkt-gold); margin-bottom: 16px; }
-  .marketing-landing .manual-card p { font-size: 0.92rem; color: rgba(255,255,255,0.75); line-height: 1.65; }
-  .marketing-landing .scenario-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
-  .marketing-landing .scenario-item {
-    display: flex; align-items: flex-start; gap: 14px;
-    background: rgba(255,255,255,0.07); border-radius: var(--mkt-radius-sm); padding: 14px 16px;
-  }
-  .marketing-landing .scenario-item .s-icon { font-size: 1.4rem; flex-shrink: 0; }
-  .marketing-landing .scenario-item p { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 0; }
-  .marketing-landing .scenario-item strong { color: var(--mkt-white); }
-
-  /* PRICING */
-  .marketing-landing .pricing-bg { background: var(--mkt-gray); }
-  .marketing-landing .pricing-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 28px; margin-top: 50px; max-width: 900px; margin-left: auto; margin-right: auto;
-  }
-  .marketing-landing .price-card {
-    border-radius: var(--mkt-radius); padding: 36px 28px; text-align: center;
-    border: 2px solid transparent; position: relative; transition: transform 0.2s;
-  }
-  .marketing-landing .price-card:hover { transform: translateY(-4px); }
-  .marketing-landing .price-card.free { background: var(--mkt-gray); border-color: #ddd; }
-  .marketing-landing .price-card.monthly { background: var(--mkt-navy); color: var(--mkt-white); border-color: var(--mkt-gold); }
-  .marketing-landing .price-card.annual { background: var(--mkt-navy); color: var(--mkt-white); border-color: var(--mkt-green2); }
-  .marketing-landing .price-badge {
-    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-    background: var(--mkt-gold); color: var(--mkt-navy); font-size: 0.7rem; font-weight: 800;
-    padding: 4px 18px; border-radius: 50px; white-space: nowrap;
-  }
-  .marketing-landing .price-badge.green-badge { background: var(--mkt-green2); color: var(--mkt-white); }
-  .marketing-landing .plan-name { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; margin-bottom: 8px; }
-  .marketing-landing .price-card.free .plan-name { color: var(--mkt-navy); }
-  .marketing-landing .price-amount { font-family: "Bebas Neue", sans-serif; font-size: 3.8rem; line-height: 1; color: var(--mkt-gold); margin: 12px 0 4px; }
-  .marketing-landing .price-card.free .price-amount { color: var(--mkt-green); }
-  .marketing-landing .price-period { font-size: 0.82rem; margin-bottom: 24px; }
-  .marketing-landing .price-card.free .price-period { color: var(--mkt-muted); }
-  .marketing-landing .price-card.monthly .price-period, .marketing-landing .price-card.annual .price-period { color: rgba(255,255,255,0.6); }
-  .marketing-landing .price-features { list-style: none; text-align: left; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; padding: 0; }
-  .marketing-landing .price-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.88rem; }
-  .marketing-landing .price-features li::before { content: "✓"; font-weight: 800; color: var(--mkt-gold); flex-shrink: 0; margin-top: 1px; }
-  .marketing-landing .price-card.free .price-features li { color: var(--mkt-muted); }
-  .marketing-landing .price-card.free .price-features li::before { color: var(--mkt-green); }
-  .marketing-landing .price-card.monthly .price-features li, .marketing-landing .price-card.annual .price-features li { color: rgba(255,255,255,0.8); }
-  .marketing-landing .price-btn {
-    display: block; width: 100%; padding: 14px; border-radius: 50px;
-    font-weight: 800; font-size: 0.95rem; text-decoration: none; text-align: center;
-    transition: opacity 0.2s;
-  }
-  .marketing-landing .price-btn:hover { opacity: 0.88; }
-  .marketing-landing .gold-btn { background: var(--mkt-gold); color: var(--mkt-navy); }
-  .marketing-landing .white-btn { background: var(--mkt-white); color: var(--mkt-navy); }
-  .marketing-landing .green-btn { background: var(--mkt-green2); color: var(--mkt-white); }
-
-  /* RESELLER */
-  .marketing-landing .reseller-section { background: linear-gradient(135deg, #0a1628, #1a3a6e); color: var(--mkt-white); }
-  .marketing-landing .reseller-tag { background: rgba(74,222,128,0.15); color: #4ade80; }
-  .marketing-landing .reseller-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-top: 40px; }
-  @media(max-width:768px) { .marketing-landing .reseller-grid { grid-template-columns: 1fr; } }
-  .marketing-landing .commission-big {
-    background: rgba(245,197,24,0.1); border: 2px solid var(--mkt-gold);
-    border-radius: var(--mkt-radius); padding: 36px; text-align: center;
-  }
-  .marketing-landing .commission-big .pct { font-family: "Bebas Neue", sans-serif; font-size: 6rem; color: var(--mkt-gold); line-height: 1; }
-  .marketing-landing .commission-big .label { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
-  .marketing-landing .commission-big .comm-divider { border-top:1px solid rgba(255,255,255,0.1); margin:16px 0; }
-  .marketing-landing .commission-big .comm-ex-label { font-size:0.85rem; color:rgba(255,255,255,0.6); }
-  .marketing-landing .commission-big .comm-ex-val { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; color:#4ade80; margin:4px 0; }
-  .marketing-landing .commission-big .sub { font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 8px; }
-  .marketing-landing .reseller-perks { display: flex; flex-direction: column; gap: 16px; }
-  .marketing-landing .reseller-perk {
-    display: flex; align-items: flex-start; gap: 16px;
-    background: rgba(255,255,255,0.06); border-radius: var(--mkt-radius-sm); padding: 18px;
-  }
-  .marketing-landing .reseller-perk .perk-icon { font-size: 1.8rem; flex-shrink: 0; }
-  .marketing-landing .reseller-perk h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; color: var(--mkt-white); }
-  .marketing-landing .reseller-perk p { font-size: 0.83rem; color: rgba(255,255,255,0.6); line-height: 1.5; margin: 0; }
-
-  /* ECOSYSTEM */
-  .marketing-landing .eco-section { background: var(--mkt-gray); }
-  .marketing-landing .eco-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 50px; }
-  .marketing-landing .eco-card {
-    background: var(--mkt-white); border-radius: var(--mkt-radius); padding: 28px 24px;
-    border: 2px solid #e8eaf0; transition: border-color 0.2s, transform 0.2s;
-  }
-  .marketing-landing .eco-card:hover { border-color: var(--mkt-navy); transform: translateY(-4px); }
-  .marketing-landing .eco-icon { font-size: 2.4rem; margin-bottom: 14px; }
-  .marketing-landing .eco-tag { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; margin-bottom: 10px; }
-  .marketing-landing .eco-tag.truck { background: rgba(245,197,24,0.15); color: var(--mkt-gold2); }
-  .marketing-landing .eco-tag.delivery { background: rgba(26,122,46,0.12); color: var(--mkt-green); }
-  .marketing-landing .eco-tag.beach { background: rgba(56,189,248,0.15); color: #0369a1; }
-  .marketing-landing .eco-tag.menu { background: rgba(167,139,250,0.15); color: #7c3aed; }
-  .marketing-landing .eco-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; color: var(--mkt-navy); }
-  .marketing-landing .eco-card p { font-size: 0.85rem; color: var(--mkt-muted); line-height: 1.6; margin-bottom: 14px; }
-  .marketing-landing .eco-link { font-size: 0.82rem; font-weight: 700; color: var(--mkt-navy); text-decoration: none; border-bottom: 2px solid var(--mkt-gold); padding-bottom: 2px; }
-  .marketing-landing .eco-link:hover { color: var(--mkt-gold2); }
-
-  /* CTA FINAL */
-  .marketing-landing .final-cta {
-    background: var(--mkt-navy); color: var(--mkt-white); text-align: center;
-    padding: 100px 5%;
-  }
-  .marketing-landing .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .marketing-landing .yt-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: #ff0000; color: #fff; font-weight: 800; font-size: 0.95rem;
-    border-radius: 50px; padding: 16px 32px; text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .marketing-landing .yt-btn:hover { opacity: 0.88; }
-
-  /* FOOTER */
-  .marketing-landing .mkt-footer {
-    background: #060e1d; color: rgba(255,255,255,0.4);
-    text-align: center; padding: 28px 5%;
-    font-size: 0.82rem; border-top: 1px solid rgba(245,197,24,0.2);
-  }
-  .marketing-landing .mkt-footer a { color: var(--mkt-gold); text-decoration: none; }
-\`;
