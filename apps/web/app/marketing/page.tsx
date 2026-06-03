@@ -496,7 +496,12 @@ export default function MarketingLandingPage() {
           </div>
           <div className="step-card">
             <div className="step-num">03</div>
-            <div className="step-icon">💳</div>
+            <div className="step-icon" style={{ color: 'var(--mp-blue)' }}>
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M6 6h20v20H6z" fill="currentColor" opacity="0.14" />
+                <path d="M10 8h5l2 4 2-4h5v16h-5l-2-4-2 4H10V8z" fill="currentColor" />
+              </svg>
+            </div>
             <h3>Conecte sua conta Mercado Pago</h3>
             <p>Integre em segundos. Se não tiver conta, criar é grátis e rápido. Sem maquininha necessária!</p>
             <span className="step-time">⏱ 5 minutos</span>
@@ -599,7 +604,9 @@ export default function MarketingLandingPage() {
               <div className="pay-item">
                 <div className="ico" aria-hidden="true">
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                    <path d="M11.2 2L3.8 13h5.5L10 22l8.4-11h-5.5L14 2h-2.8z" fill="currentColor" />
+                    <rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" opacity="0.16" />
+                    <path d="M8 6h8v2H8zM8 10h8v2H8zM8 14h8v2H8z" fill="currentColor" />
+                    <path d="M7 17h10v3H7z" fill="currentColor" opacity="0.24" />
                   </svg>
                 </div>
                 <div>
@@ -609,10 +616,10 @@ export default function MarketingLandingPage() {
               </div>
               <div className="pay-item">
                 <div className="ico" aria-hidden="true">
-                  <svg viewBox="0 0 24 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                    <rect x="1" y="3" width="22" height="12" rx="2" fill="currentColor" />
-                    <rect x="3" y="5" width="18" height="3" rx="1" fill="#FFFFFF" />
-                    <circle cx="12" cy="11" r="3" fill="#FFFFFF" />
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <rect x="2" y="6" width="20" height="12" rx="3" fill="currentColor" opacity="0.16" />
+                    <path d="M6 10h12v2H6zM6 14h12v2H6z" fill="currentColor" />
+                    <circle cx="18" cy="12" r="2" fill="currentColor" opacity="0.32" />
                   </svg>
                 </div>
                 <div>
