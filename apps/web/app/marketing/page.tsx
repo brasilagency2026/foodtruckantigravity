@@ -210,14 +210,14 @@ const CSS_STYLES = `
   .marketing-landing .pay-item.credit {
     border-left: 4px solid var(--mp-blue);
   }
-  .marketing-landing .pay-item.credit .ico { color: var(--mp-blue); }
+  .marketing-landing .pay-item.credit .ico svg,
+  .marketing-landing .pay-item.debit .ico svg { width: 28px; height: 18px; color: var(--mp-blue); display: block; }
   .marketing-landing .debit-badge {
     display: inline-flex; align-items: center; justify-content: center;
     width: 20px; height: 20px; border-radius: 50%;
     background: var(--mp-blue); color: #fff; font-size: 12px; margin-left: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.18);
   }
-  .marketing-landing .pay-item.debit .ico svg { width: 28px; height: 18px; color: var(--mp-blue); display: block; }
   .marketing-landing .pay-item .ico { font-size: 1.8rem; }
   .marketing-landing .pay-item h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 2px; color: var(--mkt-navy); }
   .marketing-landing .pay-item p { font-size: 0.82rem; color: var(--mkt-muted); margin: 0; }
@@ -571,7 +571,13 @@ export default function MarketingLandingPage() {
             <p className="section-desc">Aceite pagamentos pelo Mercado Pago. Criar uma conta é grátis e leva poucos minutos.</p>
             <div className="payment-methods">
               <div className="pay-item credit">
-                <div className="ico">💳</div>
+                <div className="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <rect x="0.5" y="1" width="23" height="14" rx="2" fill="currentColor" />
+                    <rect x="2" y="4" width="6" height="2" rx="0.5" fill="#FFFFFF" />
+                    <rect x="2" y="9" width="10" height="2" rx="0.5" fill="#FFFFFF" />
+                  </svg>
+                </div>
                 <div>
                   <h4>Cartão de Crédito</h4>
                   <p>Todas as bandeiras, parcelamento disponível</p>
