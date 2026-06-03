@@ -6,6 +6,7 @@ import Head from "next/head";
 import MercadoPagoLogo from "./mercado-pago.png";
 import PixLogo from "./logo-pix.png";
 import DinheiroLogo from "./dinheiro.png";
+import QrCodeLogo from "./qrcode.png";
 
 const CSS_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
@@ -515,13 +516,8 @@ export default function MarketingLandingPage() {
           </div>
           <div className="step-card">
             <div className="step-num">04</div>
-            <div className="step-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style={{ width: '56px', height: '56px', color: 'var(--mkt-navy)' }}>
-                <rect x="8" y="8" width="16" height="16" rx="3" fill="currentColor" />
-                <rect x="40" y="8" width="16" height="16" rx="3" fill="currentColor" />
-                <rect x="8" y="40" width="16" height="16" rx="3" fill="currentColor" />
-                <path d="M32 20h16v8H32zM20 32h8v16h-8zM36 36h12v12H36z" fill="currentColor" />
-              </svg>
+            <div className="step-icon" style={{ width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Image src={QrCodeLogo} alt="QR Code" width={56} height={56} style={{ objectFit: 'contain' }} />
             </div>
             <h3>Compartilhe o link ou QR Code</h3>
             <p>Envie o link direto do seu foodtruck para seus clientes via WhatsApp, Instagram ou imprima o QR Code.</p>
