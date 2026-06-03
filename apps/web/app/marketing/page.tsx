@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Head from "next/head";
 import MercadoPagoLogo from "./mercado-pago.png";
+import PixLogo from "./logo-pix.png";
 
 const CSS_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
@@ -614,16 +615,8 @@ export default function MarketingLandingPage() {
                 </div>
               </div>
               <div className="pay-item pix">
-                <div className="ico" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                    <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor" />
-                    <rect x="15" y="3" width="6" height="6" rx="1" fill="currentColor" />
-                    <rect x="3" y="15" width="6" height="6" rx="1" fill="currentColor" />
-                    <rect x="15" y="15" width="6" height="6" rx="1" fill="currentColor" />
-                    <rect x="10" y="10" width="4" height="4" rx="1" fill="currentColor" />
-                    <rect x="10" y="3" width="4" height="4" rx="1" fill="currentColor" opacity="0.5" />
-                    <rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" opacity="0.5" />
-                  </svg>
+                <div className="ico" aria-hidden="true" style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src={PixLogo} alt="PIX" width={28} height={28} style={{ objectFit: 'contain' }} />
                 </div>
                 <div>
                   <h4>PIX</h4>
