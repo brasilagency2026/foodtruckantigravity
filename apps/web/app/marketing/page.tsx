@@ -597,14 +597,24 @@ export default function MarketingLandingPage() {
                 </div>
               </div>
               <div className="pay-item">
-                <div className="ico">⚡</div>
+                <div className="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M11.2 2L3.8 13h5.5L10 22l8.4-11h-5.5L14 2h-2.8z" fill="currentColor" />
+                  </svg>
+                </div>
                 <div>
                   <h4>PIX</h4>
                   <p>Pagamento instantâneo 24/7, sem taxas extras</p>
                 </div>
               </div>
               <div className="pay-item">
-                <div className="ico">💵</div>
+                <div className="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <rect x="1" y="3" width="22" height="12" rx="2" fill="currentColor" />
+                    <rect x="3" y="5" width="18" height="3" rx="1" fill="#FFFFFF" />
+                    <circle cx="12" cy="11" r="3" fill="#FFFFFF" />
+                  </svg>
+                </div>
                 <div>
                   <h4>Dinheiro no Balcão</h4>
                   <p>O balconista lança o pedido manualmente para clientes sem smartphone</p>
