@@ -10,6 +10,7 @@ const CSS_STYLES = `
   .marketing-landing {
     --mkt-navy: #0d1e3a;
     --mkt-navy2: #162848;
+    --mp-blue: #00ADEF;
     --mkt-gold: #f5c518;
     --mkt-gold2: #e8a900;
     --mkt-green: #1a7a2e;
@@ -206,6 +207,10 @@ const CSS_STYLES = `
     background: var(--mkt-gray); border-radius: var(--mkt-radius-sm); padding: 16px 20px;
     border-left: 4px solid var(--mkt-gold);
   }
+  .marketing-landing .pay-item.credit {
+    border-left: 4px solid var(--mp-blue);
+  }
+  .marketing-landing .pay-item.credit .ico { color: var(--mp-blue); }
   .marketing-landing .pay-item .ico { font-size: 1.8rem; }
   .marketing-landing .pay-item h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 2px; color: var(--mkt-navy); }
   .marketing-landing .pay-item p { font-size: 0.82rem; color: var(--mkt-muted); margin: 0; }
@@ -558,7 +563,7 @@ export default function MarketingLandingPage() {
             <h2 className="section-title">Simples, rápido e<br />sem maquininha</h2>
             <p className="section-desc">Aceite pagamentos pelo Mercado Pago. Criar uma conta é grátis e leva poucos minutos.</p>
             <div className="payment-methods">
-              <div className="pay-item">
+              <div className="pay-item credit">
                 <div className="ico">💳</div>
                 <div>
                   <h4>Cartão de Crédito</h4>
