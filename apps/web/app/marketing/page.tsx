@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Head from "next/head";
+import MercadoPagoLogo from "./mercado-pago.png";
 
 const CSS_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
@@ -496,11 +497,8 @@ export default function MarketingLandingPage() {
           </div>
           <div className="step-card">
             <div className="step-num">03</div>
-            <div className="step-icon" style={{ color: 'var(--mp-blue)' }}>
-              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                <path d="M6 6h20v20H6z" fill="currentColor" opacity="0.14" />
-                <path d="M10 8h5l2 4 2-4h5v16h-5l-2-4-2 4H10V8z" fill="currentColor" />
-              </svg>
+            <div className="step-icon" style={{ width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src={MercadoPagoLogo.src} alt="Mercado Pago" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
             </div>
             <h3>Conecte sua conta Mercado Pago</h3>
             <p>Integre em segundos. Se não tiver conta, criar é grátis e rápido. Sem maquininha necessária!</p>
