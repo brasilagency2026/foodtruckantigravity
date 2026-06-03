@@ -497,8 +497,8 @@ export default function MarketingLandingPage() {
           </div>
           <div className="step-card">
             <div className="step-num">03</div>
-            <div className="step-icon" style={{ width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src={MercadoPagoLogo.src} alt="Mercado Pago" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+            <div className="step-icon" style={{ width: '90px', height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src={MercadoPagoLogo.src} alt="Mercado Pago" style={{ maxWidth: '85%', maxHeight: '85%', objectFit: 'contain' }} />
             </div>
             <h3>Conecte sua conta Mercado Pago</h3>
             <p>Integre em segundos. Se não tiver conta, criar é grátis e rápido. Sem maquininha necessária!</p>
