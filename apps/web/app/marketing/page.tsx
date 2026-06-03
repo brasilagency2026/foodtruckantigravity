@@ -625,12 +625,12 @@ export default function MarketingLandingPage() {
                 </div>
               </div>
               <div className="pay-item cash">
-                <div className="ico" aria-hidden="true" style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Image src={DinheiroLogo} alt="Dinheiro no Balcão" width={28} height={28} style={{ objectFit: 'contain' }} />
+                <div className="ico" aria-hidden="true" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src={DinheiroLogo} alt="Dinheiro no Balcão" width={40} height={40} style={{ objectFit: 'contain' }} />
                 </div>
                 <div>
                   <h4>Dinheiro no Balcão</h4>
-                  <p>O caissier lança a commande manuellement pour les clients qui paient en espèces</p>
+                  <p>O balconista registra manualmente o pedido para clientes que pagam em dinheiro</p>
                 </div>
               </div>
             </div>
