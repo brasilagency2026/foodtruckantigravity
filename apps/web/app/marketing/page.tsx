@@ -211,6 +211,12 @@ const CSS_STYLES = `
     border-left: 4px solid var(--mp-blue);
   }
   .marketing-landing .pay-item.credit .ico { color: var(--mp-blue); }
+  .marketing-landing .debit-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--mp-blue); color: #fff; font-size: 12px; margin-left: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  }
   .marketing-landing .pay-item .ico { font-size: 1.8rem; }
   .marketing-landing .pay-item h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 2px; color: var(--mkt-navy); }
   .marketing-landing .pay-item p { font-size: 0.82rem; color: var(--mkt-muted); margin: 0; }
@@ -570,8 +576,8 @@ export default function MarketingLandingPage() {
                   <p>Todas as bandeiras, parcelamento disponível</p>
                 </div>
               </div>
-              <div className="pay-item">
-                <div className="ico">🏦</div>
+              <div className="pay-item debit">
+                <div className="ico">🏦 <span className="debit-badge">💳</span></div>
                 <div>
                   <h4>Cartão de Débito</h4>
                   <p>Aprovação instantânea, dinheiro na hora</p>
