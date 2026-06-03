@@ -208,11 +208,18 @@ const CSS_STYLES = `
     background: var(--mkt-gray); border-radius: var(--mkt-radius-sm); padding: 16px 20px;
     border-left: 4px solid var(--mkt-gold);
   }
-  .marketing-landing .pay-item.credit {
+  .marketing-landing .pay-item.credit,
+  .marketing-landing .pay-item.debit {
     border-left: 4px solid var(--mp-blue);
+  }
+  .marketing-landing .pay-item.pix,
+  .marketing-landing .pay-item.cash {
+    border-left: 4px solid var(--mkt-green);
   }
   .marketing-landing .pay-item.credit .ico svg,
   .marketing-landing .pay-item.debit .ico svg { width: 28px; height: 18px; color: var(--mp-blue); display: block; }
+  .marketing-landing .pay-item.pix .ico svg,
+  .marketing-landing .pay-item.cash .ico svg { width: 28px; height: 18px; color: var(--mkt-green); display: block; }
   .marketing-landing .debit-badge {
     display: inline-flex; align-items: center; justify-content: center;
     width: 20px; height: 20px; border-radius: 50%;
@@ -606,12 +613,16 @@ export default function MarketingLandingPage() {
                   <p>Aprovação instantânea, dinheiro na hora</p>
                 </div>
               </div>
-              <div className="pay-item">
+              <div className="pay-item pix">
                 <div className="ico" aria-hidden="true">
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                    <rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" opacity="0.16" />
-                    <path d="M8 6h8v2H8zM8 10h8v2H8zM8 14h8v2H8z" fill="currentColor" />
-                    <path d="M7 17h10v3H7z" fill="currentColor" opacity="0.24" />
+                    <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor" />
+                    <rect x="15" y="3" width="6" height="6" rx="1" fill="currentColor" />
+                    <rect x="3" y="15" width="6" height="6" rx="1" fill="currentColor" />
+                    <rect x="15" y="15" width="6" height="6" rx="1" fill="currentColor" />
+                    <rect x="10" y="10" width="4" height="4" rx="1" fill="currentColor" />
+                    <rect x="10" y="3" width="4" height="4" rx="1" fill="currentColor" opacity="0.5" />
+                    <rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" opacity="0.5" />
                   </svg>
                 </div>
                 <div>
@@ -619,12 +630,13 @@ export default function MarketingLandingPage() {
                   <p>Pagamento instantâneo 24/7, sem taxas extras</p>
                 </div>
               </div>
-              <div className="pay-item">
+              <div className="pay-item cash">
                 <div className="ico" aria-hidden="true">
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
                     <rect x="2" y="6" width="20" height="12" rx="3" fill="currentColor" opacity="0.16" />
-                    <path d="M6 10h12v2H6zM6 14h12v2H6z" fill="currentColor" />
-                    <circle cx="18" cy="12" r="2" fill="currentColor" opacity="0.32" />
+                    <rect x="5" y="9" width="4" height="6" rx="1" fill="currentColor" />
+                    <circle cx="16" cy="12" r="2.5" fill="currentColor" />
+                    <path d="M8 17v2H5a1 1 0 0 1-1-1v-1h4zM16 17v2h3a1 1 0 0 0 1-1v-1h-4z" fill="currentColor" opacity="0.32" />
                   </svg>
                 </div>
                 <div>
