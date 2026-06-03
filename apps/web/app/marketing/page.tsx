@@ -5,6 +5,7 @@ import Image from "next/image";
 import Head from "next/head";
 import MercadoPagoLogo from "./mercado-pago.png";
 import PixLogo from "./logo-pix.png";
+import DinheiroLogo from "./dinheiro.png";
 
 const CSS_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
@@ -624,17 +625,12 @@ export default function MarketingLandingPage() {
                 </div>
               </div>
               <div className="pay-item cash">
-                <div className="ico" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                    <rect x="2" y="6" width="20" height="12" rx="3" fill="currentColor" opacity="0.16" />
-                    <rect x="5" y="9" width="4" height="6" rx="1" fill="currentColor" />
-                    <circle cx="16" cy="12" r="2.5" fill="currentColor" />
-                    <path d="M8 17v2H5a1 1 0 0 1-1-1v-1h4zM16 17v2h3a1 1 0 0 0 1-1v-1h-4z" fill="currentColor" opacity="0.32" />
-                  </svg>
+                <div className="ico" aria-hidden="true" style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src={DinheiroLogo} alt="Dinheiro no Balcão" width={28} height={28} style={{ objectFit: 'contain' }} />
                 </div>
                 <div>
                   <h4>Dinheiro no Balcão</h4>
-                  <p>O balconista lança o pedido manualmente para clientes sem smartphone</p>
+                  <p>O caissier lança a commande manuellement pour les clients qui paient en espèces</p>
                 </div>
               </div>
             </div>
