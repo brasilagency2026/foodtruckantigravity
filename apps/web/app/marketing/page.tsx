@@ -217,6 +217,7 @@ const CSS_STYLES = `
     background: var(--mp-blue); color: #fff; font-size: 12px; margin-left: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.18);
   }
+  .marketing-landing .pay-item.debit .ico svg { width: 28px; height: 18px; color: var(--mp-blue); display: block; }
   .marketing-landing .pay-item .ico { font-size: 1.8rem; }
   .marketing-landing .pay-item h4 { font-weight: 800; font-size: 0.95rem; margin-bottom: 2px; color: var(--mkt-navy); }
   .marketing-landing .pay-item p { font-size: 0.82rem; color: var(--mkt-muted); margin: 0; }
@@ -577,7 +578,13 @@ export default function MarketingLandingPage() {
                 </div>
               </div>
               <div className="pay-item debit">
-                <div className="ico">🏦 <span className="debit-badge">💳</span></div>
+                <div className="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <rect x="0.5" y="1" width="23" height="14" rx="2" fill="currentColor" />
+                    <rect x="2" y="4" width="6" height="2" rx="0.5" fill="#FFFFFF" />
+                    <rect x="2" y="9" width="10" height="2" rx="0.5" fill="#FFFFFF" />
+                  </svg>
+                </div>
                 <div>
                   <h4>Cartão de Débito</h4>
                   <p>Aprovação instantânea, dinheiro na hora</p>
