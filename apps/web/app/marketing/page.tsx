@@ -625,8 +625,8 @@ export default function MarketingLandingPage() {
                 </div>
               </div>
               <div className="pay-item cash">
-                <div className="ico" aria-hidden="true" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Image src={DinheiroLogo} alt="Dinheiro no Balcão" width={40} height={40} style={{ objectFit: 'contain' }} />
+                <div className="ico" aria-hidden="true" style={{ width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src={DinheiroLogo} alt="Dinheiro no Balcão" width={56} height={56} style={{ objectFit: 'contain' }} />
                 </div>
                 <div>
                   <h4>Dinheiro no Balcão</h4>
