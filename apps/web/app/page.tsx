@@ -589,6 +589,7 @@ export default function HomePage() {
           </div>
           <div className="footer-links">
             {!isNative && <a href="/precos">Preços</a>}
+            <a href="/quem-somos">Quem Somos</a>
             <a href="/termos">Termos</a>
             <a href="/politica-de-privacidade">Privacidade</a>
             <a href="/contato">Contato</a>

@@ -248,6 +248,7 @@ function TrabalheConoscoPageContent() {
         <a href="/" className="tc-footer-logo">🍔 Food Pronto</a>
         <div className="tc-footer-links">
           <a href="/precos">Preços</a>
+          <a href="/quem-somos">Quem Somos</a>
           <a href="/termos">Termos</a>
           <a href="/politica-de-privacidade">Privacidade</a>
           <a href="/contato">Contato</a>
