@@ -93,8 +93,8 @@ export default function QuemSomosPage() {
               Feito para quiosques à beira-mar: pedidos na areia,
               cardápio sul-americano, e atendimento ágil sem papel.
             </p>
-            <a href="#" className="qs-app-link" style={{ color: "#38BDF8" }}>
-              Em breve
+            <a href="https://quiosquepraia.com/" target="_blank" rel="noopener noreferrer" className="qs-app-link" style={{ color: "#38BDF8" }}>
+              quiosquepraia.com
             </a>
           </div>
 
@@ -107,8 +107,8 @@ export default function QuemSomosPage() {
               aceite pedidos online, gerencie entregas e assuma
               sem depender de grandes marketplaces.
             </p>
-            <a href="#" className="qs-app-link" style={{ color: "#A855F7" }}>
-              Em breve
+            <a href="https://delivery.foodpronto.com.br/" target="_blank" rel="noopener noreferrer" className="qs-app-link" style={{ color: "#A855F7" }}>
+              delivery.foodpronto.com.br
             </a>
           </div>
 
@@ -121,8 +121,8 @@ export default function QuemSomosPage() {
               gestão completa de mesa, comandas, cozinha
               (KDS) e relatórios de vendas.
             </p>
-            <a href="#" className="qs-app-link" style={{ color: "#22C55E" }}>
-              Em breve
+            <a href="https://cardapio.foodpronto.com.br/" target="_blank" rel="noopener noreferrer" className="qs-app-link" style={{ color: "#22C55E" }}>
+              cardapio.foodpronto.com.br
             </a>
           </div>
         </div>
@@ -153,7 +153,7 @@ export default function QuemSomosPage() {
               e acompanharem entregas diretamente pelo smartphone.
             </p>
             <a
-              href="https://play.google.com/store/apps/details?id=br.com.foodpronto"
+              href="https://play.google.com/store/apps/details?id=com.foodpronto.app"
               target="_blank"
               rel="noopener noreferrer"
               className="qs-playstore-btn"
