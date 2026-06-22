@@ -21,7 +21,8 @@ function isPublicRoute(req: any) {
       pathname.startsWith('/termos') ||
       pathname.startsWith('/politica-de-privacidade') ||
       pathname.startsWith('/marketing') ||
-      pathname.startsWith('/trabalhe-conosco')
+      pathname.startsWith('/trabalhe-conosco') ||
+      pathname.startsWith('/quem-somos')
     )
   } catch (e) {
     return false
