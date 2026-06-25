@@ -6,6 +6,7 @@ import "./globals.css";
 import "./cozinha/cozinha.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.foodpronto.com.br"),
   title: "Food Pronto",
   description: "Gerencie seu food truck, cardápio e pedidos em tempo real",
 };

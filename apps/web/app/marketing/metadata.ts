@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/marketing-og.png",
+        url: "https://www.foodpronto.com.br/marketing-og.png",
         width: 1200,
         height: 630,
         alt: "Food Pronto - Marketing para food trucks",
@@ -25,6 +25,6 @@ export const metadata: Metadata = {
     title: "Food Pronto | Marketing para food trucks",
     description:
       "Aumente a visibilidade do seu food truck com Food Pronto: cardápio digital, pagamentos Mercado Pago e alertas sonoros no celular do cliente.",
-    images: ["/marketing-og.png"],
+    images: ["https://www.foodpronto.com.br/marketing-og.png"],
   },
 };
