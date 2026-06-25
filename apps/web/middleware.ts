@@ -30,6 +30,53 @@ function isPublicRoute(req: any) {
 }
 
 export default async function middleware(req: any, ev?: any) {
+  // Serve crawler-friendly static OG HTML for /marketing when the request comes from social crawlers.
+  try {
+    const ua = req.headers?.get ? req.headers.get('user-agent') : req.headers['user-agent'] || ''
+    const pathname = req.nextUrl?.pathname ?? (new URL(req.url)).pathname
+    const isCrawler = /facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|WhatsApp/i.test(ua)
+
+    if (pathname === '/marketing' && isCrawler) {
+      const OG_TITLE = "Food Pronto | Marketing para food trucks"
+      const OG_DESC = "Aumente a visibilidade do seu food truck com Food Pronto: cardápio digital, pagamentos Mercado Pago e alertas sonoros no celular do cliente."
+      const OG_URL = "https://www.foodpronto.com.br/marketing"
+      const OG_IMAGE = "https://www.foodpronto.com.br/marketing-og.png"
+      const html = `<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>${OG_TITLE}</title>
+<meta name="description" content="${OG_DESC}" />
+<meta property="og:title" content="${OG_TITLE}" />
+<meta property="og:description" content="${OG_DESC}" />
+<meta property="og:url" content="${OG_URL}" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="${OG_IMAGE}" />
+<meta property="og:image:secure_url" content="${OG_IMAGE}" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Food Pronto - Marketing para food trucks" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="${OG_TITLE}" />
+<meta name="twitter:description" content="${OG_DESC}" />
+<meta name="twitter:image" content="${OG_IMAGE}" />
+</head>
+<body>
+<!-- Minimal crawler-friendly page; real app will load client JS after -->
+<div>
+  <h1>${OG_TITLE}</h1>
+  <p>${OG_DESC}</p>
+</div>
+</body>
+</html>`
+      return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } })
+    }
+  } catch (e) {
+    // If anything goes wrong in crawler shortcut, continue to normal middleware handling.
+    console.error('Crawler-check error in middleware — continuing to Clerk handler:', e)
+  }
+
   try {
     // Lazy-import Clerk so any import-time issues are caught here and do not prevent requests.
     const clerk = await import('@clerk/nextjs/server')
