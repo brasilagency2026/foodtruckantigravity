@@ -1,4 +1,6 @@
 export default function Head() {
+  const fbAppId = process.env.FACEBOOK_APP_ID ?? process.env.NEXT_PUBLIC_FACEBOOK_APP_ID ?? ''
+
   return (
     <>
       <meta property="og:title" content="Food Pronto | Marketing para food trucks" />
@@ -10,6 +12,7 @@ export default function Head() {
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content="Food Pronto - Marketing para food trucks" />
+      {fbAppId ? <meta property="fb:app_id" content={fbAppId} /> : null}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Food Pronto | Marketing para food trucks" />
       <meta name="twitter:description" content="Aumente a visibilidade do seu food truck com Food Pronto: cardápio digital, pagamentos Mercado Pago e alertas sonoros no celular do cliente." />

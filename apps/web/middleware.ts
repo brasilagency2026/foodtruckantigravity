@@ -41,6 +41,8 @@ export default async function middleware(req: any, ev?: any) {
       const OG_DESC = "Aumente a visibilidade do seu food truck com Food Pronto: cardápio digital, pagamentos Mercado Pago e alertas sonoros no celular do cliente."
       const OG_URL = "https://www.foodpronto.com.br/marketing"
       const OG_IMAGE = "https://www.foodpronto.com.br/marketing-og.png"
+      const FB_APP_ID = process.env.FACEBOOK_APP_ID || process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || ''
+      const fbAppMeta = FB_APP_ID ? `<meta property="fb:app_id" content="${FB_APP_ID}" />\n` : ''
       const html = `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -57,7 +59,7 @@ export default async function middleware(req: any, ev?: any) {
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Food Pronto - Marketing para food trucks" />
-<meta name="twitter:card" content="summary_large_image" />
+${fbAppMeta}<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${OG_TITLE}" />
 <meta name="twitter:description" content="${OG_DESC}" />
 <meta name="twitter:image" content="${OG_IMAGE}" />
