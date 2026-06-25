@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Food Pronto | Marketing para food trucks",
     description:
       "Aumente a visibilidade do seu food truck com Food Pronto: cardápio digital, pagamentos Mercado Pago e alertas sonoros no celular do cliente.",
-    url: "https://foodpronto.com.br/marketing",
+    url: "https://www.foodpronto.com.br/marketing",
     siteName: "Food Pronto",
     type: "website",
     images: [
