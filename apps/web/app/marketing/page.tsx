@@ -1,13 +1,5 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import Head from "next/head";
-import MercadoPagoLogo from "./mercado-pago.png";
-import PixLogo from "./logo-pix.png";
-import DinheiroLogo from "./dinheiro.png";
-import QrCodeLogo from "./qrcode.png";
-
 const CSS_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
 
