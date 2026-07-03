@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { ClerkProvider, SignedIn, UserButton } from "@clerk/nextjs";
 import { ptBR } from "@clerk/localizations";
 import { ConvexClientProvider } from "./ConvexClientProvider";
@@ -18,6 +19,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
+      <head>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-5ML1N6QL6W"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-5ML1N6QL6W');
+          `}
+        </Script>
+      </head>
       <body>
         <ClerkProvider localization={ptBR as any}>
           <ConvexClientProvider>
