@@ -279,6 +279,29 @@ export default function PricingClient() {
           </div>
         </section>
 
+        {/* VIDEO TUTORIAL */}
+        <section className="pr-video">
+          <div className="pr-video-inner">
+            <div className="pr-video-tag">🎬 Tutoriel</div>
+            <h2 className="pr-video-h2">
+              Veja como funciona<br />
+              <span className="pr-accent">em poucos minutos</span>
+            </h2>
+            <p className="pr-video-desc">
+              Aprenda como inscrever seu food truck, gerenciar o cardápio, acompanhar os pedidos na cozinha e conectar sua conta Mercado Pago.
+            </p>
+            <div className="pr-video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/_IiwHLDueR8"
+                title="Tutorial Food Pronto — Como cadastrar seu food truck"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+
         {/* FINAL CTA */}
         <section className="pr-final">
           <div className="pr-final-glow" />
@@ -546,6 +569,15 @@ const CSS = `
   .pr-faq-arrow { font-size: 20px; color: var(--orange); flex-shrink: 0; }
   .pr-faq-a { padding: 0 20px 18px; font-size: 14px; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 14px; }
 
+  /* VIDEO TUTORIAL */
+  .pr-video { padding: 80px 40px; border-top: 1px solid var(--border); }
+  .pr-video-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+  .pr-video-tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); border: 1px solid rgba(255,107,53,0.22); border-radius: 100px; padding: 4px 14px; margin-bottom: 16px; }
+  .pr-video-h2 { font-family: var(--display); font-size: clamp(28px, 4vw, 44px); font-weight: 900; line-height: 1.1; margin-bottom: 16px; }
+  .pr-video-desc { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 600px; margin: 0 auto 36px; }
+  .pr-video-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,107,53,0.2); box-shadow: 0 8px 40px rgba(255,107,53,0.1); }
+  .pr-video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
   /* FINAL CTA */
   .pr-final { position: relative; padding: 100px 40px; text-align: center; overflow: hidden; }
   .pr-final-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 300px; background: radial-gradient(ellipse, rgba(255,107,53,0.1) 0%, transparent 70%); pointer-events: none; }
@@ -577,6 +609,7 @@ const CSS = `
     .pr-freedom-inner { grid-template-columns: 1fr; gap: 40px; }
     .pr-freedom-visual { max-width: 280px; margin: 0 auto; }
     .pr-faq { padding: 60px 20px; }
+    .pr-video { padding: 60px 20px; }
     .pr-final { padding: 60px 20px; }
     .pr-footer { padding: 28px 20px; }
   }
