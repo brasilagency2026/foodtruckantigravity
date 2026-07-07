@@ -25,6 +25,12 @@ export async function OPTIONS(_req: NextRequest) {
   return withWebhookCORS(NextResponse.json({ ok: true }, { status: 200 }))
 }
 
+export async function GET(_req: NextRequest) {
+  // Some webhook providers may hit GET for reachability checks.
+  // Return 200 so we don't surface a misleading 405/404.
+  return withWebhookCORS(NextResponse.json({ ok: true }, { status: 200 }))
+}
+
 export async function POST(req: NextRequest) {
   const secret = process.env.CLERK_WEBHOOK_SECRET;
   if (!secret) {
