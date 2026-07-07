@@ -147,6 +147,48 @@ export const getPartnerDashboard = query({
   },
 });
 
+export const getVoucherByPartnerEmail = query({
+  args: {
+    partnerEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("vouchers")
+      .withIndex("by_partner_email", (q) => q.eq("partnerEmail", args.partnerEmail))
+      .first();
+  },
+});
+
+export const sendVoucherDashboardReadyEmail = mutation({
+  args: {
+    partnerEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const voucher = await ctx.db
+      .query("vouchers")
+      .withIndex("by_partner_email", (q) => q.eq("partnerEmail", args.partnerEmail))
+      .first();
+
+    if (!voucher || voucher.dashboardEmailSent) {
+      return;
+    }
+
+    await ctx.db.patch(voucher._id, {
+      dashboardEmailSent: true,
+    });
+
+    await ctx.scheduler.runAfter(0, internal.emails.sendAffiliateDashboardReadyEmail, {
+      partnerEmail: voucher.partnerEmail,
+      partnerName: voucher.partnerName,
+      code: voucher.code,
+      partnerPhone: voucher.partnerPhone,
+      partnerPixKey: voucher.partnerPixKey,
+      discountPercentage: voucher.discountPercentage,
+      commissionPercentage: voucher.commissionPercentage,
+    });
+  },
+});
+
 export const payCommissions = mutation({
   args: { partnerId: v.id("vouchers") },
   handler: async (ctx, args) => {
@@ -192,6 +234,7 @@ export const createVoucher = mutation({
     const insertData = {
       ...args,
       code: args.code.toUpperCase(),
+      dashboardEmailSent: false,
     };
 
     const newVoucher = await ctx.db.insert("vouchers", insertData);
@@ -208,6 +251,8 @@ export const createVoucher = mutation({
         commissionPercentage: args.commissionPercentage,
       });
     }
+
+    return newVoucher;
   },
 });
 

@@ -79,6 +79,18 @@ ${fbAppMeta}<meta name="twitter:card" content="summary_large_image" />
     console.error('Crawler-check error in middleware — continuing to Clerk handler:', e)
   }
 
+  // Hard-bypass Clerk middleware for webhooks.
+  // This prevents failures when Clerk env (e.g. publishableKey) is missing/misconfigured,
+  // which can otherwise stop the webhook route from being reached.
+  try {
+    const pathname = req?.nextUrl?.pathname ?? (new URL(req.url)).pathname
+    if (pathname.startsWith('/api/webhooks')) {
+      return NextResponse.next()
+    }
+  } catch (_) {
+    // ignore and continue
+  }
+
   try {
     // Lazy-import Clerk so any import-time issues are caught here and do not prevent requests.
     const clerk = await import('@clerk/nextjs/server')

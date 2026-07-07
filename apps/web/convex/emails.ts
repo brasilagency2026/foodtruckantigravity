@@ -215,10 +215,10 @@ export const sendAffiliateOnboardingEmail = internalAction({
     const html = `
       <h2>Bem-vindo ao Food Pronto — Painel Comercial</h2>
       <p>Olá ${args.partnerName},</p>
-      <p>Criamos seu acesso como parceiro comercial. Para entrar no seu painel e acompanhar vouchers, comissões e clientes indicados, use o link abaixo:</p>
-      <p><a href="${signInLink}">Entrar / Criar conta (email já preenchido)</a></p>
-      <p>Se preferir, você também pode usar este link para criar a conta primeiro:</p>
+      <p>Criamos seu acesso como parceiro comercial. Para completar seu cadastro, use um dos links abaixo. O seu painel comercial estará disponível assim que a conta for criada.</p>
       <p><a href="${signUpLink}">Criar conta</a></p>
+      <p>Se já tiver uma conta, use este link para entrar com o mesmo e-mail:</p>
+      <p><a href="${signInLink}">Entrar</a></p>
       <hr />
       <h3>Informações do seu parceiro</h3>
       <ul>
@@ -229,7 +229,7 @@ export const sendAffiliateOnboardingEmail = internalAction({
         ${args.partnerPhone ? `<li><strong>WhatsApp / Telefone:</strong> ${args.partnerPhone}</li>` : ""}
         ${args.partnerPixKey ? `<li><strong>Chave PIX:</strong> ${args.partnerPixKey}</li>` : ""}
       </ul>
-      <p>Após entrar, acesse <a href="${baseUrl}/comercial/dashboard">seu painel comercial</a> para ver seus vouchers, comissões e clientes indicados.</p>
+      <p>Assim que seu cadastro for realizado, enviaremos outro e-mail com o acesso ao painel comercial.</p>
       <p>Se tiver qualquer dúvida, responda a este e-mail.</p>
       <p>— Equipe Food Pronto</p>
     `;
@@ -238,7 +238,7 @@ export const sendAffiliateOnboardingEmail = internalAction({
       await resend.emails.send({
         from: "Food Pronto <contato@foodpronto.com.br>",
         to: [args.partnerEmail],
-        subject: `Bienvenue sur Food Pronto — Accès Partenaire (${args.code})`,
+        subject: `Acesso comercial Food Pronto — ${args.code}`,
         html,
       });
       console.log(`Onboarding email sent to ${args.partnerEmail}`);
@@ -247,6 +247,75 @@ export const sendAffiliateOnboardingEmail = internalAction({
     }
   },
 });
+
+export const sendAffiliateDashboardReadyEmail = internalAction({
+  args: {
+    partnerEmail: v.string(),
+    partnerName: v.string(),
+    code: v.string(),
+    partnerPhone: v.optional(v.string()),
+    partnerPixKey: v.optional(v.string()),
+    discountPercentage: v.number(),
+    commissionPercentage: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await sendAffiliateDashboardReadyEmailRaw(args);
+  },
+});
+
+export async function sendAffiliateDashboardReadyEmailRaw(args: {
+  partnerEmail: string;
+  partnerName: string;
+  code: string;
+  partnerPhone?: string;
+  partnerPixKey?: string;
+  discountPercentage: number;
+  commissionPercentage: number;
+}) {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) {
+    console.warn("RESEND_API_KEY is not set. Affiliate dashboard ready email not sent for:", args.partnerEmail);
+    return;
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://www.foodpronto.com.br";
+  const signInPath = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in";
+  const signInLink = `${baseUrl.replace(/\/$/,"")}${signInPath}?email=${encodeURIComponent(args.partnerEmail)}`;
+  const dashboardLink = `${baseUrl.replace(/\/$/,"")}/comercial/dashboard`;
+
+  const resend = new Resend(resendKey);
+  const html = `
+    <h2>Seu painel comercial está pronto!</h2>
+    <p>Olá ${args.partnerName},</p>
+    <p>Seu cadastro foi concluído com sucesso. Para acessar seu painel comercial e acompanhar vouchers, comissões e clientes indicados, use o link abaixo:</p>
+    <p><a href="${dashboardLink}">Acessar painel comercial</a></p>
+    <p>Se necessário, entre com o mesmo e-mail:</p>
+    <p><a href="${signInLink}">Entrar</a></p>
+    <hr />
+    <h3>Seu parceiro</h3>
+    <ul>
+      <li><strong>Voucher:</strong> ${args.code}</li>
+      <li><strong>Desconto para clientes:</strong> ${args.discountPercentage}%</li>
+      <li><strong>Comissão:</strong> ${args.commissionPercentage}% do valor pago</li>
+      ${args.partnerPhone ? `<li><strong>WhatsApp / Telefone:</strong> ${args.partnerPhone}</li>` : ""}
+      ${args.partnerPixKey ? `<li><strong>Chave PIX:</strong> ${args.partnerPixKey}</li>` : ""}
+    </ul>
+    <p>Bem-vindo ao Food Pronto! Se tiver dúvidas, responda a este e-mail.</p>
+    <p>— Equipe Food Pronto</p>
+  `;
+
+  try {
+    await resend.emails.send({
+      from: "Food Pronto <contato@foodpronto.com.br>",
+      to: [args.partnerEmail],
+      subject: `Painel comercial pronto — ${args.code}`,
+      html,
+    });
+    console.log(`Dashboard ready email sent to ${args.partnerEmail}`);
+  } catch (err) {
+    console.error("Failed to send affiliate dashboard ready email:", err);
+  }
+}
 
 export const sendSubscriptionEmail = internalAction({
   args: {
