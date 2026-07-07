@@ -147,6 +147,7 @@ export default defineSchema({
   vouchers: defineTable({
     code: v.string(), // e.g. "CARLOS10"
     partnerName: v.string(), // e.g. "Carlos Silva"
+    partnerEmail: v.optional(v.string()),
     partnerCnpj: v.optional(v.string()), // Optional, the partner's CNPJ
     partnerPhone: v.optional(v.string()),
     partnerPixKey: v.optional(v.string()), // PIX key for commission payments

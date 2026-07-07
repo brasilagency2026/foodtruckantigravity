@@ -186,6 +186,67 @@ export const sendNewCommissionEmail = internalAction({
   },
 });
 
+export const sendAffiliateOnboardingEmail = internalAction({
+  args: {
+    partnerEmail: v.string(),
+    partnerName: v.string(),
+    code: v.string(),
+    partnerPhone: v.optional(v.string()),
+    partnerPixKey: v.optional(v.string()),
+    discountPercentage: v.number(),
+    commissionPercentage: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) {
+      console.warn("RESEND_API_KEY is not set. Affiliate onboarding email not sent for:", args.partnerEmail);
+      return;
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://www.foodpronto.com.br";
+    const signInPath = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in";
+    const signUpPath = process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up";
+
+    const signInLink = `${baseUrl.replace(/\/$/,"")}${signInPath}?email=${encodeURIComponent(args.partnerEmail)}`;
+    const signUpLink = `${baseUrl.replace(/\/$/,"")}${signUpPath}?email=${encodeURIComponent(args.partnerEmail)}`;
+
+    const resend = new Resend(resendKey);
+
+    const html = `
+      <h2>Bienvenue sur Food Pronto — Panel Partenaire</h2>
+      <p>Bonjour ${args.partnerName},</p>
+      <p>Nous avons créé votre compte partenaire. Pour accéder à votre panel affilié et suivre vos vouchers, commissions et restaurants référés, connectez-vous ici :</p>
+      <p><a href="${signInLink}">Se connecter / Créer un compte (email pré-rempli)</a></p>
+      <p>Si vous préférez créer un compte d'abord, utilisez : <a href="${signUpLink}">Créer un compte</a></p>
+      <hr />
+      <h3>Vos informations de partenaire</h3>
+      <ul>
+        <li><strong>Nom :</strong> ${args.partnerName}</li>
+        <li><strong>Voucher :</strong> ${args.code}</li>
+        <li><strong>Réduction pour vos clients :</strong> ${args.discountPercentage}%</li>
+        <li><strong>Commission :</strong> ${args.commissionPercentage}% du montant payé</li>
+        ${args.partnerPhone ? `<li><strong>WhatsApp / Téléphone :</strong> ${args.partnerPhone}</li>` : ""}
+        ${args.partnerPixKey ? `<li><strong>Chave PIX :</strong> ${args.partnerPixKey}</li>` : ""}
+      </ul>
+      <p>Après connexion, accédez à <a href="${baseUrl}/comercial/dashboard">votre tableau de bord partenaire</a> pour voir vos commissions, vouchers et restaurants référés.</p>
+      <p>Si vous avez des questions, répondez simplement à cet e-mail.</p>
+      <p>— Équipe Food Pronto</p>
+    `;
+
+    try {
+      await resend.emails.send({
+        from: "Food Pronto <contato@foodpronto.com.br>",
+        to: [args.partnerEmail],
+        subject: `Bienvenue sur Food Pronto — Accès Partenaire (${args.code})`,
+        html,
+      });
+      console.log(`Onboarding email sent to ${args.partnerEmail}`);
+    } catch (err) {
+      console.error("Failed to send affiliate onboarding email:", err);
+    }
+  },
+});
+
 export const sendSubscriptionEmail = internalAction({
   args: {
     ownerId: v.string(),

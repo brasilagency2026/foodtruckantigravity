@@ -19,7 +19,7 @@ function AdminPageContent() {
   const payCommissions = useMutation(api.admin.payCommissions);
 
   const [activeTab, setActiveTab] = useState<"trucks" | "vouchers" | "assinaturas">("trucks");
-  const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
+  const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerEmail: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
 
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"name" | "trial" | "payment">("name");
@@ -222,6 +222,16 @@ function AdminPageContent() {
                 />
               </div>
               <div>
+                <label className="block text-sm mb-1 text-gray-400">Email do Comercial</label>
+                <input 
+                  type="email" 
+                  value={newVoucher.partnerEmail} 
+                  onChange={e => setNewVoucher({...newVoucher, partnerEmail: e.target.value})} 
+                  placeholder="email@exemplo.com"
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
+                />
+              </div>
+              <div>
                 <label className="block text-sm mb-1 text-gray-400">WhatsApp</label>
                 <input 
                   type="text" 
@@ -266,13 +276,14 @@ function AdminPageContent() {
                     await createVoucher({
                       code: newVoucher.code,
                       partnerName: newVoucher.partnerName,
+                      partnerEmail: newVoucher.partnerEmail,
                       partnerPhone: newVoucher.partnerPhone,
                       partnerPixKey: newVoucher.partnerPixKey,
                       isActive: true,
                       discountPercentage: newVoucher.discountPercentage,
                       commissionPercentage: newVoucher.commissionPercentage
                     });
-                    setNewVoucher({ code: "", partnerName: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
+                    setNewVoucher({ code: "", partnerName: "", partnerEmail: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
                   } catch (e: any) {
                     alert(e.message);
                   }

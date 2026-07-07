@@ -121,6 +121,7 @@ export const createVoucher = mutation({
   args: {
     code: v.string(),
     partnerName: v.string(),
+    partnerEmail: v.optional(v.string()),
     partnerCnpj: v.optional(v.string()),
     partnerPhone: v.optional(v.string()),
     partnerPixKey: v.optional(v.string()),
@@ -139,10 +140,25 @@ export const createVoucher = mutation({
       throw new Error("Um voucher com este código já existe.");
     }
 
-    await ctx.db.insert("vouchers", {
+    const insertData = {
       ...args,
       code: args.code.toUpperCase(),
-    });
+    };
+
+    const newVoucher = await ctx.db.insert("vouchers", insertData);
+
+    // Send onboarding email to partner if email provided
+    if (args.partnerEmail) {
+      await ctx.scheduler.runAfter(0, internal.emails.sendAffiliateOnboardingEmail, {
+        partnerEmail: args.partnerEmail,
+        partnerName: args.partnerName,
+        code: insertData.code,
+        partnerPhone: args.partnerPhone,
+        partnerPixKey: args.partnerPixKey,
+        discountPercentage: args.discountPercentage,
+        commissionPercentage: args.commissionPercentage,
+      });
+    }
   },
 });
 
