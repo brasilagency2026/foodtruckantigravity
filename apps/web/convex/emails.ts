@@ -213,24 +213,25 @@ export const sendAffiliateOnboardingEmail = internalAction({
     const resend = new Resend(resendKey);
 
     const html = `
-      <h2>Bienvenue sur Food Pronto — Panel Partenaire</h2>
-      <p>Bonjour ${args.partnerName},</p>
-      <p>Nous avons créé votre compte partenaire. Pour accéder à votre panel affilié et suivre vos vouchers, commissions et restaurants référés, connectez-vous ici :</p>
-      <p><a href="${signInLink}">Se connecter / Créer un compte (email pré-rempli)</a></p>
-      <p>Si vous préférez créer un compte d'abord, utilisez : <a href="${signUpLink}">Créer un compte</a></p>
+      <h2>Bem-vindo ao Food Pronto — Painel Comercial</h2>
+      <p>Olá ${args.partnerName},</p>
+      <p>Criamos seu acesso como parceiro comercial. Para entrar no seu painel e acompanhar vouchers, comissões e clientes indicados, use o link abaixo:</p>
+      <p><a href="${signInLink}">Entrar / Criar conta (email já preenchido)</a></p>
+      <p>Se preferir, você também pode usar este link para criar a conta primeiro:</p>
+      <p><a href="${signUpLink}">Criar conta</a></p>
       <hr />
-      <h3>Vos informations de partenaire</h3>
+      <h3>Informações do seu parceiro</h3>
       <ul>
-        <li><strong>Nom :</strong> ${args.partnerName}</li>
-        <li><strong>Voucher :</strong> ${args.code}</li>
-        <li><strong>Réduction pour vos clients :</strong> ${args.discountPercentage}%</li>
-        <li><strong>Commission :</strong> ${args.commissionPercentage}% du montant payé</li>
-        ${args.partnerPhone ? `<li><strong>WhatsApp / Téléphone :</strong> ${args.partnerPhone}</li>` : ""}
-        ${args.partnerPixKey ? `<li><strong>Chave PIX :</strong> ${args.partnerPixKey}</li>` : ""}
+        <li><strong>Nome:</strong> ${args.partnerName}</li>
+        <li><strong>Voucher:</strong> ${args.code}</li>
+        <li><strong>Desconto para clientes:</strong> ${args.discountPercentage}%</li>
+        <li><strong>Comissão:</strong> ${args.commissionPercentage}% do valor pago</li>
+        ${args.partnerPhone ? `<li><strong>WhatsApp / Telefone:</strong> ${args.partnerPhone}</li>` : ""}
+        ${args.partnerPixKey ? `<li><strong>Chave PIX:</strong> ${args.partnerPixKey}</li>` : ""}
       </ul>
-      <p>Après connexion, accédez à <a href="${baseUrl}/comercial/dashboard">votre tableau de bord partenaire</a> pour voir vos commissions, vouchers et restaurants référés.</p>
-      <p>Si vous avez des questions, répondez simplement à cet e-mail.</p>
-      <p>— Équipe Food Pronto</p>
+      <p>Após entrar, acesse <a href="${baseUrl}/comercial/dashboard">seu painel comercial</a> para ver seus vouchers, comissões e clientes indicados.</p>
+      <p>Se tiver qualquer dúvida, responda a este e-mail.</p>
+      <p>— Equipe Food Pronto</p>
     `;
 
     try {

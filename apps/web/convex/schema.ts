@@ -154,7 +154,7 @@ export default defineSchema({
     isActive: v.boolean(),
     discountPercentage: v.number(), // Always 10 for now
     commissionPercentage: v.number(), // Always 50 for now
-  }).index("by_code", ["code"]),
+  }).index("by_code", ["code"]).index("by_partner_email", ["partnerEmail"]),
 
   commissions: defineTable({
     partnerId: v.id("vouchers"),

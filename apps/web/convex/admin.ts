@@ -98,6 +98,55 @@ export const getAllVouchers = query({
   },
 });
 
+export const getPartnerDashboard = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity?.email) {
+      throw new Error("Usuário não autenticado.");
+    }
+
+    const vouchers = await ctx.db
+      .query("vouchers")
+      .withIndex("by_partner_email", (q) => q.eq("partnerEmail", identity.email))
+      .collect();
+
+    if (vouchers.length === 0) {
+      return null;
+    }
+
+    const voucher = vouchers[0];
+    const commissions = await ctx.db
+      .query("commissions")
+      .withIndex("by_partner", (q) => q.eq("partnerId", voucher._id))
+      .collect();
+
+    const truckIds = Array.from(new Set(commissions.map((c) => c.truckId)));
+    const trucks = await Promise.all(truckIds.map((id) => ctx.db.get(id)));
+
+    const commissionsWithTruck = commissions.map((commission) => ({
+      ...commission,
+      truckName:
+        trucks.find((truck) => truck?._id === commission.truckId)?.name || "Food Truck",
+    }));
+
+    const pendingAmount = commissionsWithTruck
+      .filter((c) => c.status === "pending")
+      .reduce((sum, c) => sum + c.amount, 0);
+
+    const paidAmount = commissionsWithTruck
+      .filter((c) => c.status === "paid")
+      .reduce((sum, c) => sum + c.amount, 0);
+
+    return {
+      voucher,
+      commissions: commissionsWithTruck,
+      pendingAmount,
+      paidAmount,
+    };
+  },
+});
+
 export const payCommissions = mutation({
   args: { partnerId: v.id("vouchers") },
   handler: async (ctx, args) => {
