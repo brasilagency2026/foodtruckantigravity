@@ -45,14 +45,24 @@ function OnboardingPageContent() {
   const isAuthenticatedRef = useRef(isAuthenticated);
   useEffect(() => { isAuthenticatedRef.current = isAuthenticated; }, [isAuthenticated]);
 
-  // Redirect to dashboard if user already has a truck
+  // Redirects:
+  // 1) If the user is a commercial partner, send them to /comercial/dashboard
+  // 2) Otherwise, if they already have a truck, send them to their truck dashboard
+  const partnerDashboard = useQuery(api.admin.getPartnerDashboard);
+
   useEffect(() => {
+    if (partnerDashboard !== undefined && partnerDashboard !== null) {
+      router.replace("/comercial/dashboard");
+      return;
+    }
+
     if (myTrucks && myTrucks.length > 0) {
       router.replace(`/dashboard/${myTrucks[0]._id}`);
     }
-  }, [myTrucks, router]);
-  
+  }, [partnerDashboard, myTrucks, router]);
+
   function update(fields: Partial<OnboardingData>) { setData((p) => ({ ...p, ...fields })); }
+
   
   async function finish(connectPayment: boolean) {
     setLoading(true);
