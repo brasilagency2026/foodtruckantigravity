@@ -80,6 +80,18 @@ function OnboardingPageContent() {
       setLoading(false);
       return;
     }
+
+    // Read voucher from referral link (non-editable)
+    const voucherCodeFromUrl = (() => {
+      try {
+        const url = new URL(window.location.href);
+        const v = url.searchParams.get("voucher") || undefined;
+        return v ? String(v).trim().toUpperCase() : undefined;
+      } catch {
+        return undefined;
+      }
+    })();
+
     try {
       const truckId = await createTruck({
         name: data.name!, description: data.description!, cuisine: data.cuisine!,
@@ -87,6 +99,7 @@ function OnboardingPageContent() {
         address: data.address!, coverPhotoUrl: data.coverPhotoUrl!, openingHours: data.openingHours ?? {},
         slug: data.slug!, state: data.state!, city: data.city!,
         cityDisplay: data.cityDisplay!, stateDisplay: data.stateDisplay!,
+        voucherCode: voucherCodeFromUrl,
       });
       if (connectPayment) {
         window.location.href = `/api/mercadopago/authorize?truckId=${truckId}`;

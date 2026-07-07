@@ -141,6 +141,9 @@ export const createTruck = mutation({
       saturday: v.optional(v.object({ open: v.string(), close: v.string() })),
       sunday: v.optional(v.object({ open: v.string(), close: v.string() })),
     }),
+
+    // Optional voucher code coming from the commercial referral link
+    voucherCode: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();

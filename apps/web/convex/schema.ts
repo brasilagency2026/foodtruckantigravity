@@ -44,6 +44,9 @@ export default defineSchema({
     subscriptionStatus: v.optional(v.union(v.literal("trial"), v.literal("active"), v.literal("past_due"), v.literal("canceled"))),
     subscriptionPlan: v.optional(v.union(v.literal("monthly"), v.literal("annual"))),
     mpPreapprovalId: v.optional(v.string()), // ID of the Mercado Pago Subscription
+
+    // Affiliate / Partner voucher (for partner commissions)
+    voucherCode: v.optional(v.string()),
   })
     .index("by_owner", ["ownerId"])
     .index("by_open", ["isOpen"])

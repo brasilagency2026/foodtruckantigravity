@@ -32,6 +32,30 @@ export default function ComercialDashboardPage() {
   return (
     <div className="p-10 text-white max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-4 text-[#FF6B35]">Painel Comercial</h1>
+      <div className="mb-4 p-4 bg-[#12131f] rounded-xl border border-white/10">
+        <h2 className="text-lg font-semibold mb-2">Compartilhe seu voucher</h2>
+        <div className="flex flex-col md:flex-row md:items-center gap-3">
+          <div className="text-sm text-gray-300">
+            Link de onboarding do seu cliente (voucher aplicado automaticamente):
+          </div>
+        </div>
+        <div className="mt-3 flex gap-3">
+          <input
+            readOnly
+            value={`https://www.foodpronto.com.br/onboarding?voucher=${dashboard?.voucher?.code ?? ""}`}
+            className="w-full bg-[#0f1220] border border-white/10 rounded-xl px-4 py-3 text-white"
+          />
+          <button
+            className="bg-gray-800 hover:bg-gray-700 px-5 py-3 rounded-xl font-bold transition-all border border-white/5"
+            onClick={() => {
+              const link = `https://www.foodpronto.com.br/onboarding?voucher=${dashboard?.voucher?.code ?? ""}`;
+              navigator.clipboard.writeText(link);
+            }}
+          >
+            Copiar
+          </button>
+        </div>
+      </div>
       <div className="mb-8 p-6 bg-[#12131f] rounded-xl border border-white/10">
         <div className="mb-4">
           <p className="text-sm text-gray-400">Parceiro</p>

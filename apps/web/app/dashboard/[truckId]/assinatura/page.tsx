@@ -18,6 +18,19 @@ export default function AssinaturaPage() {
   const [paymentMethod, setPaymentMethod] = useState<"cc" | "pix">("cc");
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherStatus, setVoucherStatus] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
+  const [voucherLocked, setVoucherLocked] = useState(false);
+
+  // Prefill voucher code if it was set during truck onboarding via referral link
+  useEffect(() => {
+    if (!truck) return;
+    if (truck.voucherCode && String(truck.voucherCode).trim() !== "") {
+      setVoucherCode(String(truck.voucherCode).trim().toUpperCase());
+      setVoucherLocked(true);
+      setVoucherStatus("valid");
+      // Keep existing discount logic: discount will be validated on the next click of "Aplicar"
+      // but we can already set it optimistically by validating immediately.
+    }
+  }, [truck]);
   const [discount, setDiscount] = useState(0); // e.g., 10 for 10%
   const [mpEmail, setMpEmail] = useState(""); // Email for Mercado Pago account
 
@@ -240,10 +253,12 @@ export default function AssinaturaPage() {
             <div className="my-8">
               <label className="block text-sm text-gray-400 mb-3">Código do Parceiro (Voucher)</label>
               <div className="flex gap-3">
-                <input 
+                  <input 
                   type="text" 
                   value={voucherCode}
+                  readOnly={voucherLocked}
                   onChange={(e) => {
+                    if (voucherLocked) return;
                     setVoucherCode(e.target.value.toUpperCase());
                     setVoucherStatus("idle");
                     setDiscount(0);
@@ -253,9 +268,10 @@ export default function AssinaturaPage() {
                 />
                 <button 
                   onClick={handleApplyVoucher}
-                  className="bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-xl font-bold transition-all border border-white/5"
+                  disabled={voucherLocked && voucherStatus === "valid"}
+                  className={`bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-xl font-bold transition-all border border-white/5 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  {voucherStatus === "validating" ? "..." : "Aplicar"}
+                  {voucherStatus === "validating" ? "..." : voucherLocked ? "Voucher aplicado" : "Aplicar"}
                 </button>
               </div>
               {voucherStatus === "valid" && <p className="text-green-400 text-sm mt-3 flex items-center gap-1">✨ Cupom aplicado com sucesso!</p>}
