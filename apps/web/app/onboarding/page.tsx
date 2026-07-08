@@ -51,6 +51,10 @@ function OnboardingPageContent() {
   const partnerDashboard = useQuery(api.admin.getPartnerDashboard);
 
   useEffect(() => {
+    // Don’t block onboarding for non-partner signups.
+    // This prevents errors when onboarding is opened as a “new client” with ?voucher=...
+    if (!isSignedIn) return;
+
     if (partnerDashboard !== undefined && partnerDashboard !== null) {
       router.replace("/comercial/dashboard");
       return;
@@ -59,7 +63,7 @@ function OnboardingPageContent() {
     if (myTrucks && myTrucks.length > 0) {
       router.replace(`/dashboard/${myTrucks[0]._id}`);
     }
-  }, [partnerDashboard, myTrucks, router]);
+  }, [partnerDashboard, myTrucks, router, isSignedIn]);
 
   function update(fields: Partial<OnboardingData>) { setData((p) => ({ ...p, ...fields })); }
 
@@ -112,7 +116,7 @@ function OnboardingPageContent() {
     }
   }
 
-  if (!clerkLoaded) {
+  if (!clerkLoaded || partnerDashboard === undefined || myTrucks === undefined) {
     return (
       <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center" }}>
         <p style={{ color:"rgba(255,255,255,0.5)", fontSize:16 }}>Carregando...</p>

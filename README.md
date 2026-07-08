@@ -1,61 +1,23 @@
-# 🍔 Food Pronto
+Food Truck Alert - Onboarding
 
-App mobile (Android + iOS) + painel web para food trucks com cardápio digital, pedidos em tempo real, alertas sonoros e vibração quando o pedido fica pronto.
+## Objectif
+Corriger le flux d’inscription **commercial** afin que le lien reçu par le commercial
+`https://www.foodpronto.com.br/sign-up?email=...` mène au bon rôle / panel.
 
-## 🏗️ Stack
+## Contexte (actuel)
+- La page `apps/web/app/sign-up/[[...sign-up]]/page.tsx` rend le composant Clerk `SignUp` avec `fallbackRedirectUrl="/onboarding"`.
+- Le panel commercial est `/comercial/dashboard`.
+- La redirection “commercial” est actuellement gérée par la page `apps/web/app/onboarding/page.tsx`, via `api.admin.getPartnerDashboard`.
 
-| | Tecnologia |
-|---|---|
-| Mobile | Capacitor (Next.js Hybrid) |
-| Web (admin + homepage) | Next.js → Vercel |
-| Backend + DB | Convex (tempo real) |
-| Autenticação | Clerk |
-| Storage de fotos | Cloudflare R2 |
-| Pagamentos | Mercado Pago |
-| Mapa | Google Maps |
-| CI/CD | GitHub Actions |
+## Changement proposé
+1. Détecter sur le signup quand l’utilisateur doit être “commercial”.
+2. Rediriger directement vers `/comercial/dashboard` après signup (ou au moins vers `/onboarding` en conservant le mapping partner).
 
-## 📁 Estrutura
+## Où modifier
+- `apps/web/app/sign-up/[[...sign-up]]/page.tsx`
+  - ajouter une logique pour lire le query param `email`.
+  - injecter une `fallbackRedirectUrl` dynamique (au lieu d’une constante `/onboarding`).
 
-```
-food-truck-alert/
-├── apps/
-│   ├── web/             # Next.js (homepage + admin) + Capacitor (Android/iOS)
-│   └── mobile/          # (Legacy) Projeto Expo anterior
-├── packages/
-│   └── shared/
-│       ├── convex/      # schema + queries + mutations
-│       ├── types/       # TypeScript compartilhado
-│       └── utils/       # slug, upload R2, QR Code
-└── .github/workflows/   # CI/CD automático
-```
+## Note importante
+Ce README décrit la correction à faire. Les modifications de code associées doivent être appliquées dans le dépôt avant release.
 
-## 🚀 Setup
-
-Consulte o arquivo `SETUP.md` para instruções completas.
-
-### Instalação rápida
-
-```bash
-yarn install
-cp .env.example .env.local
-# Preencher .env.local com suas credenciais
-npx convex dev
-yarn dev
-```
-
-## 🔑 Variáveis de ambiente
-
-Copie `.env.example` para `.env.local` e preencha todas as variáveis. Veja comentários no arquivo para onde obter cada chave.
-
-## 📱 Funcionalidades
-
-- 🗺️ Mapa de food trucks próximos com filtro por culinária
-- 📋 Cardápio digital via QR Code (web + app)
-- 💳 Pagamento Pix, crédito e débito via Mercado Pago
-- ⚡ Pedidos e status em tempo real (Convex)
-- 🔔 Alerta sonoro + vibração quando pedido fica pronto
-- 👨‍🍳 Painel da cozinha ao vivo
-- 🔗 URL SEO-friendly por estado/cidade/truck
-- 📊 Dashboard com faturamento e estatísticas
-"# foodtruckantigravity" 

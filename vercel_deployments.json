@@ -1,0 +1,688 @@
+﻿Project: foodtruckantigravity-web prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6
+OK endpoint: /v6/deployments
+{
+  "deployments": [
+    {
+      "uid": "dpl_3L9PqbJ6W2NhGddxucc3APQ9spTa",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-g2e7kf0r3-gerald-leveques-projects.vercel.app",
+      "created": 1782428285669,
+      "source": "git",
+      "state": "READY",
+      "readyState": "READY",
+      "readySubstate": "PROMOTED",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/3L9PqbJ6W2NhGddxucc3APQ9spTa",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "marketing: add client-side fallback OG/Twitter meta injection for /marketing",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "a2b5a3a67140b7291961ef989402dcc87f2ed6fd",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782428283000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app",
+        "lambdaRuntimeStats": "{\"nodejs\":5}"
+      },
+      "target": "production",
+      "aliasError": null,
+      "aliasAssigned": 1782428455323,
+      "isRollbackCandidate": true,
+      "createdAt": 1782428285669,
+      "buildingAt": 1782428286678,
+      "ready": 1782428454482,
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_3u2WHGZ8BduPLsDH4aKtAQYPUkrH",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-fxa9a6j5a-gerald-leveques-projects.vercel.app",
+      "created": 1782423824003,
+      "source": "git",
+      "state": "READY",
+      "readyState": "READY",
+      "readySubstate": "PROMOTED",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/3u2WHGZ8BduPLsDH4aKtAQYPUkrH",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "Add explicit marketing OpenGraph head tags for Facebook",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "0b8705812e02b2daaad1c77d045db54f0cc64d63",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782423821000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app",
+        "lambdaRuntimeStats": "{\"nodejs\":5}"
+      },
+      "target": "production",
+      "aliasError": null,
+      "aliasAssigned": 1782423960487,
+      "isRollbackCandidate": true,
+      "createdAt": 1782423824003,
+      "buildingAt": 1782423825096,
+      "ready": 1782423959787,
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_BNgJSHrFnQ64b96FrGoiLVQUN25G",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-h3sgi1uel-gerald-leveques-projects.vercel.app",
+      "created": 1782423106803,
+      "source": "git",
+      "state": "READY",
+      "readyState": "READY",
+      "readySubstate": "PROMOTED",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/BNgJSHrFnQ64b96FrGoiLVQUN25G",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "Fix marketing OpenGraph URLs to use absolute image path and metadataBase",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "e21dd88c0feebce063e722e2d6d23c31c8d912e4",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782423104000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app",
+        "lambdaRuntimeStats": "{\"nodejs\":5}"
+      },
+      "target": "production",
+      "aliasError": null,
+      "aliasAssigned": 1782423290753,
+      "isRollbackCandidate": false,
+      "createdAt": 1782423106803,
+      "buildingAt": 1782423108271,
+      "ready": 1782423290172,
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_CjrbcrHJ7fFvrVJHvHPtqDa74DCN",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-f3zuoofey-gerald-leveques-projects.vercel.app",
+      "created": 1782422690896,
+      "source": "git",
+      "state": "READY",
+      "readyState": "READY",
+      "readySubstate": "PROMOTED",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/CjrbcrHJ7fFvrVJHvHPtqDa74DCN",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "Fix marketing page imports for useState and Image",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "3c712c9886782bc7d7a2e0db994d69fe18bf42df",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782422688000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app",
+        "lambdaRuntimeStats": "{\"nodejs\":5}"
+      },
+      "target": "production",
+      "aliasError": null,
+      "aliasAssigned": 1782422960980,
+      "isRollbackCandidate": false,
+      "createdAt": 1782422690896,
+      "buildingAt": 1782422720154,
+      "ready": 1782422900345,
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_7ckJX3LwT7BSiERqTQtD3aSraXto",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-bbeu6pke6-gerald-leveques-projects.vercel.app",
+      "created": 1782422441236,
+      "source": "git",
+      "state": "ERROR",
+      "readyState": "ERROR",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/7ckJX3LwT7BSiERqTQtD3aSraXto",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "Update marketing image resource",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "6b749d16e97908b17c73cadb6bd5361791ffdc29",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782422438000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app"
+      },
+      "target": "production",
+      "aliasAssigned": null,
+      "isRollbackCandidate": false,
+      "createdAt": 1782422441236,
+      "buildingAt": 1782422442639,
+      "ready": 1782422599902,
+      "errorCode": "type_error",
+      "errorMessage": "Command \"turbo run build\" exited with 1",
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_6Voqeag9gYU9gjmdFRdiRsdwF1oK",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-f3ompu9f1-gerald-leveques-projects.vercel.app",
+      "created": 1782421743592,
+      "source": "git",
+      "state": "ERROR",
+      "readyState": "ERROR",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/6Voqeag9gYU9gjmdFRdiRsdwF1oK",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "Add marketing OpenGraph metadata and image for Facebook preview",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "b4bd52b9cb9180ce32eaaa34ffcdddde384919ee",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782421741000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app"
+      },
+      "target": "production",
+      "aliasAssigned": null,
+      "isRollbackCandidate": false,
+      "createdAt": 1782421743592,
+      "buildingAt": 1782421745045,
+      "ready": 1782421905564,
+      "errorCode": "type_error",
+      "errorMessage": "Command \"turbo run build\" exited with 1",
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_2c3KDaHjq8HgGFy8yc7TJffwMKWF",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-ltailmcmn-gerald-leveques-projects.vercel.app",
+      "created": 1782154287678,
+      "source": "git",
+      "state": "READY",
+      "readyState": "READY",
+      "readySubstate": "PROMOTED",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/2c3KDaHjq8HgGFy8yc7TJffwMKWF",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "fix: update Quem Somos links with real URLs",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "a21c15708c8ce6ffd31e9a1e62f16e893ea812fe",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782154284000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app",
+        "lambdaRuntimeStats": "{\"nodejs\":5}"
+      },
+      "target": "production",
+      "aliasError": null,
+      "aliasAssigned": 1782154426257,
+      "isRollbackCandidate": false,
+      "createdAt": 1782154287678,
+      "buildingAt": 1782154288762,
+      "ready": 1782154425949,
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_4AF13BbKKb7HAgVsSp64tNTqnhry",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-94p0i1dyc-gerald-leveques-projects.vercel.app",
+      "created": 1782153907029,
+      "source": "git",
+      "state": "READY",
+      "readyState": "READY",
+      "readySubstate": "PROMOTED",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/4AF13BbKKb7HAgVsSp64tNTqnhry",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "fix: add /quem-somos to public routes in Clerk middleware",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "975655b0ca03bab0a82958b88c1cead055011266",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782153903000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app",
+        "lambdaRuntimeStats": "{\"nodejs\":5}"
+      },
+      "target": "production",
+      "aliasError": null,
+      "aliasAssigned": 1782154046965,
+      "isRollbackCandidate": false,
+      "createdAt": 1782153907029,
+      "buildingAt": 1782153908528,
+      "ready": 1782154045936,
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_2DMSgwYbY8rzJ4WByre2wUx9wpXY",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-bo7ezrty5-gerald-leveques-projects.vercel.app",
+      "created": 1782153618234,
+      "source": "git",
+      "state": "READY",
+      "readyState": "READY",
+      "readySubstate": "PROMOTED",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/2DMSgwYbY8rzJ4WByre2wUx9wpXY",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "feat: add Quem Somos page and update footer links",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "main",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "851ed0d8247c1d0936d688b0da5e913623ff65c7",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782153615000",
+        "branchAlias": "foodtruckantigravity-web-git-main-gerald-leveques-projects.vercel.app",
+        "lambdaRuntimeStats": "{\"nodejs\":5}"
+      },
+      "target": "production",
+      "aliasError": null,
+      "aliasAssigned": 1782153770403,
+      "isRollbackCandidate": false,
+      "createdAt": 1782153618234,
+      "buildingAt": 1782153619330,
+      "ready": 1782153769804,
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    },
+    {
+      "uid": "dpl_2ekBp1aPsy2K4Nxp9krffw4fYrnE",
+      "name": "foodtruckantigravity-web",
+      "projectId": "prj_1lXmmAfFxLZTK3cVfF6WSLUdmvT6",
+      "url": "foodtruckantigravity-orijou6x7-gerald-leveques-projects.vercel.app",
+      "created": 1782153438205,
+      "source": "git",
+      "state": "ERROR",
+      "readyState": "ERROR",
+      "type": "LAMBDAS",
+      "creator": {
+        "uid": "DJu57cf3VwqPP6Hi5PHyifrU",
+        "email": "brasilagency2026@gmail.com",
+        "username": "brasilagency2026",
+        "githubLogin": "gleveque27"
+      },
+      "inspectorUrl": "https://vercel.com/gerald-leveques-projects/foodtruckantigravity-web/2ekBp1aPsy2K4Nxp9krffw4fYrnE",
+      "attribution": {
+        "commitMeta": {
+          "name": "gleveque27",
+          "email": "glwebagency2@gmail.com",
+          "isVerified": false
+        },
+        "gitUser": {
+          "id": 213996997,
+          "login": "gleveque27",
+          "type": "user",
+          "provider": "github"
+        },
+        "vercelUser": {
+          "id": "74J8iw6102DuU1R5FlquB9jU",
+          "username": "glwebagency2-1284"
+        }
+      },
+      "meta": {
+        "githubCommitAuthorName": "gleveque27",
+        "githubCommitAuthorEmail": "glwebagency2@gmail.com",
+        "githubCommitMessage": "feat: add Quem Somos page and update footer links",
+        "githubCommitOrg": "brasilagency2026",
+        "githubCommitRef": "feat/quem-somos-page",
+        "githubCommitRepo": "foodtruckantigravity",
+        "githubCommitSha": "851ed0d8247c1d0936d688b0da5e913623ff65c7",
+        "githubDeployment": "1",
+        "githubOrg": "brasilagency2026",
+        "githubRepo": "foodtruckantigravity",
+        "githubRepoOwnerType": "User",
+        "githubCommitRepoId": "1213297870",
+        "githubRepoId": "1213297870",
+        "githubRepoVisibility": "public",
+        "githubHost": "github.com",
+        "githubCommitAuthorLogin": "gleveque27",
+        "githubCommitVerification": "unverified",
+        "repoPushedAt": "1782153434000",
+        "branchAlias": "foodtruckantigravity-web-git-fe-cb2108-gerald-leveques-projects.vercel.app"
+      },
+      "target": null,
+      "aliasAssigned": null,
+      "isRollbackCandidate": false,
+      "createdAt": 1782153438205,
+      "buildingAt": 1782153439345,
+      "ready": 1782153545830,
+      "errorCode": "BUILD_UTILS_SPAWN_1",
+      "errorMessage": "Command \"turbo run build\" exited with 1",
+      "projectSettings": {
+        "commandForIgnoringBuildStep": null
+      }
+    }
+  ],
+  "pagination": {
+    "count": 10,
+    "next": 1782153438205,
+    "prev": 1782428285669
+  }
+}

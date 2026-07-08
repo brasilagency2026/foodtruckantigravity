@@ -102,8 +102,10 @@ export const getPartnerDashboard = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
+    // Avoid crashing the client when the user has no email in Convex auth.
+    // The commercial dashboard can handle `null`.
     if (!identity?.email) {
-      throw new Error("Usuário não autenticado.");
+      return null;
     }
 
     const vouchers = await ctx.db

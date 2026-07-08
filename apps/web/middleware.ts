@@ -8,6 +8,8 @@ function isPublicRoute(req: any) {
     return (
       pathname.startsWith('/sign-in') ||
       pathname.startsWith('/sign-up') ||
+      pathname.startsWith('/comercial/sign-in') ||
+      pathname.startsWith('/comercial/sign-up') ||
       pathname.startsWith('/menu') ||
       pathname.startsWith('/t') ||
       pathname.startsWith('/checkout') ||

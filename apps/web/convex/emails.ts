@@ -207,8 +207,8 @@ export const sendAffiliateOnboardingEmail = internalAction({
     const signInPath = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in";
     const signUpPath = process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up";
 
-    const signInLink = `${baseUrl.replace(/\/$/,"")}${signInPath}?email=${encodeURIComponent(args.partnerEmail)}`;
-    const signUpLink = `${baseUrl.replace(/\/$/,"")}${signUpPath}?email=${encodeURIComponent(args.partnerEmail)}`;
+    const signInLink = `${baseUrl.replace(/\/$/,"")}/comercial/sign-in?email=${encodeURIComponent(args.partnerEmail)}`;
+    const signUpLink = `${baseUrl.replace(/\/$/,"")}/comercial/sign-up?email=${encodeURIComponent(args.partnerEmail)}`;
 
     const resend = new Resend(resendKey);
 
