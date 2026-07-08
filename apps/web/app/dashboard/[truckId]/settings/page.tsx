@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -44,6 +44,64 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [searching, setSearching] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const autocompleteRef = useRef<any>(null);
+
+  useEffect(() => {
+    const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
+    if (!key) return;
+
+    const loadScript = () => {
+      if (window.google?.maps?.places) {
+        initAutocomplete();
+        return;
+      }
+
+      const existingScript = document.getElementById("google-maps-script");
+      if (existingScript) {
+        existingScript.addEventListener("load", initAutocomplete);
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.id = "google-maps-script";
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`;
+      script.async = true;
+      script.onload = initAutocomplete;
+      document.head.appendChild(script);
+    };
+
+    const initAutocomplete = () => {
+      if (!inputRef.current || !window.google?.maps?.places) return;
+
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
+        types: ["address"],
+        componentRestrictions: { country: "br" },
+        fields: ["geometry", "formatted_address"],
+      });
+
+      autocompleteRef.current.addListener("place_changed", () => {
+        const place = autocompleteRef.current?.getPlace();
+        if (place?.geometry?.location) {
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+          setLatitude(lat);
+          setLongitude(lng);
+          setAddress(place.formatted_address || "");
+          setError("");
+        }
+      });
+    };
+
+    loadScript();
+
+    return () => {
+      if (window.google?.maps?.event && autocompleteRef.current) {
+        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (truck) {
@@ -224,6 +282,7 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
         <h2 style={s.sectionTitle}>Endereço</h2>
         <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
           <input 
+            ref={inputRef}
             style={s.input} 
             value={address} 
             onChange={(e) => setAddress(e.target.value)} 
