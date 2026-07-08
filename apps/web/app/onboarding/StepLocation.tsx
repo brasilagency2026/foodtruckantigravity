@@ -22,31 +22,10 @@ export function StepLocation({ data, onBack, onNext }: Props) {
   const autocompleteRef = useRef<any>(null);
 
   useEffect(() => {
-    const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
-    if (!key) return;
-
-    const loadScript = () => {
-      if (window.google?.maps?.places) {
-        initAutocomplete();
-        return;
-      }
-
-      const existingScript = document.getElementById("google-maps-script");
-      if (existingScript) {
-        existingScript.addEventListener("load", initAutocomplete);
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.id = "google-maps-script";
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`;
-      script.async = true;
-      script.onload = initAutocomplete;
-      document.head.appendChild(script);
-    };
+    let intervalId: any;
 
     const initAutocomplete = () => {
-      if (!inputRef.current || !window.google?.maps?.places) return;
+      if (!inputRef.current || !window.google?.maps?.places) return false;
 
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
         types: ["address"],
@@ -64,11 +43,19 @@ export function StepLocation({ data, onBack, onNext }: Props) {
           setError("");
         }
       });
+      return true;
     };
 
-    loadScript();
+    if (!initAutocomplete()) {
+      intervalId = setInterval(() => {
+        if (initAutocomplete()) {
+          clearInterval(intervalId);
+        }
+      }, 100);
+    }
 
     return () => {
+      if (intervalId) clearInterval(intervalId);
       if (window.google?.maps?.event && autocompleteRef.current) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
       }

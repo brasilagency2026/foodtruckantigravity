@@ -37,6 +37,12 @@ export default function RootLayout({
       <body>
         <ClerkProvider localization={ptBR as any}>
           <ConvexClientProvider>
+            {process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY && (
+              <Script
+                src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&libraries=places`}
+                strategy="afterInteractive"
+              />
+            )}
             {children}
           </ConvexClientProvider>
         </ClerkProvider>
