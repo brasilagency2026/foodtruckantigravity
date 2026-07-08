@@ -41,6 +41,10 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [searching, setSearching] = useState(false);
+
   useEffect(() => {
     if (truck) {
       setName(truck.name);
@@ -50,8 +54,34 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
       setAddress(truck.address);
       setCoverPhotoUrl(truck.coverPhotoUrl);
       setOpeningHours((truck.openingHours as any) ?? {});
+      setLatitude(truck.latitude);
+      setLongitude(truck.longitude);
     }
   }, [truck]);
+
+  const searchAddress = async () => {
+    if (!address.trim()) return;
+    setSearching(true);
+    setError(null);
+    try {
+      const res = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}`
+      );
+      const json = await res.json();
+      if (json.results && json.results[0]) {
+        const loc = json.results[0].geometry.location;
+        setLatitude(loc.lat);
+        setLongitude(loc.lng);
+        setAddress(json.results[0].formatted_address);
+      } else {
+        setError("Endereço não encontrado.");
+      }
+    } catch {
+      setError("Erro ao buscar endereço.");
+    } finally {
+      setSearching(false);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -67,6 +97,8 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
         address,
         coverPhotoUrl,
         openingHours,
+        latitude: latitude ?? undefined,
+        longitude: longitude ?? undefined,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -190,7 +222,43 @@ export default function SettingsPage({ params }: { params: { truckId: string } }
       {/* Address */}
       <section style={s.section}>
         <h2 style={s.sectionTitle}>Endereço</h2>
-        <input style={s.input} value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rua, número, bairro..." />
+        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+          <input 
+            style={s.input} 
+            value={address} 
+            onChange={(e) => setAddress(e.target.value)} 
+            placeholder="Digite o endereço (Ex: Rua Augusta, 1000, São Paulo)" 
+            onKeyDown={(e) => e.key === "Enter" && searchAddress()}
+          />
+          <button 
+            type="button"
+            onClick={searchAddress}
+            disabled={searching}
+            style={{
+              padding: "14px 20px",
+              background: "#FF6B35",
+              border: "none",
+              borderRadius: 12,
+              color: "#FFF",
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: "pointer",
+            }}
+          >
+            {searching ? "Buscando..." : "Buscar"}
+          </button>
+        </div>
+        
+        {latitude && longitude && (
+          <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", marginBottom: 12 }}>
+            <img
+              src={`https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=16&size=520x200&scale=2&markers=color:0xFF6B35|${latitude},${longitude}&style=element:geometry|color:0x1a1a1a&style=element:labels.text.fill|color:0x757575&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}`}
+              alt="Localização no mapa"
+              style={{ width: "100%", display: "block", borderRadius: 16 }}
+            />
+            <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)", fontSize: 28 }}>📍</div>
+          </div>
+        )}
       </section>
 
       {/* Hours */}
