@@ -74,11 +74,33 @@ export const getNearbyTrucks = query({
   },
 });
 
+export async function checkTruckAccess(ctx: any, truckId: any) {
+  const truck = await ctx.db.get(truckId);
+  if (!truck) throw new Error("Food Truck não encontrado.");
+  
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Não autenticado.");
+  
+  const isOwner = identity.subject === truck.ownerId;
+  const isSuperAdmin = identity.email === "glwebagency2@gmail.com";
+  const isPending = truck.ownerId.startsWith("admin_pending_");
+  
+  if (isOwner || (isSuperAdmin && isPending)) {
+    return truck;
+  }
+  
+  throw new Error("Acesso negado. Você não tem permissão para gerenciar este Food Truck.");
+}
+
 // Um truck por ID (dashboard interno)
 export const getTruckById = query({
   args: { truckId: v.id("foodTrucks") },
   handler: async (ctx, { truckId }) => {
-    return await ctx.db.get(truckId);
+    try {
+      return await checkTruckAccess(ctx, truckId);
+    } catch {
+      return null;
+    }
   },
 });
 
@@ -213,6 +235,7 @@ export const updateTruck = mutation({
     })),
   },
   handler: async (ctx, { truckId, ...fields }) => {
+    await checkTruckAccess(ctx, truckId);
     await ctx.db.patch(truckId, fields);
   },
 });
@@ -220,6 +243,7 @@ export const updateTruck = mutation({
 export const toggleOpen = mutation({
   args: { truckId: v.id("foodTrucks"), isOpen: v.boolean() },
   handler: async (ctx, { truckId, isOpen }) => {
+    await checkTruckAccess(ctx, truckId);
     await ctx.db.patch(truckId, { isOpen });
   },
 });
@@ -232,6 +256,7 @@ export const updateLocation = mutation({
     address: v.string(),
   },
   handler: async (ctx, { truckId, latitude, longitude, address }) => {
+    await checkTruckAccess(ctx, truckId);
     await ctx.db.patch(truckId, { latitude, longitude, address });
   },
 });
@@ -245,6 +270,7 @@ export const saveMercadoPagoTokens = mutation({
     mpExpiresAt: v.number(),
   },
   handler: async (ctx, { truckId, mpAccessToken, mpRefreshToken, mpUserId, mpExpiresAt }) => {
+    await checkTruckAccess(ctx, truckId);
     await ctx.db.patch(truckId, { mpAccessToken, mpRefreshToken, mpUserId, mpExpiresAt });
   },
 });
@@ -252,6 +278,7 @@ export const saveMercadoPagoTokens = mutation({
 export const disconnectMercadoPago = mutation({
   args: { truckId: v.id("foodTrucks") },
   handler: async (ctx, { truckId }) => {
+    await checkTruckAccess(ctx, truckId);
     await ctx.db.patch(truckId, {
       mpAccessToken: undefined,
       mpRefreshToken: undefined,

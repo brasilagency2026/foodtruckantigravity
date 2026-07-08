@@ -24,7 +24,7 @@ function AdminPageContent() {
   const [activeTab, setActiveTab] = useState<"trucks" | "vouchers" | "assinaturas">("trucks");
   const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerEmail: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
   const [newPendingTruck, setNewPendingTruck] = useState({ name: "", phone: "", voucherCode: "" });
-  const [generatedLink, setGeneratedLink] = useState<{ name: string; link: string; phone: string } | null>(null);
+  const [generatedLink, setGeneratedLink] = useState<{ id: string; name: string; link: string; phone: string } | null>(null);
 
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"name" | "trial" | "payment">("name");
@@ -156,6 +156,7 @@ function AdminPageContent() {
                     });
                     const claimLink = `${window.location.origin}/claim?token=${res.transferToken}`;
                     setGeneratedLink({
+                      id: res.truckId,
                       name: newPendingTruck.name,
                       link: claimLink,
                       phone: newPendingTruck.phone,
@@ -174,8 +175,24 @@ function AdminPageContent() {
 
             {generatedLink && (
               <div className="mt-4 p-4 bg-[#16162a] border border-[#FF6B35]/30 rounded-lg">
-                <h3 className="font-bold text-green-400 mb-2">🎉 Food Truck criado com sucesso!</h3>
-                <p className="text-sm text-gray-300 mb-2">Envie o link abaixo para o proprietário para que ele possa reivindicar o acesso:</p>
+                <h3 className="font-bold text-green-400 mb-2">🎉 Food Truck pré-criado com sucesso!</h3>
+                
+                <div className="mb-4 p-3 bg-purple-950/30 border border-purple-800/30 rounded-lg">
+                  <p className="text-sm text-purple-200 mb-2">
+                    💡 <strong>Fórmula Chave na Mão:</strong> Você pode configurar o cardápio, horários, endereço e fotos deste Food Truck antes de enviar o controle ao proprietário:
+                  </p>
+                  <a
+                    href={`/dashboard/${(generatedLink as any).id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-purple-600 hover:bg-purple-500 text-white px-3 py-2 rounded text-xs font-bold inline-flex items-center gap-1"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    ⚙️ Configurar Food Truck (Dashboard)
+                  </a>
+                </div>
+
+                <p className="text-sm text-gray-300 mb-2">Envie o link abaixo para o proprietário para que ele possa reivindicar o acesso total:</p>
                 <div className="flex gap-2 items-center flex-wrap">
                   <input
                     type="text"
@@ -190,7 +207,7 @@ function AdminPageContent() {
                     }}
                     className="bg-[#10B981] hover:bg-[#059669] text-white px-3 py-2 rounded text-sm font-bold"
                   >
-                    📋 Copiar
+                    📋 Copiar Link
                   </button>
                   <a
                     href={`https://wa.me/55${generatedLink.phone.replace(/\D/g, '')}?text=${encodeURIComponent(
@@ -304,6 +321,15 @@ function AdminPageContent() {
                         <div className="flex gap-2">
                           {truck.ownerId.startsWith("admin_pending_") && (
                             <>
+                              <a
+                                href={`/dashboard/${truck._id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-purple-900/40 hover:bg-purple-900/60 text-purple-300 border border-purple-700/40 px-2 py-1 rounded text-xs font-bold"
+                                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+                              >
+                                ⚙️ Configurar
+                              </a>
                               <button
                                 onClick={async () => {
                                   let token = truck.transferToken;
