@@ -40,6 +40,17 @@ function OnboardingPageContent() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Partial<OnboardingData>>({});
+  const [voucherCode, setVoucherCode] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      const v = url.searchParams.get("voucher");
+      if (v) {
+        setVoucherCode(v.trim().toUpperCase());
+      }
+    }
+  }, []);
 
   // Ref so async finish() always reads the latest isAuthenticated (fixes stale closure)
   const isAuthenticatedRef = useRef(isAuthenticated);
@@ -85,17 +96,6 @@ function OnboardingPageContent() {
       return;
     }
 
-    // Read voucher from referral link (non-editable)
-    const voucherCodeFromUrl = (() => {
-      try {
-        const url = new URL(window.location.href);
-        const v = url.searchParams.get("voucher") || undefined;
-        return v ? String(v).trim().toUpperCase() : undefined;
-      } catch {
-        return undefined;
-      }
-    })();
-
     try {
       const truckId = await createTruck({
         name: data.name!, description: data.description!, cuisine: data.cuisine!,
@@ -103,7 +103,7 @@ function OnboardingPageContent() {
         address: data.address!, coverPhotoUrl: data.coverPhotoUrl!, openingHours: data.openingHours ?? {},
         slug: data.slug!, state: data.state!, city: data.city!,
         cityDisplay: data.cityDisplay!, stateDisplay: data.stateDisplay!,
-        voucherCode: voucherCodeFromUrl,
+        voucherCode: voucherCode || undefined,
       });
       if (connectPayment) {
         window.location.href = `/api/mercadopago/authorize?truckId=${truckId}`;
@@ -129,7 +129,18 @@ function OnboardingPageContent() {
        <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:20 }}>
          <h1>Acesso Restrito</h1>
          <p>Por favor, faça login para continuar.</p>
-         <button onClick={() => router.push("/sign-in")} style={{ background:"#FF6B35", color:"#FFF", border:"none", padding:"10px 20px", borderRadius:8, cursor:"pointer" }}>
+         <button
+           onClick={() => {
+             if (typeof window !== "undefined") {
+               const url = new URL(window.location.href);
+               const v = url.searchParams.get("voucher");
+               router.push(v ? `/sign-in?voucher=${encodeURIComponent(v)}` : "/sign-in");
+             } else {
+               router.push("/sign-in");
+             }
+           }}
+           style={{ background:"#FF6B35", color:"#FFF", border:"none", padding:"10px 20px", borderRadius:8, cursor:"pointer" }}
+         >
             Ir para Login
          </button>
        </div>
@@ -171,7 +182,7 @@ function OnboardingPageContent() {
         ))}
       </div>
       <div style={{ flex:1,padding:"32px 24px 48px",maxWidth:520,margin:"0 auto",width:"100%" }}>
-        {step===0 && <StepInfo data={data} onNext={(f)=>{update(f);setStep(1);}} />}
+        {step===0 && <StepInfo data={data} voucherCode={voucherCode} onNext={(f)=>{update(f);setStep(1);}} />}
         {step===1 && <StepLocation data={data} onBack={()=>setStep(0)} onNext={(f)=>{update(f);setStep(2);}} />}
         {step===2 && <StepPhoto data={data} onBack={()=>setStep(1)} onNext={(f)=>{update(f);setStep(3);}} />}
         {step===3 && <StepHours data={data} onBack={()=>setStep(2)} onNext={(f)=>{update(f);setStep(4);}} />}

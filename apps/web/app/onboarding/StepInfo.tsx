@@ -18,10 +18,11 @@ const STATE_OPTIONS = Object.entries(BRAZIL_STATES).map(([slug, name]) => ({
 
 interface Props {
   data: Partial<OnboardingData>;
+  voucherCode?: string;
   onNext: (fields: Pick<OnboardingData, "name" | "description" | "cuisine" | "phone" | "slug" | "state" | "city" | "cityDisplay" | "stateDisplay">) => void;
 }
 
-export function StepInfo({ data, onNext }: Props) {
+export function StepInfo({ data, voucherCode, onNext }: Props) {
   const [name, setName] = useState(data.name ?? "");
   const [description, setDescription] = useState(data.description ?? "");
   const [cuisine, setCuisine] = useState(data.cuisine ?? "");
@@ -96,6 +97,28 @@ export function StepInfo({ data, onNext }: Props) {
         )}
 
         <Input label="WhatsApp / Telefone *" placeholder="(11) 99999-9999" value={phone} onChange={setPhone} error={errors.phone} type="tel" />
+
+        {voucherCode && (
+          <div>
+            <label style={ls}>Código do Voucher (Comercial)</label>
+            <input
+              type="text"
+              value={voucherCode}
+              readOnly
+              style={{
+                ...is,
+                opacity: 0.6,
+                cursor: "not-allowed",
+                border: "1px solid rgba(255,107,53,0.3)",
+                color: "#FF6B35",
+                fontWeight: "bold",
+              }}
+            />
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", display: "block", marginTop: 6 }}>
+              Este voucher comercial foi aplicado através do link e garante seus descontos/comissões. Não é possível modificá-lo.
+            </span>
+          </div>
+        )}
       </div>
       <NextButton onClick={handleNext} label="Próximo — Localização →" />
     </div>

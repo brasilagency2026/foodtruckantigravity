@@ -3,7 +3,32 @@
 import { SignIn } from "@clerk/nextjs";
 import WebOnlyRoute from "../../../components/WebOnlyRoute";
 
+function buildFallbackRedirectUrl() {
+  if (typeof window === "undefined") return "/onboarding"
+  try {
+    const url = new URL(window.location.href)
+    const voucher = url.searchParams.get("voucher")
+    if (voucher && String(voucher).trim().length > 0) {
+      return `/onboarding?voucher=${encodeURIComponent(voucher.trim())}`
+    }
+  } catch {
+    // ignore
+  }
+  return "/onboarding"
+}
+
 export default function SignInPage() {
+  const getSignUpUrl = () => {
+    if (typeof window === "undefined") return "/sign-up"
+    try {
+      const url = new URL(window.location.href)
+      const voucher = url.searchParams.get("voucher")
+      return voucher ? `/sign-up?voucher=${encodeURIComponent(voucher)}` : "/sign-up"
+    } catch {
+      return "/sign-up"
+    }
+  }
+
   return (
     <WebOnlyRoute>
       <div style={{ minHeight: "100vh", background: "#080810", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, -apple-system, sans-serif" }}>
@@ -31,8 +56,8 @@ export default function SignInPage() {
               }
             }
           }}
-          signUpUrl="/sign-up"
-          fallbackRedirectUrl="/onboarding"
+          signUpUrl={getSignUpUrl()}
+          fallbackRedirectUrl={buildFallbackRedirectUrl()}
         />
       </div>
     </WebOnlyRoute>

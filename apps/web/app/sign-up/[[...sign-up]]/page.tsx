@@ -15,6 +15,11 @@ function buildFallbackRedirectUrl() {
     if (email && String(email).trim().length > 0) {
       return "/comercial/dashboard"
     }
+
+    const voucher = url.searchParams.get("voucher")
+    if (voucher && String(voucher).trim().length > 0) {
+      return `/onboarding?voucher=${encodeURIComponent(voucher.trim())}`
+    }
   } catch {
     // ignore
   }
@@ -23,6 +28,17 @@ function buildFallbackRedirectUrl() {
 }
 
 export default function SignUpPage() {
+  const getSignInUrl = () => {
+    if (typeof window === "undefined") return "/sign-in"
+    try {
+      const url = new URL(window.location.href)
+      const voucher = url.searchParams.get("voucher")
+      return voucher ? `/sign-in?voucher=${encodeURIComponent(voucher)}` : "/sign-in"
+    } catch {
+      return "/sign-in"
+    }
+  }
+
   return (
     <WebOnlyRoute>
       <div
@@ -59,7 +75,7 @@ export default function SignUpPage() {
               },
             },
           }}
-          signInUrl="/sign-in"
+          signInUrl={getSignInUrl()}
           fallbackRedirectUrl={buildFallbackRedirectUrl()}
         />
       </div>
