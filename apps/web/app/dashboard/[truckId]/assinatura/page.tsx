@@ -147,17 +147,37 @@ export default function AssinaturaPage() {
 
       {/* Status Banner */}
       {truck && (
-        <div className={`mb-8 p-6 rounded-xl border flex flex-col md:flex-row justify-between items-center gap-4 ${truck.subscriptionStatus === "active" ? "bg-green-500/10 border-green-500/30" : "bg-orange-500/10 border-orange-500/30"}`}>
+        <div className={`mb-8 p-6 rounded-xl border flex flex-col md:flex-row justify-between items-center gap-4 ${
+          truck.subscriptionStatus === "active" 
+            ? "bg-green-500/10 border-green-500/30" 
+            : truck.subscriptionStatus === "trial"
+            ? "bg-blue-500/10 border-blue-500/30"
+            : "bg-orange-500/10 border-orange-500/30"
+        }`}>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className={`w-3 h-3 rounded-full ${truck.subscriptionStatus === "active" ? "bg-green-500 animate-pulse" : "bg-orange-500"}`}></span>
+              <span className={`w-3 h-3 rounded-full ${
+                truck.subscriptionStatus === "active" 
+                  ? "bg-green-500 animate-pulse" 
+                  : truck.subscriptionStatus === "trial"
+                  ? "bg-blue-500 animate-pulse"
+                  : "bg-orange-500"
+              }`}></span>
               <h2 className="font-bold text-lg">
-                Status: {truck.subscriptionStatus === "active" ? "Assinatura Ativa" : "Aguardando Pagamento"}
+                Status: {
+                  truck.subscriptionStatus === "active" 
+                    ? "Assinatura Ativa" 
+                    : truck.subscriptionStatus === "trial"
+                    ? "Período de Teste Ativo"
+                    : "Aguardando Pagamento"
+                }
               </h2>
             </div>
             <p className="text-sm text-gray-400">
               {truck.subscriptionStatus === "active" 
                 ? `Sua assinatura está em dia. Próxima renovação: ${new Date(truck.nextPaymentAt || 0).toLocaleDateString('pt-BR')}`
+                : truck.subscriptionStatus === "trial"
+                ? `Você está no período de teste gratuito de 30 dias. Expira em: ${truck.trialEndsAt ? new Date(truck.trialEndsAt).toLocaleDateString('pt-BR') : "-"}`
                 : "Seu acesso está limitado. Realize o pagamento abaixo para ativar seu Food Truck no mapa."}
             </p>
           </div>

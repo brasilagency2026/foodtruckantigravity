@@ -140,11 +140,25 @@ export const getPartnerDashboard = query({
       .filter((c) => c.status === "paid")
       .reduce((sum, c) => sum + c.amount, 0);
 
+    const referredTrucks = await ctx.db
+      .query("foodTrucks")
+      .filter((q) => q.eq(q.field("voucherCode"), voucher.code))
+      .collect();
+
     return {
       voucher,
       commissions: commissionsWithTruck,
       pendingAmount,
       paidAmount,
+      referredTrucks: referredTrucks.map((truck) => ({
+        _id: truck._id,
+        name: truck.name,
+        phone: truck.phone,
+        createdAt: truck._creationTime,
+        subscriptionStatus: truck.subscriptionStatus || "trial",
+        isActive: truck.isActive,
+        trialEndsAt: truck.trialEndsAt,
+      })),
     };
   },
 });

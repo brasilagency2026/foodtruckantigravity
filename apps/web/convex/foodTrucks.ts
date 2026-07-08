@@ -171,6 +171,9 @@ export const createTruck = mutation({
       ownerId: identity.subject,
       slug: finalSlug,
       isOpen: false,
+      trialEndsAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      subscriptionStatus: "trial",
+      isActive: true,
     });
 
     // Schedule the email notification asynchronously

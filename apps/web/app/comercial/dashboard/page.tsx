@@ -107,6 +107,65 @@ export default function ComercialDashboardPage() {
       </div>
 
       <div className="mt-8 p-6 bg-[#12131f] rounded-xl border border-white/10">
+        <h2 className="text-xl font-semibold mb-4">Clientes Indicados (Food Trucks)</h2>
+        {!dashboard.referredTrucks || dashboard.referredTrucks.length === 0 ? (
+          <p className="text-gray-400">Nenhum food truck cadastrado com seu voucher ainda.</p>
+        ) : (
+          <div className="space-y-4">
+            {dashboard.referredTrucks.map((truck: any) => {
+              const rawPhone = truck.phone ? truck.phone.replace(/\D/g, "") : "";
+              const whatsappUrl = rawPhone 
+                ? `https://wa.me/${rawPhone.startsWith("55") ? rawPhone : "55" + rawPhone}`
+                : null;
+
+              return (
+                <div key={truck._id} className="p-4 rounded-xl bg-[#0f1220] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="font-semibold text-lg">{truck.name}</h3>
+                    {whatsappUrl ? (
+                      <a 
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sky-400 hover:underline text-sm inline-flex items-center gap-1 mt-1"
+                      >
+                        💬 WhatsApp: {truck.phone}
+                      </a>
+                    ) : (
+                      <p className="text-sm text-gray-400 mt-1">WhatsApp: Não informado</p>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      Data de cadastro: {new Date(truck.createdAt).toLocaleDateString("pt-BR")}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${
+                      truck.subscriptionStatus === "active"
+                        ? "bg-green-500/10 text-green-400 border-green-500/20"
+                        : truck.subscriptionStatus === "trial"
+                        ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                        : "bg-orange-500/10 text-orange-400 border-orange-500/20"
+                    }`}>
+                      {truck.subscriptionStatus === "active"
+                        ? "Assinatura Ativa"
+                        : truck.subscriptionStatus === "trial"
+                        ? "Período de Teste"
+                        : "Pendente"}
+                    </span>
+                    {truck.subscriptionStatus === "trial" && truck.trialEndsAt && (
+                      <p className="text-[10px] text-gray-400 mt-2">
+                        Expira em: {new Date(truck.trialEndsAt).toLocaleDateString("pt-BR")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8 p-6 bg-[#12131f] rounded-xl border border-white/10">
         <h2 className="text-xl font-semibold mb-4">Comissões</h2>
         {dashboard.commissions.length === 0 ? (
           <p className="text-gray-400">Nenhuma comissão registrada ainda.</p>
