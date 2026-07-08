@@ -56,6 +56,15 @@ function OnboardingPageContent() {
   const isAuthenticatedRef = useRef(isAuthenticated);
   useEffect(() => { isAuthenticatedRef.current = isAuthenticated; }, [isAuthenticated]);
 
+  // Redirect unauthenticated users immediately to /sign-up, preserving the voucher code
+  useEffect(() => {
+    if (clerkLoaded && !isSignedIn) {
+      const url = new URL(window.location.href);
+      const v = url.searchParams.get("voucher");
+      router.replace(v ? `/sign-up?voucher=${encodeURIComponent(v)}` : "/sign-up");
+    }
+  }, [clerkLoaded, isSignedIn, router]);
+
   // Redirects:
   // 1) If the user is a commercial partner, send them to /comercial/dashboard
   // 2) Otherwise, if they already have a truck, send them to their truck dashboard
@@ -126,23 +135,8 @@ function OnboardingPageContent() {
 
   if (!isSignedIn) {
      return (
-       <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", gap:20 }}>
-         <h1>Acesso Restrito</h1>
-         <p>Por favor, faça login para continuar.</p>
-         <button
-           onClick={() => {
-             if (typeof window !== "undefined") {
-               const url = new URL(window.location.href);
-               const v = url.searchParams.get("voucher");
-               router.push(v ? `/sign-in?voucher=${encodeURIComponent(v)}` : "/sign-in");
-             } else {
-               router.push("/sign-in");
-             }
-           }}
-           style={{ background:"#FF6B35", color:"#FFF", border:"none", padding:"10px 20px", borderRadius:8, cursor:"pointer" }}
-         >
-            Ir para Login
-         </button>
+       <div style={{ minHeight:"100vh", background:"#0D0D0D", color:"#FFF", display:"flex", alignItems:"center", justifyContent:"center" }}>
+         <p style={{ color:"rgba(255,255,255,0.5)", fontSize:16 }}>Redirecionando para o cadastro...</p>
        </div>
      );
   }
