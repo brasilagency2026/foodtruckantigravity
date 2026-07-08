@@ -47,12 +47,14 @@ export default defineSchema({
 
     // Affiliate / Partner voucher (for partner commissions)
     voucherCode: v.optional(v.string()),
+    transferToken: v.optional(v.string()),
   })
     .index("by_owner", ["ownerId"])
     .index("by_open", ["isOpen"])
     .index("by_slug", ["slug"])
     .index("by_city", ["state", "city"])
-    .index("by_approval", ["approvalStatus"]),
+    .index("by_approval", ["approvalStatus"])
+    .index("by_transfer_token", ["transferToken"]),
 
   menuItems: defineTable({
     truckId: v.id("foodTrucks"),

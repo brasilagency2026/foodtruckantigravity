@@ -18,8 +18,13 @@ function AdminPageContent() {
   const deleteVoucher = useMutation(api.admin.deleteVoucher);
   const payCommissions = useMutation(api.admin.payCommissions);
 
+  const createPendingTruck = useMutation(api.admin.createPendingFoodTruck);
+  const generateTransferToken = useMutation(api.admin.generateTransferToken);
+
   const [activeTab, setActiveTab] = useState<"trucks" | "vouchers" | "assinaturas">("trucks");
   const [newVoucher, setNewVoucher] = useState({ code: "", partnerName: "", partnerEmail: "", partnerPhone: "", partnerPixKey: "", discountPercentage: 10, commissionPercentage: 50 });
+  const [newPendingTruck, setNewPendingTruck] = useState({ name: "", phone: "", voucherCode: "" });
+  const [generatedLink, setGeneratedLink] = useState<{ name: string; link: string; phone: string } | null>(null);
 
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"name" | "trial" | "payment">("name");
@@ -100,6 +105,115 @@ function AdminPageContent() {
             <button className={filter === "approved" ? "active" : ""} onClick={() => setFilter("approved")}>Aprovados</button>
           </div>
 
+          {/* Create & Delegate Food Truck Form */}
+          <div className="admin-table-wrapper mb-8" style={{ padding: 20 }}>
+            <h2 className="text-xl font-bold mb-4 text-[#FF6B35]">➕ Criar & Delegar Novo Food Truck</h2>
+            <div className="flex gap-4 items-end flex-wrap">
+              <div>
+                <label className="block text-sm mb-1 text-gray-400">Nome do Food Truck</label>
+                <input 
+                  type="text" 
+                  value={newPendingTruck.name} 
+                  onChange={e => setNewPendingTruck({...newPendingTruck, name: e.target.value})} 
+                  placeholder="Ex: La Bonne Crêpe"
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-1 text-gray-400">Telefone / WhatsApp</label>
+                <input 
+                  type="text" 
+                  value={newPendingTruck.phone} 
+                  onChange={e => setNewPendingTruck({...newPendingTruck, phone: e.target.value})} 
+                  placeholder="Ex: 11999999999"
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-1 text-gray-400">Voucher do Comercial (Opcional)</label>
+                <select
+                  value={newPendingTruck.voucherCode}
+                  onChange={e => setNewPendingTruck({...newPendingTruck, voucherCode: e.target.value})}
+                  className="bg-[#16162a] border border-white/20 p-2 rounded text-white"
+                  style={{ minWidth: "150px", height: "42px" }}
+                >
+                  <option value="">Nenhum</option>
+                  {vouchers?.filter(v => v.isActive).map(v => (
+                    <option key={v._id} value={v.code}>{v.code} ({v.partnerName})</option>
+                  ))}
+                </select>
+              </div>
+              <button 
+                onClick={async () => {
+                  if (!newPendingTruck.name || !newPendingTruck.phone) {
+                    return alert("Nome e telefone são obrigatórios.");
+                  }
+                  try {
+                    const res = await createPendingTruck({
+                      name: newPendingTruck.name,
+                      phone: newPendingTruck.phone,
+                      voucherCode: newPendingTruck.voucherCode || undefined,
+                    });
+                    const claimLink = `${window.location.origin}/claim?token=${res.transferToken}`;
+                    setGeneratedLink({
+                      name: newPendingTruck.name,
+                      link: claimLink,
+                      phone: newPendingTruck.phone,
+                    });
+                    setNewPendingTruck({ name: "", phone: "", voucherCode: "" });
+                  } catch (e: any) {
+                    alert(e.message);
+                  }
+                }}
+                className="bg-[#FF6B35] text-white px-4 py-2 rounded font-bold hover:bg-[#e05a2b]"
+                style={{ height: "42px" }}
+              >
+                Gerar & Criar
+              </button>
+            </div>
+
+            {generatedLink && (
+              <div className="mt-4 p-4 bg-[#16162a] border border-[#FF6B35]/30 rounded-lg">
+                <h3 className="font-bold text-green-400 mb-2">🎉 Food Truck criado com sucesso!</h3>
+                <p className="text-sm text-gray-300 mb-2">Envie o link abaixo para o proprietário para que ele possa reivindicar o acesso:</p>
+                <div className="flex gap-2 items-center flex-wrap">
+                  <input
+                    type="text"
+                    readOnly
+                    value={generatedLink.link}
+                    className="bg-black/40 border border-white/10 p-2 rounded text-sm text-gray-300 flex-grow font-mono"
+                  />
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedLink.link);
+                      alert("Link copiado para a área de transferência!");
+                    }}
+                    className="bg-[#10B981] hover:bg-[#059669] text-white px-3 py-2 rounded text-sm font-bold"
+                  >
+                    📋 Copiar
+                  </button>
+                  <a
+                    href={`https://wa.me/55${generatedLink.phone.replace(/\D/g, '')}?text=${encodeURIComponent(
+                      `Olá! Seu Food Truck *${generatedLink.name}* foi pré-cadastrado no Food Pronto. Clique no link a seguir para criar sua conta e assumir o controle dele: ${generatedLink.link}`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-2 rounded text-sm font-bold flex items-center gap-1"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    💬 WhatsApp
+                  </a>
+                  <button
+                    onClick={() => setGeneratedLink(null)}
+                    className="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded text-sm"
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="admin-table-wrapper">
             <table className="admin-table">
               <thead>
@@ -122,6 +236,17 @@ function AdminPageContent() {
                       <td>
                         <strong>{truck.name}</strong><br/>
                         <small>{truck.cityDisplay} - {truck.stateDisplay}</small>
+                        <div className="mt-1">
+                          {truck.ownerId.startsWith("admin_pending_") ? (
+                            <span className="inline-block bg-yellow-900/40 border border-yellow-700/30 text-yellow-300 text-[10px] px-1.5 py-0.5 rounded font-semibold">
+                              ⏳ Pendente de Reivindicação
+                            </span>
+                          ) : (
+                            <span className="inline-block bg-green-900/40 border border-green-700/30 text-green-300 text-[10px] px-1.5 py-0.5 rounded font-semibold">
+                              👤 Proprietário: {truck.ownerId.substring(0, 10)}...
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td>
                         {truck.phone}<br/>
@@ -176,16 +301,57 @@ function AdminPageContent() {
                         />
                       </td>
                       <td>
-                        <button 
-                          className="btn-delete"
-                          onClick={() => {
-                            if (window.confirm(`Tem certeza que deseja DELETAR o truck ${truck.name}?`)) {
-                              deleteTruck({ id: truck._id });
-                            }
-                          }}
-                        >
-                          🗑️ Excluir
-                        </button>
+                        <div className="flex gap-2">
+                          {truck.ownerId.startsWith("admin_pending_") && (
+                            <>
+                              <button
+                                onClick={async () => {
+                                  let token = truck.transferToken;
+                                  if (!token) {
+                                    try {
+                                      token = await generateTransferToken({ truckId: truck._id });
+                                    } catch (e: any) {
+                                      return alert("Erro ao gerar token: " + e.message);
+                                    }
+                                  }
+                                  const claimLink = `${window.location.origin}/claim?token=${token}`;
+                                  navigator.clipboard.writeText(claimLink);
+                                  alert(`Link de reivindicação copiado:\n${claimLink}`);
+                                }}
+                                className="bg-[#FF6B35]/20 hover:bg-[#FF6B35]/40 text-[#FF6B35] border border-[#FF6B35]/40 px-2 py-1 rounded text-xs font-bold"
+                              >
+                                🔗 Link
+                              </button>
+                              <button
+                                onClick={async () => {
+                                  if (window.confirm("Deseja invalidar o link anterior e gerar um novo link de reivindicação?")) {
+                                    try {
+                                      const token = await generateTransferToken({ truckId: truck._id });
+                                      const claimLink = `${window.location.origin}/claim?token=${token}`;
+                                      navigator.clipboard.writeText(claimLink);
+                                      alert(`Novo link de reivindicação gerado e copiado:\n${claimLink}`);
+                                    } catch (e: any) {
+                                      alert("Erro ao gerar novo token: " + e.message);
+                                    }
+                                  }
+                                }}
+                                className="bg-blue-900/40 hover:bg-blue-900/60 text-blue-300 border border-blue-700/40 px-2 py-1 rounded text-xs font-bold"
+                              >
+                                🔄 Novo Link
+                              </button>
+                            </>
+                          )}
+                          <button 
+                            className="btn-delete"
+                            onClick={() => {
+                              if (window.confirm(`Tem certeza que deseja DELETAR o truck ${truck.name}?`)) {
+                                deleteTruck({ id: truck._id });
+                              }
+                            }}
+                          >
+                            🗑️ Excluir
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))

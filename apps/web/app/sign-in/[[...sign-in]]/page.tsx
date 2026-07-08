@@ -7,6 +7,10 @@ function buildFallbackRedirectUrl() {
   if (typeof window === "undefined") return "/onboarding"
   try {
     const url = new URL(window.location.href)
+    const redirectUrl = url.searchParams.get("redirect_url")
+    if (redirectUrl && String(redirectUrl).trim().length > 0) {
+      return redirectUrl
+    }
     const voucher = url.searchParams.get("voucher")
     if (voucher && String(voucher).trim().length > 0) {
       return `/onboarding?voucher=${encodeURIComponent(voucher.trim())}`

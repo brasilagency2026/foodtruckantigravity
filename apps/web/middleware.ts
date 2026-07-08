@@ -6,6 +6,7 @@ function isPublicRoute(req: any) {
     const pathname = req.nextUrl?.pathname ?? (new URL(req.url)).pathname
     if (pathname === '/') return true
     return (
+      pathname.startsWith('/claim') ||
       pathname.startsWith('/sign-in') ||
       pathname.startsWith('/sign-up') ||
       pathname.startsWith('/comercial/sign-in') ||

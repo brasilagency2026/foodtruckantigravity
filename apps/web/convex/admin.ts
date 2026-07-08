@@ -301,3 +301,149 @@ export const deleteVoucher = mutation({
     await ctx.db.delete(args.id);
   },
 });
+
+export const createPendingFoodTruck = mutation({
+  args: {
+    name: v.string(),
+    phone: v.string(),
+    voucherCode: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity || identity.email !== "glwebagency2@gmail.com") {
+      throw new Error("Não autorizado. Apenas o superadmin pode criar food trucks.");
+    }
+
+    // Generate random slug
+    const baseSlug = args.name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    // Check slug uniqueness
+    const existing = await ctx.db
+      .query("foodTrucks")
+      .withIndex("by_slug", (q) => q.eq("slug", baseSlug))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("state"), "sp"),
+          q.eq(q.field("city"), "sao-paulo")
+        )
+      )
+      .first();
+
+    const finalSlug = existing
+      ? `${baseSlug}-${Date.now().toString(36)}`
+      : baseSlug;
+
+    // Generate transfer token
+    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    const truckId = await ctx.db.insert("foodTrucks", {
+      name: args.name,
+      description: "Página em construção...",
+      cuisine: "Variada",
+      latitude: -23.5505,
+      longitude: -46.6333,
+      address: "A definir",
+      coverPhotoUrl: "https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?w=800",
+      phone: args.phone,
+      slug: finalSlug,
+      state: "sp",
+      city: "sao-paulo",
+      cityDisplay: "São Paulo",
+      stateDisplay: "SP",
+      openingHours: {},
+      isOpen: false,
+      ownerId: `admin_pending_${Date.now()}`,
+      approvalStatus: "approved",
+      isActive: true,
+      trialEndsAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      subscriptionStatus: "trial",
+      voucherCode: args.voucherCode || undefined,
+      transferToken: token,
+    });
+
+    return { truckId, transferToken: token };
+  },
+});
+
+export const generateTransferToken = mutation({
+  args: {
+    truckId: v.id("foodTrucks"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity || identity.email !== "glwebagency2@gmail.com") {
+      throw new Error("Não autorizado");
+    }
+
+    const truck = await ctx.db.get(args.truckId);
+    if (!truck) {
+      throw new Error("Food Truck não encontrado.");
+    }
+
+    if (!truck.ownerId.startsWith("admin_pending_")) {
+      throw new Error("Este Food Truck já foi reivindicado por um proprietário.");
+    }
+
+    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    await ctx.db.patch(args.truckId, {
+      transferToken: token,
+    });
+
+    return token;
+  },
+});
+
+export const getTruckByTransferToken = query({
+  args: { transferToken: v.string() },
+  handler: async (ctx, args) => {
+    if (!args.transferToken) return null;
+    const truck = await ctx.db
+      .query("foodTrucks")
+      .withIndex("by_transfer_token", (q) => q.eq("transferToken", args.transferToken))
+      .first();
+
+    if (!truck) return null;
+
+    // Return only non-sensitive data
+    return {
+      _id: truck._id,
+      name: truck.name,
+      phone: truck.phone,
+    };
+  },
+});
+
+export const claimFoodTruck = mutation({
+  args: {
+    transferToken: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Você precisa estar conectado para reivindicar um Food Truck.");
+    }
+
+    const truck = await ctx.db
+      .query("foodTrucks")
+      .withIndex("by_transfer_token", (q) => q.eq("transferToken", args.transferToken))
+      .first();
+
+    if (!truck) {
+      throw new Error("Link de transferência inválido ou expirado.");
+    }
+
+    // Set new owner, clear token, and activate trial
+    await ctx.db.patch(truck._id, {
+      ownerId: identity.subject,
+      transferToken: undefined, // Consume token
+    });
+
+    return truck._id;
+  },
+});

@@ -4,13 +4,15 @@ import { SignUp } from "@clerk/nextjs";
 import WebOnlyRoute from "../../../components/WebOnlyRoute";
 
 function buildFallbackRedirectUrl() {
-  // Le lien commercial ressemble à : /sign-up?email=<partner_email>
-  // On évite d’envoyer systématiquement vers /onboarding : si un partner email est présent,
-  // on redirige d’abord vers le panel commercial.
   if (typeof window === "undefined") return "/onboarding"
 
   try {
     const url = new URL(window.location.href)
+    const redirectUrl = url.searchParams.get("redirect_url")
+    if (redirectUrl && String(redirectUrl).trim().length > 0) {
+      return redirectUrl
+    }
+
     const email = url.searchParams.get("email")
     if (email && String(email).trim().length > 0) {
       return "/comercial/dashboard"
