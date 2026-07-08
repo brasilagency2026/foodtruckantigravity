@@ -24,13 +24,27 @@ export default function AssinaturaPage() {
   useEffect(() => {
     if (!truck) return;
     if (truck.voucherCode && String(truck.voucherCode).trim() !== "") {
-      setVoucherCode(String(truck.voucherCode).trim().toUpperCase());
+      const code = String(truck.voucherCode).trim().toUpperCase();
+      setVoucherCode(code);
       setVoucherLocked(true);
-      setVoucherStatus("valid");
-      // Keep existing discount logic: discount will be validated on the next click of "Aplicar"
-      // but we can already set it optimistically by validating immediately.
+      setVoucherStatus("validating");
+      
+      convex.query(api.vouchers.getVoucherByCode, { code })
+        .then((voucher) => {
+          if (voucher) {
+            setVoucherStatus("valid");
+            setDiscount(voucher.discountPercentage);
+          } else {
+            setVoucherStatus("invalid");
+            setDiscount(0);
+          }
+        })
+        .catch(() => {
+          setVoucherStatus("invalid");
+          setDiscount(0);
+        });
     }
-  }, [truck]);
+  }, [truck, convex]);
   const [discount, setDiscount] = useState(0); // e.g., 10 for 10%
   const [mpEmail, setMpEmail] = useState(""); // Email for Mercado Pago account
 
